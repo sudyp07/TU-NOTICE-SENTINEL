@@ -51,6 +51,7 @@ jobs:
       - name: Run notice bot
         if: github.event_name != 'workflow_dispatch' || github.event.inputs.mode != 'test-email'
         env:
+          API_SECRET: ${{ secrets.API_SECRET }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
