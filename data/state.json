@@ -1,5 +1,6 @@
 {
   "seenIds": [
+    "14313",
     "14286",
     "14284",
     "14241",
@@ -58,6 +59,17 @@
     "11271"
   ],
   "notices": [
+    {
+      "id": "14313",
+      "title": "मानविकी तथा समाजिकशास्त्र संकाय अन्तर्गत ३ वर्षे र ४ वर्षे स्नातक तहका परीक्षाहरुको आन्तरिक तथा प्रयोगात्मक प्राप्ताङ्क प्रविष्ट गर्ने बारे ।",
+      "url": "https://exam.tu.edu.np/notices/14313",
+      "bsDate": null,
+      "adDate": null,
+      "originalDate": null,
+      "isNew": true,
+      "isRead": false,
+      "discoveredAt": "2026-08-10T09:39:49.537Z"
+    },
     {
       "id": "14286",
       "title": "Exam Result: 4-Years B.F.A Second year Regular/Partial-2082 Published",
@@ -675,7 +687,7 @@
       "discoveredAt": "2026-08-10T08:03:14.567Z"
     }
   ],
-  "updatedAt": "2026-08-10T09:36:13.192Z",
+  "updatedAt": "2026-08-10T09:39:49.537Z",
   "status": {
     "configured": true,
     "online": true,
@@ -683,16 +695,16 @@
     "website": "online",
     "scraper": "success",
     "state": "saved",
-    "gmail": "configured",
+    "gmail": "sent",
     "github": "connected",
-    "lastChecked": "2026-08-10T09:36:13.192Z",
-    "lastSuccessfulRun": "2026-08-10T09:36:13.192Z",
+    "lastChecked": "2026-08-10T09:39:49.537Z",
+    "lastSuccessfulRun": "2026-08-10T09:39:49.537Z",
     "lastFailedRun": "2026-08-10T07:59:56.516Z",
     "lastError": null,
-    "noticesScanned": 56,
-    "storedNotices": 56,
-    "newNotices": 0,
-    "emailsSent": 0,
+    "noticesScanned": 57,
+    "storedNotices": 57,
+    "newNotices": 1,
+    "emailsSent": 1,
     "version": "3.3.0"
   },
   "logs": [
@@ -749,8 +761,84 @@
       "timestamp": "2026-08-10T09:36:13.192Z",
       "level": "INFO",
       "message": "No new notices. No email sent."
+    },
+    {
+      "id": "log-2026-08-10T09:39:27.334Z-9",
+      "timestamp": "2026-08-10T09:39:27.334Z",
+      "level": "INFO",
+      "message": "Starting TU Notice Sentinel"
+    },
+    {
+      "id": "log-2026-08-10T09:39:27.334Z-10",
+      "timestamp": "2026-08-10T09:39:27.334Z",
+      "level": "INFO",
+      "message": "Source: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-10T09:39:27.334Z-11",
+      "timestamp": "2026-08-10T09:39:27.334Z",
+      "level": "INFO",
+      "message": "Dry run: false"
+    },
+    {
+      "id": "log-2026-08-10T09:39:27.335Z-12",
+      "timestamp": "2026-08-10T09:39:27.335Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 1, attempt 1/5: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-10T09:39:33.826Z-13",
+      "timestamp": "2026-08-10T09:39:33.826Z",
+      "level": "INFO",
+      "message": "TU website returned HTTP 500. Retrying in 10 seconds."
+    },
+    {
+      "id": "log-2026-08-10T09:39:43.827Z-14",
+      "timestamp": "2026-08-10T09:39:43.827Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 1, attempt 2/5: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-10T09:39:48.386Z-15",
+      "timestamp": "2026-08-10T09:39:48.386Z",
+      "level": "INFO",
+      "message": "Found 57 notice link(s) on page 1."
+    },
+    {
+      "id": "log-2026-08-10T09:39:48.387Z-16",
+      "timestamp": "2026-08-10T09:39:48.387Z",
+      "level": "INFO",
+      "message": "Current unique notices collected: 57"
+    },
+    {
+      "id": "log-2026-08-10T09:39:48.387Z-17",
+      "timestamp": "2026-08-10T09:39:48.387Z",
+      "level": "INFO",
+      "message": "Previously stored notices: 56"
+    },
+    {
+      "id": "log-2026-08-10T09:39:48.387Z-18",
+      "timestamp": "2026-08-10T09:39:48.387Z",
+      "level": "INFO",
+      "message": "New notices detected: 1"
+    },
+    {
+      "id": "log-2026-08-10T09:39:49.537Z-19",
+      "timestamp": "2026-08-10T09:39:49.537Z",
+      "level": "INFO",
+      "message": "Email sent with 1 notice(s)."
     }
   ],
-  "notifications": [],
+  "notifications": [
+    {
+      "id": "email-1786354789537",
+      "type": "email",
+      "noticeCount": 1,
+      "timestamp": "2026-08-10T09:39:49.537Z",
+      "recipient": "su*****@gmail.com",
+      "status": "accepted",
+      "summary": "1 new TU notice"
+    }
+  ],
   "botEnabled": true
 }
