@@ -1,6 +1,6 @@
 // src/parser.js
 import * as cheerio from "cheerio";
-import { extractADDate } from "./dates.js";
+import { extractADDate, extractBSDate, normalizeNepaliDigits, isBSDate, extractTUDate } from "./dates.js";
 
 /**
  * Clean whitespace.
@@ -143,10 +143,15 @@ export function absoluteUrl(href, base) {
 }
 
 /**
- * Find an AD date inside text.
- *
- * We intentionally use extractADDate() so BS dates such as
- * 2083-04-15 are rejected.
+ * Enhanced date extraction from text with direct AD date detection.
+ * 
+ * This function now handles:
+ * - YYYY-MM-DD format (direct detection) but ONLY for AD dates
+ * - YYYY/MM/DD format but ONLY for AD dates
+ * - Various date formats found on TU website
+ * 
+ * CRITICAL: Does NOT use Date() constructor to avoid timezone issues
+ * CRITICAL: BS dates (2080+) are rejected
  */
 function extractDateFromText(text) {
   const cleaned = cleanText(text);
@@ -155,6 +160,72 @@ function extractDateFromText(text) {
     return null;
   }
 
+  // DIRECT DETECTION: Check for YYYY-MM-DD format
+  const adDateMatch = cleaned.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (adDateMatch) {
+    const year = parseInt(adDateMatch[1]);
+    const month = parseInt(adDateMatch[2]);
+    const day = parseInt(adDateMatch[3]);
+    
+    // CRITICAL: Reject BS dates (years >= 2080)
+    if (year >= 2080) {
+      return null; // This is a BS date, reject it
+    }
+    if (year < 1900) {
+      return null; // Too old to be valid
+    }
+    
+    // Validate month and day ranges
+    if (month < 1 || month > 12) return null;
+    if (day < 1 || day > 31) return null;
+    
+    // Return the date as-is, no Date object conversion
+    return adDateMatch[0];
+  }
+
+  // DIRECT DETECTION: Check for YYYY/MM/DD format
+  const adSlashMatch = cleaned.match(/(\d{4})\/(\d{2})\/(\d{2})/);
+  if (adSlashMatch) {
+    const year = parseInt(adSlashMatch[1]);
+    const month = parseInt(adSlashMatch[2]);
+    const day = parseInt(adSlashMatch[3]);
+    
+    // CRITICAL: Reject BS dates (years >= 2080)
+    if (year >= 2080) {
+      return null;
+    }
+    if (year < 1900) {
+      return null;
+    }
+    
+    if (month < 1 || month > 12) return null;
+    if (day < 1 || day > 31) return null;
+    
+    return `${adSlashMatch[1]}-${adSlashMatch[2]}-${adSlashMatch[3]}`;
+  }
+
+  // Check for DD-MM-YYYY or DD/MM/YYYY format
+  const dayMonthYearMatch = cleaned.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);
+  if (dayMonthYearMatch) {
+    const day = parseInt(dayMonthYearMatch[1]);
+    const month = parseInt(dayMonthYearMatch[2]);
+    const year = parseInt(dayMonthYearMatch[3]);
+    
+    // CRITICAL: Reject BS dates (years >= 2080)
+    if (year >= 2080) {
+      return null;
+    }
+    if (year < 1900) {
+      return null;
+    }
+    
+    if (month < 1 || month > 12) return null;
+    if (day < 1 || day > 31) return null;
+    
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  // Fallback: Use extractADDate (which also avoids Date object)
   return extractADDate(cleaned);
 }
 
@@ -225,6 +296,8 @@ function findNoticeContainer($, anchor) {
  *
  * This is the safest source because it prevents a BS date
  * elsewhere in the notice from interfering.
+ * 
+ * UPDATED: Added .nep_date selector for TU's specific date format
  */
 function findDateElement($, anchor) {
   const element = $(anchor);
@@ -233,8 +306,10 @@ function findDateElement($, anchor) {
     return $();
   }
 
+  // IMPORTANT: Added .nep_date to support TU's specific date format
   const dateSelectors = [
     ".date",
+    ".nep_date",           // ← CRITICAL FIX: TU uses this class for dates
     ".notice-date",
     ".notice_date",
     ".publish-date",
@@ -335,7 +410,7 @@ function findDateElement($, anchor) {
  *
  * Priority:
  *
- * 1. Dedicated date element
+ * 1. Dedicated date element (now includes .nep_date)
  * 2. Notice title
  * 3. Anchor attributes
  * 4. Nearby siblings
@@ -346,7 +421,7 @@ function findDateElement($, anchor) {
 function findADDate($, anchor, title) {
   /*
    * ---------------------------------------------------------
-   * 1. Dedicated date element
+   * 1. Dedicated date element (UPDATED with .nep_date support)
    * ---------------------------------------------------------
    */
   const dateElement = findDateElement($, anchor);
@@ -655,6 +730,118 @@ export function parsePage(html, pageUrl) {
       $,
       pageUrl
     ),
+  };
+}
+
+/**
+ * Parse a single notice page for its details (especially the AD date)
+ * 
+ * This function is exported and used by scraper.js to fetch individual
+ * notice pages and extract the AD date from the full page HTML.
+ * 
+ * CRITICAL: Does NOT use Date() constructor to avoid timezone issues
+ */
+export async function parseNoticeDetails(html, url) {
+  const $ = cheerio.load(String(html || ""));
+  
+  // Extract title from the page
+  let title = $('h1').first().text().trim() || 
+              $('h2').first().text().trim() || 
+              $('title').first().text().trim() ||
+              'Untitled Notice';
+  
+  // Look for AD date in the page - DIRECT APPROACH
+  let adDate = null;
+  let bsDate = null;
+  
+  // Get the page text once
+  const pageText = $('body').text();
+  
+  // METHOD 1: Look for .nep_date class (TU's primary date format)
+  const nepDateElements = $('.nep_date');
+  if (nepDateElements.length > 0) {
+    const dateText = cleanText(nepDateElements.first().text());
+    
+    // Extract date directly without any conversion
+    const dateMatch = dateText.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (dateMatch) {
+      const year = parseInt(dateMatch[1]);
+      // Reject BS dates (years >= 2080)
+      if (year < 2080 && year >= 1900) {
+        // Use the exact date as-is, no conversion
+        adDate = dateMatch[0];
+      }
+    }
+  }
+  
+  // METHOD 2: Look for any date in .date or other classes
+  if (!adDate) {
+    const dateElements = $('.date, [class*="date"]');
+    dateElements.each((_, element) => {
+      const text = cleanText($(element).text());
+      const dateMatch = text.match(/(\d{4})-(\d{2})-(\d{2})/);
+      if (dateMatch) {
+        const year = parseInt(dateMatch[1]);
+        if (year < 2080 && year >= 1900) {
+          adDate = dateMatch[0];
+          return false; // break loop
+        }
+      }
+    });
+  }
+  
+  // METHOD 3: Search the entire page for any AD date
+  if (!adDate) {
+    const allDates = pageText.match(/(\d{4})-(\d{2})-(\d{2})/g);
+    if (allDates) {
+      // Find the first AD date (year < 2080)
+      for (const dateStr of allDates) {
+        const match = dateStr.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (match) {
+          const year = parseInt(match[1]);
+          if (year < 2080 && year >= 1900) {
+            adDate = dateStr;
+            break;
+          }
+        }
+      }
+    }
+  }
+  
+  // METHOD 4: Try extractADDate as fallback (which also avoids Date object)
+  if (!adDate) {
+    // Look for YYYY-MM-DD pattern specifically
+    const directMatch = pageText.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (directMatch) {
+      const year = parseInt(directMatch[1]);
+      if (year < 2080 && year >= 1900) {
+        adDate = directMatch[0];
+      }
+    }
+  }
+  
+  // Extract BS date if present
+  const bsPatterns = [
+    /BS\s*[:：]\s*([\d\-/]+)/i,
+    /B\.?S\.?\s*[:：]\s*([\d\-/]+)/i,
+    /वि\.\s*सं\.?\s*[:：]\s*([\d\-/]+)/i,
+    /विक्रम\s*संवत्\s*[:：]\s*([\d\-/]+)/i,
+    /मिति\s*[:：]\s*([\d\-/]+)/i,
+  ];
+  
+  for (const pattern of bsPatterns) {
+    const match = pageText.match(pattern);
+    if (match) {
+      bsDate = match[1].trim();
+      break;
+    }
+  }
+  
+  return {
+    title,
+    adDate,
+    bsDate,
+    url,
   };
 }
 
