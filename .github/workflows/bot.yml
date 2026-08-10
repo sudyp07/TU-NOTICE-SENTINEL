@@ -1,31 +1,51 @@
 name: TU Notice Sentinel
+
 on:
   schedule:
     - cron: "*/30 * * * *"
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   check:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: {node-version: 20, cache: npm}
-      - run: npm install
-      - run: npm test
-      - run: npm start
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run TU Notice Sentinel
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-      - name: Save state
+        run: npm start
+
+      - name: Save notice state
+        if: success()
         run: |
-          if git diff --quiet; then echo "No state changes."
-          else
-            git config user.name "TU Notice Sentinel Bot"
-            git config user.email "actions@users.noreply.github.com"
-            git add data/state.json
-            git commit -m "chore: update notice state"
-            git push
+          if git diff --quiet -- data/state.json; then
+            echo "No state changes."
+            exit 0
           fi
+
+          git config user.name "TU Notice Sentinel Bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          git add data/state.json
+          git commit -m "chore: update notice state"
+          git push
