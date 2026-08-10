@@ -52,7 +52,7 @@ jobs:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
 
           SOURCE_URL: ${{ vars.SOURCE_URL || 'https://exam.tu.edu.np/notices' }}
-          MAX_PAGES: ${{ vars.MAX_PAGES || '4' }}
+          MAX_PAGES: ${{ vars.MAX_PAGES || '1' }}
           FIRST_RUN_LIMIT: ${{ vars.FIRST_RUN_LIMIT || '10' }}
           STATE_FILE: data/state.json
 
