@@ -451,5 +451,70 @@
       "adDate": null
     }
   ],
-  "updatedAt": "2026-08-10T06:43:31.092Z"
+  "updatedAt": "2026-08-10T07:56:50.435Z",
+  "status": {
+    "configured": true,
+    "online": false,
+    "bot": "failed",
+    "website": "error",
+    "scraper": "failed",
+    "state": "error",
+    "gmail": "unknown",
+    "github": "connected",
+    "lastChecked": "2026-08-10T07:56:41.887Z",
+    "lastSuccessfulRun": null,
+    "lastFailedRun": "2026-08-10T07:56:50.435Z",
+    "lastError": "TU website returned HTTP 500",
+    "noticesScanned": 0,
+    "storedNotices": 0,
+    "newNotices": 0,
+    "emailsSent": 0,
+    "version": "3.3.0"
+  },
+  "logs": [
+    {
+      "id": "log-2026-08-10T07:56:41.904Z-0",
+      "timestamp": "2026-08-10T07:56:41.904Z",
+      "level": "INFO",
+      "message": "Starting TU Notice Sentinel"
+    },
+    {
+      "id": "log-2026-08-10T07:56:41.904Z-1",
+      "timestamp": "2026-08-10T07:56:41.904Z",
+      "level": "INFO",
+      "message": "Source: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-10T07:56:41.905Z-2",
+      "timestamp": "2026-08-10T07:56:41.905Z",
+      "level": "INFO",
+      "message": "Dry run: false"
+    },
+    {
+      "id": "log-2026-08-10T07:56:41.905Z-3",
+      "timestamp": "2026-08-10T07:56:41.905Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 1: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-10T07:56:50.144Z-4",
+      "timestamp": "2026-08-10T07:56:50.144Z",
+      "level": "INFO",
+      "message": "Found 56 notice link(s) on page 1."
+    },
+    {
+      "id": "log-2026-08-10T07:56:50.144Z-5",
+      "timestamp": "2026-08-10T07:56:50.144Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 2: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0wMyAxMDo0MTowOSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-10T07:56:50.435Z-6",
+      "timestamp": "2026-08-10T07:56:50.435Z",
+      "level": "ERROR",
+      "message": "TU website returned HTTP 500"
+    }
+  ],
+  "notifications": [],
+  "botEnabled": true
 }
