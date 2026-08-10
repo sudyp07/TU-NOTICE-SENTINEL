@@ -30,6 +30,7 @@ jobs:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           SOURCE_URL: ${{ vars.SOURCE_URL }}
+          MAX_PAGES: ${{ vars.MAX_PAGES }}
       - name: Save state
         run: |
           if git diff --quiet -- data/state.json; then echo "No state changes."
