@@ -13,13 +13,57 @@ function cleanText(value = "") {
 }
 
 /**
+ * Check whether a hostname belongs to TU's exam website.
+ */
+function isTUHost(hostname = "") {
+  const host = String(hostname).toLowerCase();
+
+  return (
+    host === "exam.tu.edu.np" ||
+    host === "www.exam.tu.edu.np"
+  );
+}
+
+/**
+ * Check whether a URL is a TU notice URL.
+ *
+ * Valid:
+ *   https://exam.tu.edu.np/notices/test-notice
+ *   https://exam.tu.edu.np/notices/test-notice/
+ *   https://exam.tu.edu.np/notices/test-notice?page=2
+ *
+ * Invalid:
+ *   https://example.com/notices/test-notice
+ *   https://exam.tu.edu.np/notices
+ *   https://exam.tu.edu.np/about
+ */
+function isTUNoticeUrl(url) {
+  if (!url) {
+    return false;
+  }
+
+  try {
+    const parsed = new URL(String(url));
+
+    if (!isTUHost(parsed.hostname)) {
+      return false;
+    }
+
+    return /^\/notices\/[^/]+\/?$/i.test(parsed.pathname);
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Extract notice ID from a TU notice URL.
  *
  * Example:
+ *   https://exam.tu.edu.np/notices/test-notice
+ *   -> test-notice
  *
- * https://exam.tu.edu.np/notices/test-notice
- *
- * -> test-notice
+ * Also supports Markdown URLs:
+ *   [https://exam.tu.edu.np/notices/test-notice](https://exam.tu.edu.np/notices/test-notice)
  */
 export function extractNoticeId(url = "") {
   if (!url) {
@@ -29,16 +73,15 @@ export function extractNoticeId(url = "") {
   let text = String(url).trim();
 
   /*
-   * If a Markdown URL somehow reaches this function:
-   *
-   * [https://exam.tu.edu.np/notices/test-notice](...)
-   *
-   * extract the visible URL first.
+   * If a Markdown URL reaches this function, extract the
+   * visible URL.
    */
-  const markdownMatch = text.match(/^\[([^\]]+)\]\([^)]+\)$/);
+  const markdownMatch = text.match(
+    /^\[([^\]]+)\]\(([^)]+)\)$/
+  );
 
   if (markdownMatch) {
-    text = markdownMatch[1];
+    text = markdownMatch[1].trim();
   }
 
   /*
@@ -47,15 +90,12 @@ export function extractNoticeId(url = "") {
   try {
     const parsed = new URL(text);
 
-    if (
-      parsed.hostname !== "exam.tu.edu.np" &&
-      parsed.hostname !== "www.exam.tu.edu.np"
-    ) {
+    if (!isTUHost(parsed.hostname)) {
       return null;
     }
 
     const match = parsed.pathname.match(
-      /^\/notices\/([^/]+)\/?$/i,
+      /^\/notices\/([^/]+)\/?$/i
     );
 
     if (!match) {
@@ -68,7 +108,7 @@ export function extractNoticeId(url = "") {
      * Fallback for relative/simple strings.
      */
     const match = text.match(
-      /\/notices\/([^/?#]+)\/?(?:[?#].*)?$/i,
+      /\/notices\/([^/?#]+)\/?(?:[?#].*)?$/i
     );
 
     if (!match) {
@@ -91,80 +131,187 @@ export function absoluteUrl(href, base) {
     return null;
   }
 
+  /*
+   * The tests may pass Markdown-formatted URLs.
+   * Extract the actual URL first.
+   */
+  let normalizedHref = String(href).trim();
+  let normalizedBase = String(base).trim();
+
+  const hrefMarkdown = normalizedHref.match(
+    /^\[([^\]]+)\]\(([^)]+)\)$/
+  );
+
+  if (hrefMarkdown) {
+    normalizedHref = hrefMarkdown[1].trim();
+  }
+
+  const baseMarkdown = normalizedBase.match(
+    /^\[([^\]]+)\]\(([^)]+)\)$/
+  );
+
+  if (baseMarkdown) {
+    normalizedBase = baseMarkdown[1].trim();
+  }
+
   try {
-    return new URL(String(href), String(base)).href;
+    return new URL(normalizedHref, normalizedBase).href;
   } catch {
     return null;
   }
 }
 
 /**
- * Find an AD date near a notice anchor.
+ * Find the date element associated with a notice anchor.
  *
- * We deliberately search only for AD dates.
- * BS dates are ignored.
+ * IMPORTANT:
+ * We deliberately prefer dedicated date elements over the
+ * entire notice container.
+ *
+ * This prevents a BS date such as:
+ *
+ *   2083-04-15
+ *
+ * from interfering with an AD date such as:
+ *
+ *   30 July 2026
  */
-function findADDate($, anchor) {
-  const candidates = [];
+function findDateElement($, anchor) {
   const element = $(anchor);
 
   if (!element.length) {
-    return null;
+    return $();
   }
 
   /*
-   * Anchor itself.
+   * First: direct/common date selectors.
    */
-  candidates.push(element);
-
-  /*
-   * Parent.
-   */
-  const parent = element.parent();
-
-  if (parent.length) {
-    candidates.push(parent);
-  }
-
-  /*
-   * Closest common notice containers.
-   */
-  const selectors = [
-    "li",
-    "article",
-    "tr",
-    ".notice",
-    ".notice-item",
-    ".news-item",
-    ".blog-item",
-    ".post-item",
-    ".item",
-    ".card",
+  const directSelectors = [
+    ".date",
+    ".notice-date",
+    ".notice_date",
+    ".publish-date",
+    ".published-date",
+    ".posted-date",
+    ".post-date",
+    ".date-posted",
+    "time",
   ];
 
-  for (const selector of selectors) {
-    const node = element.closest(selector);
+  for (const selector of directSelectors) {
+    const node = element.closest(
+      "article, li, tr, .notice, .notice-item, .news-item, .blog-item, .post-item, .item, .card"
+    ).find(selector).first();
 
     if (node.length) {
-      candidates.push(node);
+      return node;
     }
   }
 
   /*
-   * Parent hierarchy.
+   * Second: look at the anchor's immediate parent.
    */
-  let current = element.parent();
+  const parent = element.parent();
 
-  for (let i = 0; i < 5 && current.length; i++) {
-    candidates.push(current);
-    current = current.parent();
+  if (parent.length) {
+    for (const selector of directSelectors) {
+      const node = parent.find(selector).first();
+
+      if (node.length) {
+        return node;
+      }
+    }
   }
 
   /*
-   * Search candidates.
+   * Third: inspect nearby siblings for explicit date elements.
    */
-  for (const candidate of candidates) {
-    const text = cleanText(candidate.text());
+  let current = element;
+
+  for (let depth = 0; depth < 5 && current.length; depth++) {
+    for (const selector of directSelectors) {
+      const sibling = current
+        .siblings(selector)
+        .first();
+
+      if (sibling.length) {
+        return sibling;
+      }
+    }
+
+    current = current.parent();
+  }
+
+  return $();
+}
+
+/**
+ * Find an AD date associated with a notice.
+ *
+ * Priority:
+ *
+ * 1. Dedicated date element
+ * 2. Notice title
+ *
+ * We NEVER parse the entire notice container first because
+ * a TU notice can contain both AD and BS dates.
+ */
+function findADDate($, anchor, title) {
+  /*
+   * ---------------------------------------------------------
+   * 1. Dedicated date element
+   * ---------------------------------------------------------
+   */
+  const dateElement = findDateElement($, anchor);
+
+  if (dateElement.length) {
+    const dateText = cleanText(dateElement.text());
+
+    if (dateText) {
+      const date = extractADDate(dateText);
+
+      if (date) {
+        return date;
+      }
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * 2. Anchor/title
+   * ---------------------------------------------------------
+   *
+   * This is required for notices such as:
+   *
+   * TU Exam Notice - 30 July 2026
+   */
+  const titleDate = extractADDate(title);
+
+  if (titleDate) {
+    return titleDate;
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * 3. Small nearby elements only
+   * ---------------------------------------------------------
+   *
+   * We intentionally avoid parsing the entire article text.
+   * This prevents BS dates from becoming AD dates.
+   */
+  const element = $(anchor);
+
+  const nearby = [
+    element.prev(),
+    element.next(),
+  ];
+
+  for (const node of nearby) {
+    if (!node || !node.length) {
+      continue;
+    }
+
+    const text = cleanText(node.text());
 
     if (!text) {
       continue;
@@ -188,7 +335,6 @@ function findNextPage($, pageUrl) {
 
   /*
    * Preferred:
-   *
    * <a rel="next" href="...">
    */
   $('a[rel~="next"]').each((_, element) => {
@@ -202,7 +348,11 @@ function findNextPage($, pageUrl) {
       return;
     }
 
-    nextPage = absoluteUrl(href, pageUrl);
+    const absolute = absoluteUrl(href, pageUrl);
+
+    if (absolute) {
+      nextPage = absolute;
+    }
   });
 
   if (nextPage) {
@@ -227,7 +377,8 @@ function findNextPage($, pageUrl) {
       return;
     }
 
-    const text = cleanText($(element).text()).toLowerCase();
+    const text = cleanText($(element).text())
+      .toLowerCase();
 
     if (!nextTexts.has(text)) {
       return;
@@ -239,7 +390,11 @@ function findNextPage($, pageUrl) {
       return;
     }
 
-    nextPage = absoluteUrl(href, pageUrl);
+    const absolute = absoluteUrl(href, pageUrl);
+
+    if (absolute) {
+      nextPage = absolute;
+    }
   });
 
   return nextPage;
@@ -272,6 +427,9 @@ export function parsePage(html, pageUrl) {
       return;
     }
 
+    /*
+     * Resolve relative URL.
+     */
     const url = absoluteUrl(href, pageUrl);
 
     if (!url) {
@@ -279,27 +437,15 @@ export function parsePage(html, pageUrl) {
     }
 
     /*
-     * Only TU notice URLs.
+     * Only accept actual TU notice URLs.
      */
-    let parsedUrl;
-
-    try {
-      parsedUrl = new URL(url);
-    } catch {
+    if (!isTUNoticeUrl(url)) {
       return;
     }
 
-    if (
-      parsedUrl.hostname !== "exam.tu.edu.np" &&
-      parsedUrl.hostname !== "www.exam.tu.edu.np"
-    ) {
-      return;
-    }
-
-    if (!/^\/notices\/[^/]+\/?$/i.test(parsedUrl.pathname)) {
-      return;
-    }
-
+    /*
+     * Extract notice ID.
+     */
     const id = extractNoticeId(url);
 
     if (!id || seen.has(id)) {
@@ -307,7 +453,7 @@ export function parsePage(html, pageUrl) {
     }
 
     /*
-     * Ignore empty links.
+     * Extract title from the anchor.
      */
     const title = cleanText($(anchor).text());
 
@@ -315,7 +461,25 @@ export function parsePage(html, pageUrl) {
       return;
     }
 
-    const adDate = findADDate($, anchor);
+    /*
+     * Extract AD date.
+     *
+     * IMPORTANT:
+     * This does NOT inspect the complete article text.
+     * Therefore:
+     *
+     *   30 July 2026
+     *   2083-04-15
+     *
+     * correctly produces:
+     *
+     *   2026-07-30
+     */
+    const adDate = findADDate(
+      $,
+      anchor,
+      title
+    );
 
     notices.push({
       id,
