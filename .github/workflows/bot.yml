@@ -2,23 +2,25 @@ name: TU Notice Sentinel
 
 on:
   schedule:
-    - cron: "7,37 * * * *"
+    - cron: "*/5 * * * *"
+
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run mode"
+        required: false
+        default: "check"
+        type: choice
+        options:
+          - check
+          - test-email
 
 permissions:
   contents: write
 
-concurrency:
-  group: tu-notice-sentinel-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
-  check-notices:
-    name: Check TU Notices
+  sentinel:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    if: ${{ vars.BOT_ENABLED != 'false' || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Checkout repository
@@ -26,78 +28,49 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run automated tests
+      - name: Run tests
         run: npm test
 
-      - name: Run TU Notice Sentinel
-        id: run_bot
-        run: npm run bot
+      - name: Run Gmail test
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'test-email'
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: node src/test-email.js
 
-          SOURCE_URL: ${{ vars.SOURCE_URL || 'https://exam.tu.edu.np/notices' }}
-          MAX_PAGES: ${{ vars.MAX_PAGES || '1' }}
-          FETCH_RETRIES: ${{ vars.FETCH_RETRIES || '5' }}
-          FIRST_RUN_LIMIT: ${{ vars.FIRST_RUN_LIMIT || '10' }}
+      - name: Run notice bot
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.mode != 'test-email'
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          SOURCE_URL: https://exam.tu.edu.np/notices
           STATE_FILE: data/state.json
+          DRY_RUN: "false"
+          MAX_PAGES: "20"
+          FIRST_RUN_LIMIT: "10"
+        run: npm start
 
-      - name: Save bot state
-        if: ${{ always() }}
-        shell: bash
+      - name: Commit updated state
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.mode != 'test-email'
         run: |
-          if [ ! -f "data/state.json" ]; then
-            echo "No state file was generated."
-            exit 0
-          fi
+          if git status --porcelain -- data/state.json | grep -q .; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if ! node -e 'JSON.parse(require("fs").readFileSync("data/state.json", "utf8"))'; then
-            echo "State file is not valid JSON. It will not be committed."
-            exit 1
-          fi
-
-          if [ -z "$(git status --porcelain -- data/state.json)" ]; then
-            echo "No state changes to commit."
-            exit 0
-          fi
-
-          git config user.name "TU Notice Sentinel Bot"
-          git config user.email "actions@users.noreply.github.com"
-
-          git add data/state.json
-          git commit -m "chore: update TU notice state"
-
-          # The API can update state while this workflow is running.
-          # During a state conflict, prefer the freshly generated bot state.
-          if ! git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"; then
-            git rebase --abort || true
-            echo "Could not synchronize bot state with the repository."
-            exit 1
-          fi
-
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-
-      - name: Create workflow summary
-        if: ${{ always() }}
-        shell: bash
-        run: |
-          echo "## TU Notice Sentinel" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Workflow status: **${{ job.status }}**" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Trigger: **${{ github.event_name }}**" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Maximum pages: **${{ vars.MAX_PAGES || '1' }}**" >> "$GITHUB_STEP_SUMMARY"
-
-          if [ -f "data/state.json" ] && node -e 'JSON.parse(require("fs").readFileSync("data/state.json", "utf8"))' 2>/dev/null; then
-            node -e 'const s=require("./data/state.json"); console.log(`- Last checked: **${s.status?.lastChecked ?? "unknown"}**`); console.log(`- Notices scanned: **${s.status?.noticesScanned ?? 0}**`); console.log(`- New notices: **${s.status?.newNotices ?? 0}**`); console.log(`- Last error: **${s.status?.lastError ?? "none"}**`);' >> "$GITHUB_STEP_SUMMARY"
+            git add data/state.json
+            git commit -m "chore: update notice state"
+            git push
           else
-            echo "- State summary: **Unavailable because state JSON was invalid**" >> "$GITHUB_STEP_SUMMARY"
+            echo "No state changes."
           fi
