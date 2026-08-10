@@ -1,4 +1,4 @@
-import { AppError } from './errors.js';
+import { AppError } from "./errors.js";
 
 export class SentinelAdapter {
   constructor(github, cacheTtlMs = 30_000) {
@@ -13,9 +13,14 @@ export class SentinelAdapter {
 
   async readState(force = false) {
     if (!this.configured) {
-      throw new AppError(503, 'GITHUB_NOT_CONFIGURED', 'Configure GitHub on the API server before using the dashboard.');
+      throw new AppError(
+        503,
+        "GITHUB_NOT_CONFIGURED",
+        "Configure GitHub on the API server before using the dashboard.",
+      );
     }
-    if (!force && this.cache && Date.now() - this.cachedAt < this.cacheTtlMs) return structuredClone(this.cache);
+    if (!force && this.cache && Date.now() - this.cachedAt < this.cacheTtlMs)
+      return structuredClone(this.cache);
     try {
       const { state } = await this.github.readStateFile();
       this.cache = state;
@@ -43,17 +48,26 @@ export class SentinelAdapter {
       this.github.latestWorkflowStatus(),
       this.github.getBotEnabled(),
     ]);
-    const workflow = workflowResult.status === 'fulfilled'
-      ? workflowResult.value
-      : { state: 'error', updatedAt: null };
-    const enabled = enabledResult.status === 'fulfilled' ? enabledResult.value : state.botEnabled !== false;
+    const workflow =
+      workflowResult.status === "fulfilled"
+        ? workflowResult.value
+        : { state: "error", updatedAt: null };
+    const enabled =
+      enabledResult.status === "fulfilled"
+        ? enabledResult.value
+        : state.botEnabled !== false;
     return {
       ...state.status,
       configured: true,
       online: true,
-      bot: workflow.state === 'running' ? 'running' : enabled ? state.status.bot : 'disabled',
+      bot:
+        workflow.state === "running"
+          ? "running"
+          : enabled
+            ? state.status.bot
+            : "disabled",
       github: workflow.state,
-      state: this.stale ? 'stale' : state.status.state,
+      state: this.stale ? "stale" : state.status.state,
       lastChecked: state.status.lastChecked || workflow.updatedAt,
       lastError: this.stale ? this.lastReadError : state.status.lastError,
       botEnabled: enabled,
@@ -76,37 +90,48 @@ export class SentinelAdapter {
     await this.github.updateState((state) => {
       state.logs = [];
       return state;
-    }, 'chore: clear Sentinel logs');
+    }, "chore: clear Sentinel logs");
     this.invalidate();
   }
 
-  async checkNow() {
-    return this.github.triggerWorkflow();
+  async checkNow(mode = "check") {
+    return this.github.triggerWorkflow(mode);
   }
 
   async setEnabled(enabled) {
     const result = await this.github.setBotEnabled(enabled);
-    await this.github.updateState((state) => {
-      state.botEnabled = Boolean(enabled);
-      state.status.bot = enabled ? 'idle' : 'disabled';
-      return state;
-    }, `chore: ${enabled ? 'enable' : 'disable'} TU Notice Sentinel`);
+    await this.github.updateState(
+      (state) => {
+        state.botEnabled = Boolean(enabled);
+        state.status.bot = enabled ? "idle" : "disabled";
+        return state;
+      },
+      `chore: ${enabled ? "enable" : "disable"} TU Notice Sentinel`,
+    );
     this.invalidate();
     return result;
   }
 
   async runTests() {
-    const [state, workflow] = await Promise.all([this.readState(true), this.github.latestWorkflowStatus()]);
-    return { ok: true, stateReadable: Boolean(state), workflowReachable: workflow.state !== undefined };
+    const [state, workflow] = await Promise.all([
+      this.readState(true),
+      this.github.latestWorkflowStatus(),
+    ]);
+    return {
+      ok: true,
+      stateReadable: Boolean(state),
+      workflowReachable: workflow.state !== undefined,
+    };
   }
 
   async recordNotification(notification) {
     await this.github.updateState((state) => {
       state.notifications.push(notification);
       state.notifications = state.notifications.slice(-200);
-      if (notification.status === 'accepted') state.status.emailsSent = Number(state.status.emailsSent || 0) + 1;
+      if (notification.status === "accepted")
+        state.status.emailsSent = Number(state.status.emailsSent || 0) + 1;
       return state;
-    }, 'chore: record Sentinel test email');
+    }, "chore: record Sentinel test email");
     this.invalidate();
   }
 }
