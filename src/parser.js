@@ -1,222 +1,74 @@
-import * as cheerio from "cheerio";
-import {
-  extractBSDate,
-  extractADDate,
-} from "./dates.js";
+import * as cheerio from 'cheerio';
+import { extractBSDate, parseADDate, toISODate } from './dates.js';
 
-export function extractNoticeId(url = "") {
+export function extractNoticeId(url = '') {
   const match = String(url).match(/\/notices\/([^/?#]+)/i);
   return match ? match[1] : null;
 }
 
 export function absoluteUrl(href, base) {
   try {
-    return new URL(href, base).href;
+    const url = new URL(href, base);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
   } catch {
     return null;
   }
 }
 
-function normalizeText(value = "") {
-  return String(value)
-    .replace(/\u00a0/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function extractDateFromElement($, element) {
-  const candidates = [];
-
-  // Element text
-  candidates.push($(element).text());
-
-  // Common date attributes
-  for (const attribute of [
-    "datetime",
-    "date",
-    "data-date",
-    "data-bs-date",
-    "data-date-bs",
-    "title",
-  ]) {
-    const value = $(element).attr(attribute);
-
-    if (value) {
-      candidates.push(value);
-    }
+function nextPageUrl($, pageUrl) {
+  const candidates = $('a[href]').toArray();
+  for (const anchor of candidates) {
+    const element = $(anchor);
+    const rel = String(element.attr('rel') ?? '').toLowerCase();
+    const label = String(element.attr('aria-label') ?? '').toLowerCase();
+    const text = element.text().replace(/\s+/g, ' ').trim().toLowerCase();
+    const isNext = rel.split(/\s+/).includes('next')
+      || /\bnext\b/.test(label)
+      || /^(next|older|›|»|→)$/.test(text);
+    if (!isNext) continue;
+    const resolved = absoluteUrl(element.attr('href'), pageUrl);
+    if (resolved && resolved !== pageUrl) return resolved;
   }
-
-  // Common date-related child elements
-  $(element)
-    .find(
-      "time, .date, .notice-date, .published, .published-date, [datetime], [data-date]"
-    )
-    .each((_, child) => {
-      candidates.push($(child).text());
-
-      for (const attribute of [
-        "datetime",
-        "date",
-        "data-date",
-        "data-bs-date",
-        "title",
-      ]) {
-        const value = $(child).attr(attribute);
-
-        if (value) {
-          candidates.push(value);
-        }
-      }
-    });
-
-  for (const candidate of candidates) {
-    const text = normalizeText(candidate);
-
-    if (!text) {
-      continue;
-    }
-
-    // IMPORTANT:
-    // Check BS first because TU notice dates are primarily BS dates.
-    const bsDate = extractBSDate(text);
-
-    if (bsDate) {
-      return {
-        bsDate,
-        adDate: null,
-      };
-    }
-
-    const adDate = extractADDate(text);
-
-    if (adDate) {
-      return {
-        bsDate: null,
-        adDate,
-      };
-    }
-  }
-
-  return {
-    bsDate: null,
-    adDate: null,
-  };
-}
-
-function getNoticeContext($, anchor) {
-  const contexts = [];
-
-  // Anchor itself
-  contexts.push(anchor);
-
-  // Walk up several parent levels.
-  let current = anchor;
-
-  for (let i = 0; i < 5; i++) {
-    current = $(current).parent();
-
-    if (!current || !current.length) {
-      break;
-    }
-
-    contexts.push(current);
-  }
-
-  // Prefer semantic notice containers.
-  const semantic = $(anchor).closest(
-    "article, li, tr, td, section, " +
-      ".notice, .notice-item, .notice-list-item, .card"
-  );
-
-  if (semantic.length) {
-    contexts.unshift(semantic);
-  }
-
-  return contexts;
+  return null;
 }
 
 export function parsePage(html, pageUrl) {
   const $ = cheerio.load(html);
-
   const notices = [];
   const seen = new Set();
 
-  $("a[href]").each((_, anchor) => {
-    const rawHref = $(anchor).attr("href");
-
-    const url = absoluteUrl(rawHref, pageUrl);
+  $('a[href]').each((_, anchor) => {
+    const element = $(anchor);
+    const url = absoluteUrl(element.attr('href'), pageUrl);
     const id = extractNoticeId(url);
+    if (!url || !id || seen.has(id)) return;
 
-    if (
-      !url ||
-      !id ||
-      seen.has(id) ||
-      !/\/notices\//i.test(url)
-    ) {
-      return;
-    }
+    const title = (element.text() || element.attr('title') || element.find('img').attr('alt') || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!title) return;
 
-    const title = normalizeText($(anchor).text());
-
-    if (!title) {
-      return;
-    }
-
-    let bsDate = null;
-    let adDate = null;
-
-    const contexts = getNoticeContext($, anchor);
-
-    // Search surrounding notice containers.
-    for (const context of contexts) {
-      const result = extractDateFromElement($, context);
-
-      if (result.bsDate || result.adDate) {
-        bsDate = result.bsDate;
-
-        // If BS exists, AD must remain null.
-        adDate = result.bsDate ? null : result.adDate;
-
-        break;
-      }
-    }
-
-    // Final fallback: search title itself.
-    if (!bsDate && !adDate) {
-      bsDate = extractBSDate(title);
-
-      if (bsDate) {
-        adDate = null;
-      } else {
-        adDate = extractADDate(title);
-      }
-    }
-
+    const block = element.closest('article, li, tr, .notice, .card, div').text().replace(/\s+/g, ' ').trim();
+    const bsDate = extractBSDate(block) || extractBSDate(title);
+    const adDate = toISODate(parseADDate(block) || parseADDate(title));
     notices.push({
       id,
       title,
       url,
       bsDate,
       adDate,
+      originalDate: bsDate || adDate,
     });
-
     seen.add(id);
   });
 
-  return {
-    notices,
-    nextPage: null,
-  };
+  return { notices, nextPage: nextPageUrl($, pageUrl) };
 }
 
 export function dedupeNotices(notices) {
-  const map = new Map();
-
+  const unique = new Map();
   for (const notice of notices) {
-    if (notice.id && !map.has(notice.id)) {
-      map.set(notice.id, notice);
-    }
+    if (notice.id && !unique.has(notice.id)) unique.set(notice.id, notice);
   }
-
-  return [...map.values()];
+  return [...unique.values()];
 }
