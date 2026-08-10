@@ -1,43 +1,38 @@
-name: TU Notice Sentinel
+- name: Debug state file
+  if: always()
+  run: |
+    echo "=== Current directory ==="
+    pwd
 
-on:
-  schedule:
-    - cron: "*/30 * * * *"
-  workflow_dispatch:
+    echo "=== Data directory ==="
+    ls -la data || true
 
-permissions:
-  contents: write
+    echo "=== State file ==="
+    if [ -f data/state.json ]; then
+      echo "state.json EXISTS"
+      wc -c data/state.json
+      head -20 data/state.json
+    else
+      echo "state.json DOES NOT EXIST"
+    fi
 
-jobs:
-  check:
-    runs-on: ubuntu-latest
+    echo "=== Git status ==="
+    git status --short
 
-    steps:
-      - uses: actions/checkout@v4
+- name: Save state
+  if: always()
+  run: |
+    if [ -f data/state.json ]; then
+      git add data/state.json
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - run: npm install
-
-      - run: npm test
-
-      - run: npm start
-        env:
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-
-      - name: Save state
-        run: |
-          if git status --porcelain -- data/state.json | grep -q .; then
-            git config user.name "TU Notice Sentinel Bot"
-            git config user.email "actions@users.noreply.github.com"
-            git add data/state.json
-            git commit -m "chore: update notice state"
-            git push
-          else
-            echo "No state changes."
-          fi
+      if git diff --cached --quiet; then
+        echo "No state changes."
+      else
+        git config user.name "TU Notice Sentinel Bot"
+        git config user.email "actions@users.noreply.github.com"
+        git commit -m "chore: update notice state"
+        git push
+      fi
+    else
+      echo "WARNING: data/state.json was not created."
+    fi
