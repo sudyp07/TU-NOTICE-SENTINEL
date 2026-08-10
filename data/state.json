@@ -687,7 +687,7 @@
       "discoveredAt": "2026-08-10T08:03:14.567Z"
     }
   ],
-  "updatedAt": "2026-08-10T11:28:20.762Z",
+  "updatedAt": "2026-08-10T11:34:02.796Z",
   "status": {
     "configured": true,
     "online": true,
@@ -697,8 +697,8 @@
     "state": "saved",
     "gmail": "configured",
     "github": "connected",
-    "lastChecked": "2026-08-10T11:28:20.762Z",
-    "lastSuccessfulRun": "2026-08-10T11:28:20.762Z",
+    "lastChecked": "2026-08-10T11:34:02.796Z",
+    "lastSuccessfulRun": "2026-08-10T11:34:02.796Z",
     "lastFailedRun": "2026-08-10T07:59:56.516Z",
     "lastError": null,
     "noticesScanned": 57,
@@ -707,7 +707,62 @@
     "emailsSent": 1,
     "version": "3.3.0"
   },
-  "logs": [],
+  "logs": [
+    {
+      "id": "log-2026-08-10T11:33:56.650Z-0",
+      "timestamp": "2026-08-10T11:33:56.650Z",
+      "level": "INFO",
+      "message": "Starting TU Notice Sentinel"
+    },
+    {
+      "id": "log-2026-08-10T11:33:56.650Z-1",
+      "timestamp": "2026-08-10T11:33:56.650Z",
+      "level": "INFO",
+      "message": "Source: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-10T11:33:56.650Z-2",
+      "timestamp": "2026-08-10T11:33:56.650Z",
+      "level": "INFO",
+      "message": "Dry run: false"
+    },
+    {
+      "id": "log-2026-08-10T11:33:56.651Z-3",
+      "timestamp": "2026-08-10T11:33:56.651Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 1, attempt 1/5: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-10T11:34:02.796Z-4",
+      "timestamp": "2026-08-10T11:34:02.796Z",
+      "level": "INFO",
+      "message": "Found 57 notice link(s) on page 1."
+    },
+    {
+      "id": "log-2026-08-10T11:34:02.796Z-5",
+      "timestamp": "2026-08-10T11:34:02.796Z",
+      "level": "INFO",
+      "message": "Current unique notices collected: 57"
+    },
+    {
+      "id": "log-2026-08-10T11:34:02.796Z-6",
+      "timestamp": "2026-08-10T11:34:02.796Z",
+      "level": "INFO",
+      "message": "Previously stored notices: 57"
+    },
+    {
+      "id": "log-2026-08-10T11:34:02.796Z-7",
+      "timestamp": "2026-08-10T11:34:02.796Z",
+      "level": "INFO",
+      "message": "New notices detected: 0"
+    },
+    {
+      "id": "log-2026-08-10T11:34:02.796Z-8",
+      "timestamp": "2026-08-10T11:34:02.796Z",
+      "level": "INFO",
+      "message": "No new notices. No email sent."
+    }
+  ],
   "notifications": [
     {
       "id": "email-1786354789537",
