@@ -1,0 +1,3 @@
+export function normalizeNepaliDigits(v=""){const m={"०":"0","१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9"};return String(v).replace(/[०-९]/g,d=>m[d]);}
+export function extractBSDate(v=""){const s=normalizeNepaliDigits(v),m=s.match(/(?:BS\s*)?(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})/i);return m?`${m[1]}-${String(m[2]).padStart(2,"0")}-${String(m[3]).padStart(2,"0")}`:null;}
+export function parseADDate(v=""){const s=normalizeNepaliDigits(v).trim(),m=s.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);if(!m)return null;const d=new Date(`${m[1]}-${String(m[2]).padStart(2,"0")}-${String(m[3]).padStart(2,"0")}T00:00:00Z`);return Number.isNaN(d.getTime())?null:d;}

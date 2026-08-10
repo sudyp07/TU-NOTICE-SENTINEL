@@ -1,0 +1,2 @@
+import {parsePage,dedupeNotices} from "./parser.js";
+export async function fetchNotices(source,maxPages=20,log=console){const all=[];let url=source;for(let page=1;page<=maxPages&&url;page++){log.info(`Fetching TU notices page ${page}: ${url}`);const r=await fetch(url,{headers:{"User-Agent":"TU-Notice-Sentinel/3.2"}});if(!r.ok)throw Error(`TU website returned HTTP ${r.status}`);const p=parsePage(await r.text(),url);log.info(`Found ${p.notices.length} notice link(s) on page ${page}.`);all.push(...p.notices);if(!p.nextPage)break;url=p.nextPage}return dedupeNotices(all);}

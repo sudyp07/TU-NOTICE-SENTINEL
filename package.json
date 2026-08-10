@@ -1,0 +1,17 @@
+{
+  "name": "tu-notice-sentinel",
+  "version": "3.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dry-run": "cross-env DRY_RUN=true node src/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.1",
+    "nodemailer": "^9.0.5"
+  }
+}
