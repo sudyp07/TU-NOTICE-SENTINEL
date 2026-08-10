@@ -1,7 +1,6 @@
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-
 import { createAuth } from "./auth.js";
 import { AppError, redactError } from "./errors.js";
 
@@ -9,9 +8,11 @@ const booleanValue = (value) => value === true || value === "true";
 
 const sortNotices = (notices) =>
   [...notices].sort((left, right) => {
-    const leftDate = left.adDate || left.bsDate || left.discoveredAt || "";
+    const leftDate =
+      left.adDate || left.bsDate || left.date || left.discoveredAt || "";
 
-    const rightDate = right.adDate || right.bsDate || right.discoveredAt || "";
+    const rightDate =
+      right.adDate || right.bsDate || right.date || right.discoveredAt || "";
 
     return (
       String(rightDate).localeCompare(String(leftDate)) ||
@@ -19,25 +20,51 @@ const sortNotices = (notices) =>
     );
   });
 
-const normalizeNotice = (notice) => ({
-  id: String(notice.id || notice.noticeId || notice.url || ""),
+/**
+ * Normalize a notice into the Android/API data contract.
+ *
+ * Important:
+ * - adDate is the canonical AD/Gregorian date.
+ * - bsDate is kept separately when available.
+ * - originalDate preserves the original date information.
+ * - date is provided as a compatibility field for the Android app.
+ */
+const normalizeNotice = (notice) => {
+  const adDate = notice.adDate || null;
+  const bsDate = notice.bsDate || null;
 
-  title: String(notice.title || "Untitled notice"),
+  const originalDate = notice.originalDate || adDate || bsDate || null;
 
-  url: String(notice.url || notice.link || ""),
+  /*
+   * Android compatibility field.
+   *
+   * The Android app can simply display:
+   *
+   * notice.date
+   *
+   * Prefer AD date because the application intentionally
+   * stores Gregorian/AD dates as its primary notice date.
+   */
+  const date = notice.date || adDate || bsDate || null;
 
-  bsDate: notice.bsDate || null,
+  return {
+    id: String(notice.id || notice.noticeId || notice.url || ""),
+    title: String(notice.title || "Untitled notice"),
+    url: String(notice.url || notice.link || ""),
 
-  adDate: notice.adDate || null,
+    // Canonical date fields.
+    adDate,
+    bsDate,
+    originalDate,
 
-  originalDate: notice.originalDate || notice.bsDate || notice.adDate || null,
+    // Android compatibility field.
+    date,
 
-  isNew: Boolean(notice.isNew),
-
-  isRead: Boolean(notice.isRead),
-
-  discoveredAt: notice.discoveredAt || null,
-});
+    isNew: Boolean(notice.isNew),
+    isRead: Boolean(notice.isRead),
+    discoveredAt: notice.discoveredAt || null,
+  };
+};
 
 export function createApp({
   adapter,
@@ -55,7 +82,6 @@ export function createApp({
    * one reverse proxy.
    */
   app.set("trust proxy", 1);
-
   app.disable("x-powered-by");
 
   app.use(helmet());
@@ -79,11 +105,8 @@ export function createApp({
   );
 
   /*
-   * ---------------------------------------------------------
    * HEALTH
-   * ---------------------------------------------------------
    */
-
   app.get("/health", (_request, response) => {
     response.json({
       ok: true,
@@ -94,9 +117,7 @@ export function createApp({
   });
 
   /*
-   * ---------------------------------------------------------
    * AUTH
-   * ---------------------------------------------------------
    *
    * Android sends:
    *
@@ -104,17 +125,14 @@ export function createApp({
    *
    * and receives a temporary Bearer token.
    */
-
   app.post(
     "/api/auth/token",
-
     rateLimit({
       windowMs: 60_000,
       limit: 10,
       standardHeaders: "draft-8",
       legacyHeaders: false,
     }),
-
     auth.issue,
   );
 
@@ -125,11 +143,8 @@ export function createApp({
   app.use("/api", auth.requireToken);
 
   /*
-   * ---------------------------------------------------------
    * STATUS
-   * ---------------------------------------------------------
    */
-
   app.get("/api/status", async (_request, response) => {
     const status = await adapter.getStatus();
 
@@ -140,11 +155,8 @@ export function createApp({
   });
 
   /*
-   * ---------------------------------------------------------
    * NOTICES
-   * ---------------------------------------------------------
    */
-
   app.get("/api/notices", async (request, response) => {
     const search = String(request.query.search || "")
       .trim()
@@ -169,271 +181,161 @@ export function createApp({
 
     response.json({
       notices: sorted.slice(0, limit),
-
       total: filtered.length,
     });
   });
 
   /*
-   * ---------------------------------------------------------
    * LATEST NOTICE
-   * ---------------------------------------------------------
    */
-
   app.get("/api/notices/latest", async (_request, response) => {
-    const notices = sortNotices(
-      (await adapter.listNotices()).map(normalizeNotice),
-    );
+    const notices = (await adapter.listNotices()).map(normalizeNotice);
+
+    const sorted = sortNotices(notices);
 
     response.json({
-      notice: notices[0] || null,
+      notice: sorted[0] || null,
     });
   });
 
   /*
-   * ---------------------------------------------------------
    * LOGS
-   * ---------------------------------------------------------
    */
-
-  app.get("/api/logs", async (request, response) => {
-    const requestedLevel = String(request.query.level || "").toUpperCase();
-
-    const level = ["INFO", "WARN", "ERROR"].includes(requestedLevel)
-      ? requestedLevel
-      : null;
-
-    const logs = (await adapter.listLogs())
-      .filter((entry) => !level || String(entry.level).toUpperCase() === level)
-      .slice(-500)
-      .reverse();
+  app.get("/api/logs", async (_request, response) => {
+    const logs = await adapter.listLogs();
 
     response.json({
       logs,
+      total: logs.length,
     });
   });
 
   /*
-   * ---------------------------------------------------------
-   * CLEAR LOGS
-   * ---------------------------------------------------------
+   * NOTIFICATIONS
    */
-
-  app.delete("/api/logs", async (_request, response) => {
-    await adapter.clearLogs();
-
-    response.status(204).end();
-  });
-
-  /*
-   * ---------------------------------------------------------
-   * NOTIFICATION HISTORY
-   * ---------------------------------------------------------
-   */
-
   app.get("/api/notifications", async (_request, response) => {
-    const notifications = (await adapter.listNotifications())
-      .slice(-200)
-      .reverse();
+    const notifications = await adapter.listNotifications();
 
     response.json({
       notifications,
+      total: notifications.length,
     });
   });
 
   /*
-   * ---------------------------------------------------------
-   * RUN BOT NOW
-   * ---------------------------------------------------------
-   *
-   * This does NOT scrape TU from Render.
-   *
-   * It queues:
-   *
-   * Render
-   *   ↓
-   * GitHub Actions
-   *   ↓
-   * TU scraper
-   *   ↓
-   * Gmail
+   * CHECK NOW
    */
+  app.post("/api/check", async (request, response, next) => {
+    try {
+      const mode = String(request.body?.mode || "check");
 
-  app.post("/api/check", async (_request, response) => {
-    const result = await adapter.checkNow("check");
+      const result = await adapter.checkNow(mode);
 
-    response.status(202).json({
-      accepted: true,
-      queued: true,
-
-      mode: "check",
-
-      message: result.message || "TU Notice Sentinel workflow was queued.",
-    });
-  });
-
-  /*
-   * ---------------------------------------------------------
-   * ENABLE BOT
-   * ---------------------------------------------------------
-   */
-
-  app.post("/api/bot/enable", async (_request, response) => {
-    const result = await adapter.setEnabled(true);
-
-    response.json(result);
-  });
-
-  /*
-   * ---------------------------------------------------------
-   * DISABLE BOT
-   * ---------------------------------------------------------
-   */
-
-  app.post("/api/bot/disable", async (_request, response) => {
-    const result = await adapter.setEnabled(false);
-
-    response.json(result);
-  });
-
-  /*
-   * ---------------------------------------------------------
-   * BOT TESTS
-   * ---------------------------------------------------------
-   */
-
-  app.post("/api/bot/test", async (_request, response) => {
-    const result = await adapter.runTests();
-
-    response.json({
-      result,
-    });
-  });
-
-  /*
-   * ---------------------------------------------------------
-   * TEST EMAIL
-   * ---------------------------------------------------------
-   *
-   * IMPORTANT:
-   *
-   * Render DOES NOT connect to Gmail.
-   *
-   * Instead:
-   *
-   * Android
-   *   ↓
-   * Render
-   *   ↓
-   * GitHub Actions
-   *   ↓
-   * src/test-email.js
-   *   ↓
-   * Nodemailer
-   *   ↓
-   * Gmail SMTP
-   *
-   * This avoids Render's SMTP connection timeout.
-   */
-
-  app.post("/api/test-email", async (_request, response) => {
-    const result = await adapter.checkNow("test-email");
-
-    response.status(202).json({
-      accepted: true,
-      queued: true,
-
-      mode: "test-email",
-
-      message: result.message || "Gmail test workflow was queued successfully.",
-    });
-  });
-
-  /*
-   * ---------------------------------------------------------
-   * GITHUB WORKFLOW
-   * ---------------------------------------------------------
-   *
-   * Allows the app to explicitly
-   * trigger the configured workflow.
-   *
-   * Optional body:
-   *
-   * {
-   *   "mode": "check"
-   * }
-   *
-   * or:
-   *
-   * {
-   *   "mode": "test-email"
-   * }
-   */
-
-  app.post("/api/github/workflow", async (request, response) => {
-    const mode = request.body?.mode || "check";
-
-    if (!["check", "test-email"].includes(mode)) {
-      throw new AppError(
-        400,
-        "INVALID_WORKFLOW_MODE",
-        "Workflow mode must be either check or test-email.",
-      );
+      response.status(202).json({
+        ok: true,
+        ...result,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    const result = await adapter.checkNow(mode);
-
-    response.status(202).json(result);
   });
 
   /*
-   * ---------------------------------------------------------
-   * GITHUB WORKFLOW STATUS
-   * ---------------------------------------------------------
+   * BOT ENABLE / DISABLE
    */
+  app.post("/api/bot/enabled", async (request, response, next) => {
+    try {
+      const enabled = booleanValue(request.body?.enabled);
 
-  app.get("/api/github/status", async (_request, response) => {
-    const result = await adapter.github.latestWorkflowStatus();
+      const result = await adapter.setEnabled(enabled);
 
-    response.json(result);
+      response.json({
+        ok: true,
+        enabled,
+        ...result,
+      });
+    } catch (error) {
+      next(error);
+    }
   });
 
   /*
-   * ---------------------------------------------------------
-   * 404
-   * ---------------------------------------------------------
+   * RUN TESTS
    */
+  app.post("/api/tests/run", async (_request, response, next) => {
+    try {
+      const result = await adapter.runTests();
 
-  app.use((_request, _response, next) => {
-    next(new AppError(404, "NOT_FOUND", "Endpoint not found"));
+      response.json(result);
+    } catch (error) {
+      next(error);
+    }
   });
 
   /*
-   * ---------------------------------------------------------
+   * RECORD TEST NOTIFICATION
+   */
+  app.post("/api/notifications/test", async (request, response, next) => {
+    try {
+      const notification = {
+        id: request.body?.id || `test-${Date.now()}`,
+
+        status: request.body?.status || "accepted",
+
+        message: request.body?.message || "Test notification",
+
+        createdAt: new Date().toISOString(),
+      };
+
+      await adapter.recordNotification(notification);
+
+      response.status(201).json({
+        ok: true,
+        notification,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  /*
+   * CLEAR LOGS
+   */
+  app.delete("/api/logs", async (_request, response, next) => {
+    try {
+      await adapter.clearLogs();
+
+      response.json({
+        ok: true,
+        message: "Logs cleared.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  /*
    * ERROR HANDLER
-   * ---------------------------------------------------------
    */
-
   app.use((error, _request, response, _next) => {
-    const status = error instanceof AppError ? error.status : 500;
+    if (error instanceof AppError) {
+      const status = Number.isInteger(error.statusCode)
+        ? error.statusCode
+        : Number.isInteger(error.status)
+          ? error.status
+          : 500;
 
-    const code = error instanceof AppError ? error.code : "INTERNAL_ERROR";
-
-    const message =
-      status >= 500 && !(error instanceof AppError)
-        ? "The Sentinel server could not complete the request."
-        : redactError(error);
-
-    if (status >= 500) {
-      console.error(`[${code}] ${redactError(error)}`);
+      return response.status(status).json({
+        error: error.code || "API_ERROR",
+        message: error.message || "An API error occurred.",
+      });
     }
 
-    response.status(status).json({
-      error: {
-        code,
-        message,
-        details: error.details || null,
-      },
+    console.error(redactError(error));
+
+    return response.status(500).json({
+      error: "INTERNAL_SERVER_ERROR",
+      message: "An unexpected server error occurred.",
     });
   });
 

@@ -1,5 +1,4 @@
 // src/parser.js
-
 import * as cheerio from "cheerio";
 import { extractADDate } from "./dates.js";
 
@@ -26,16 +25,6 @@ function isTUHost(hostname = "") {
 
 /**
  * Check whether a URL is a TU notice URL.
- *
- * Valid:
- *   https://exam.tu.edu.np/notices/test-notice
- *   https://exam.tu.edu.np/notices/test-notice/
- *   https://exam.tu.edu.np/notices/test-notice?page=2
- *
- * Invalid:
- *   https://example.com/notices/test-notice
- *   https://exam.tu.edu.np/notices
- *   https://exam.tu.edu.np/about
  */
 function isTUNoticeUrl(url) {
   if (!url) {
@@ -58,12 +47,13 @@ function isTUNoticeUrl(url) {
 /**
  * Extract notice ID from a TU notice URL.
  *
- * Example:
- *   https://exam.tu.edu.np/notices/test-notice
- *   -> test-notice
+ * Supports:
  *
- * Also supports Markdown URLs:
- *   [https://exam.tu.edu.np/notices/test-notice](https://exam.tu.edu.np/notices/test-notice)
+ * https://exam.tu.edu.np/notices/14313
+ *
+ * and Markdown:
+ *
+ * [https://exam.tu.edu.np/notices/14313](https://exam.tu.edu.np/notices/14313)
  */
 export function extractNoticeId(url = "") {
   if (!url) {
@@ -72,10 +62,6 @@ export function extractNoticeId(url = "") {
 
   let text = String(url).trim();
 
-  /*
-   * If a Markdown URL reaches this function, extract the
-   * visible URL.
-   */
   const markdownMatch = text.match(
     /^\[([^\]]+)\]\(([^)]+)\)$/
   );
@@ -84,9 +70,6 @@ export function extractNoticeId(url = "") {
     text = markdownMatch[1].trim();
   }
 
-  /*
-   * Normal URL parsing.
-   */
   try {
     const parsed = new URL(text);
 
@@ -104,9 +87,6 @@ export function extractNoticeId(url = "") {
 
     return decodeURIComponent(match[1]);
   } catch {
-    /*
-     * Fallback for relative/simple strings.
-     */
     const match = text.match(
       /\/notices\/([^/?#]+)\/?(?:[?#].*)?$/i
     );
@@ -124,17 +104,15 @@ export function extractNoticeId(url = "") {
 }
 
 /**
- * Convert relative URL into absolute URL.
+ * Convert a relative URL into an absolute URL.
+ *
+ * Also supports Markdown-formatted URLs used by tests/logs.
  */
 export function absoluteUrl(href, base) {
   if (!href || !base) {
     return null;
   }
 
-  /*
-   * The tests may pass Markdown-formatted URLs.
-   * Extract the actual URL first.
-   */
   let normalizedHref = String(href).trim();
   let normalizedBase = String(base).trim();
 
@@ -155,26 +133,98 @@ export function absoluteUrl(href, base) {
   }
 
   try {
-    return new URL(normalizedHref, normalizedBase).href;
+    return new URL(
+      normalizedHref,
+      normalizedBase
+    ).href;
   } catch {
     return null;
   }
 }
 
 /**
- * Find the date element associated with a notice anchor.
+ * Find an AD date inside text.
  *
- * IMPORTANT:
- * We deliberately prefer dedicated date elements over the
- * entire notice container.
+ * We intentionally use extractADDate() so BS dates such as
+ * 2083-04-15 are rejected.
+ */
+function extractDateFromText(text) {
+  const cleaned = cleanText(text);
+
+  if (!cleaned) {
+    return null;
+  }
+
+  return extractADDate(cleaned);
+}
+
+/**
+ * Find a likely notice container around an anchor.
  *
- * This prevents a BS date such as:
+ * We search several common structures because TU's HTML may
+ * change between deployments.
+ */
+function findNoticeContainer($, anchor) {
+  const element = $(anchor);
+
+  if (!element.length) {
+    return $();
+  }
+
+  const selectors = [
+    "article",
+    "li",
+    "tr",
+    ".notice",
+    ".notice-item",
+    ".notice-list-item",
+    ".news-item",
+    ".news-list-item",
+    ".blog-item",
+    ".post-item",
+    ".item",
+    ".card",
+    ".media",
+    ".list-group-item",
+  ];
+
+  for (const selector of selectors) {
+    const closest = element.closest(selector);
+
+    if (closest.length) {
+      return closest.first();
+    }
+  }
+
+  /*
+   * If no semantic container exists, use a few parent levels.
+   */
+  let current = element.parent();
+
+  for (let depth = 0; depth < 4 && current.length; depth += 1) {
+    const text = cleanText(current.text());
+
+    /*
+     * Avoid jumping all the way to body/html.
+     */
+    if (
+      text &&
+      text.length <= 2000
+    ) {
+      return current;
+    }
+
+    current = current.parent();
+  }
+
+  return element.parent();
+}
+
+/**
+ * Find a dedicated date element.
  *
- *   2083-04-15
- *
- * from interfering with an AD date such as:
- *
- *   30 July 2026
+ * This is the safest source because it prevents a BS date
+ * elsewhere in the notice from interfering.
  */
 function findDateElement($, anchor) {
   const element = $(anchor);
@@ -183,10 +233,7 @@ function findDateElement($, anchor) {
     return $();
   }
 
-  /*
-   * First: direct/common date selectors.
-   */
-  const directSelectors = [
+  const dateSelectors = [
     ".date",
     ".notice-date",
     ".notice_date",
@@ -195,27 +242,30 @@ function findDateElement($, anchor) {
     ".posted-date",
     ".post-date",
     ".date-posted",
+    ".publication-date",
+    ".published",
+    ".posting-date",
+    ".entry-date",
+    ".news-date",
+    "[class*='date']",
+    "[class*='Date']",
     "time",
   ];
 
-  for (const selector of directSelectors) {
-    const node = element.closest(
-      "article, li, tr, .notice, .notice-item, .news-item, .blog-item, .post-item, .item, .card"
-    ).find(selector).first();
+  const container = findNoticeContainer($, anchor);
 
-    if (node.length) {
-      return node;
-    }
-  }
+  if (container.length) {
+    for (const selector of dateSelectors) {
+      const node = container
+        .find(selector)
+        .filter((_, element) => {
+          const text = cleanText($(element).text());
 
-  /*
-   * Second: look at the anchor's immediate parent.
-   */
-  const parent = element.parent();
-
-  if (parent.length) {
-    for (const selector of directSelectors) {
-      const node = parent.find(selector).first();
+          return Boolean(
+            extractDateFromText(text)
+          );
+        })
+        .first();
 
       if (node.length) {
         return node;
@@ -224,14 +274,49 @@ function findDateElement($, anchor) {
   }
 
   /*
-   * Third: inspect nearby siblings for explicit date elements.
+   * Search direct parent.
+   */
+  const parent = element.parent();
+
+  if (parent.length) {
+    for (const selector of dateSelectors) {
+      const node = parent
+        .find(selector)
+        .filter((_, element) => {
+          const text = cleanText($(element).text());
+
+          return Boolean(
+            extractDateFromText(text)
+          );
+        })
+        .first();
+
+      if (node.length) {
+        return node;
+      }
+    }
+  }
+
+  /*
+   * Search siblings.
    */
   let current = element;
 
-  for (let depth = 0; depth < 5 && current.length; depth++) {
-    for (const selector of directSelectors) {
+  for (
+    let depth = 0;
+    depth < 4 && current.length;
+    depth += 1
+  ) {
+    for (const selector of dateSelectors) {
       const sibling = current
         .siblings(selector)
+        .filter((_, element) => {
+          const text = cleanText($(element).text());
+
+          return Boolean(
+            extractDateFromText(text)
+          );
+        })
         .first();
 
       if (sibling.length) {
@@ -246,15 +331,17 @@ function findDateElement($, anchor) {
 }
 
 /**
- * Find an AD date associated with a notice.
+ * Extract an AD date associated with a notice.
  *
  * Priority:
  *
  * 1. Dedicated date element
  * 2. Notice title
+ * 3. Anchor attributes
+ * 4. Nearby siblings
+ * 5. Notice container
  *
- * We NEVER parse the entire notice container first because
- * a TU notice can contain both AD and BS dates.
+ * BS dates are never converted.
  */
 function findADDate($, anchor, title) {
   /*
@@ -265,27 +352,27 @@ function findADDate($, anchor, title) {
   const dateElement = findDateElement($, anchor);
 
   if (dateElement.length) {
-    const dateText = cleanText(dateElement.text());
+    const dateText = cleanText(
+      dateElement.text()
+    );
 
-    if (dateText) {
-      const date = extractADDate(dateText);
+    const date = extractDateFromText(dateText);
 
-      if (date) {
-        return date;
-      }
+    if (date) {
+      return date;
     }
   }
 
   /*
    * ---------------------------------------------------------
-   * 2. Anchor/title
+   * 2. Notice title
    * ---------------------------------------------------------
    *
-   * This is required for notices such as:
+   * Example:
    *
-   * TU Exam Notice - 30 July 2026
+   * "TU Exam Notice - 30 July 2026"
    */
-  const titleDate = extractADDate(title);
+  const titleDate = extractDateFromText(title);
 
   if (titleDate) {
     return titleDate;
@@ -293,37 +380,104 @@ function findADDate($, anchor, title) {
 
   /*
    * ---------------------------------------------------------
-   * 3. Small nearby elements only
+   * 3. Check useful HTML attributes
    * ---------------------------------------------------------
    *
-   * We intentionally avoid parsing the entire article text.
-   * This prevents BS dates from becoming AD dates.
+   * Some websites store dates in:
+   *
+   * datetime=""
+   * data-date=""
+   * data-published=""
+   * data-publish-date=""
+   * title=""
    */
   const element = $(anchor);
 
-  const nearby = [
-    element.prev(),
-    element.next(),
+  const attributes = [
+    "datetime",
+    "data-date",
+    "data-datetime",
+    "data-published",
+    "data-publish-date",
+    "data-posted",
+    "title",
+    "aria-label",
   ];
 
-  for (const node of nearby) {
-    if (!node || !node.length) {
-      continue;
-    }
+  for (const attribute of attributes) {
+    const value = element.attr(attribute);
 
-    const text = cleanText(node.text());
-
-    if (!text) {
-      continue;
-    }
-
-    const date = extractADDate(text);
+    const date = extractDateFromText(value);
 
     if (date) {
       return date;
     }
   }
 
+  /*
+   * ---------------------------------------------------------
+   * 4. Nearby siblings
+   * ---------------------------------------------------------
+   */
+  const siblingNodes = [
+    element.prev(),
+    element.next(),
+    element.prev().prev(),
+    element.next().next(),
+  ];
+
+  for (const node of siblingNodes) {
+    if (!node || !node.length) {
+      continue;
+    }
+
+    const text = cleanText(node.text());
+
+    const date = extractDateFromText(text);
+
+    if (date) {
+      return date;
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * 5. Inspect the notice container
+   * ---------------------------------------------------------
+   *
+   * This is intentionally LAST.
+   *
+   * extractADDate() rejects BS dates, so a container such as:
+   *
+   * Published: 30 July 2026
+   * मिति: 2083-04-15
+   *
+   * can safely return:
+   *
+   * 2026-07-30
+   */
+  const container = findNoticeContainer(
+    $,
+    anchor
+  );
+
+  if (container.length) {
+    const containerText = cleanText(
+      container.text()
+    );
+
+    const date = extractDateFromText(
+      containerText
+    );
+
+    if (date) {
+      return date;
+    }
+  }
+
+  /*
+   * No AD date found.
+   */
   return null;
 }
 
@@ -335,6 +489,7 @@ function findNextPage($, pageUrl) {
 
   /*
    * Preferred:
+   *
    * <a rel="next" href="...">
    */
   $('a[rel~="next"]').each((_, element) => {
@@ -348,7 +503,10 @@ function findNextPage($, pageUrl) {
       return;
     }
 
-    const absolute = absoluteUrl(href, pageUrl);
+    const absolute = absoluteUrl(
+      href,
+      pageUrl
+    );
 
     if (absolute) {
       nextPage = absolute;
@@ -377,8 +535,9 @@ function findNextPage($, pageUrl) {
       return;
     }
 
-    const text = cleanText($(element).text())
-      .toLowerCase();
+    const text = cleanText(
+      $(element).text()
+    ).toLowerCase();
 
     if (!nextTexts.has(text)) {
       return;
@@ -390,7 +549,10 @@ function findNextPage($, pageUrl) {
       return;
     }
 
-    const absolute = absoluteUrl(href, pageUrl);
+    const absolute = absoluteUrl(
+      href,
+      pageUrl
+    );
 
     if (absolute) {
       nextPage = absolute;
@@ -401,7 +563,7 @@ function findNextPage($, pageUrl) {
 }
 
 /**
- * Parse one TU notice page.
+ * Parse one TU notice listing page.
  *
  * Returned notice:
  *
@@ -412,10 +574,12 @@ function findNextPage($, pageUrl) {
  *   adDate
  * }
  *
- * No bsDate property is created.
+ * BS dates are deliberately not stored.
  */
 export function parsePage(html, pageUrl) {
-  const $ = cheerio.load(html);
+  const $ = cheerio.load(
+    String(html || "")
+  );
 
   const notices = [];
   const seen = new Set();
@@ -430,14 +594,17 @@ export function parsePage(html, pageUrl) {
     /*
      * Resolve relative URL.
      */
-    const url = absoluteUrl(href, pageUrl);
+    const url = absoluteUrl(
+      href,
+      pageUrl
+    );
 
     if (!url) {
       return;
     }
 
     /*
-     * Only accept actual TU notice URLs.
+     * Only accept TU notice URLs.
      */
     if (!isTUNoticeUrl(url)) {
       return;
@@ -453,9 +620,11 @@ export function parsePage(html, pageUrl) {
     }
 
     /*
-     * Extract title from the anchor.
+     * Extract title.
      */
-    const title = cleanText($(anchor).text());
+    const title = cleanText(
+      $(anchor).text()
+    );
 
     if (!title) {
       return;
@@ -463,17 +632,6 @@ export function parsePage(html, pageUrl) {
 
     /*
      * Extract AD date.
-     *
-     * IMPORTANT:
-     * This does NOT inspect the complete article text.
-     * Therefore:
-     *
-     *   30 July 2026
-     *   2083-04-15
-     *
-     * correctly produces:
-     *
-     *   2026-07-30
      */
     const adDate = findADDate(
       $,
@@ -493,14 +651,19 @@ export function parsePage(html, pageUrl) {
 
   return {
     notices,
-    nextPage: findNextPage($, pageUrl),
+    nextPage: findNextPage(
+      $,
+      pageUrl
+    ),
   };
 }
 
 /**
  * Remove duplicate notices while preserving order.
  */
-export function dedupeNotices(notices = []) {
+export function dedupeNotices(
+  notices = []
+) {
   const result = [];
   const seen = new Set();
 
