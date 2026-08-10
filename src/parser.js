@@ -734,21 +734,118 @@ export function parsePage(html, pageUrl) {
 }
 
 /**
- * Parse a single notice page for its details (especially the AD date)
+ * Parse a single notice page for its details (especially the AD date and correct title)
  * 
  * This function is exported and used by scraper.js to fetch individual
  * notice pages and extract the AD date from the full page HTML.
  * 
  * CRITICAL: Does NOT use Date() constructor to avoid timezone issues
+ * CRITICAL: Extracts the correct notice title, not the page title
  */
 export async function parseNoticeDetails(html, url) {
   const $ = cheerio.load(String(html || ""));
   
-  // Extract title from the page
-  let title = $('h1').first().text().trim() || 
-              $('h2').first().text().trim() || 
-              $('title').first().text().trim() ||
-              'Untitled Notice';
+  // Extract title from the page - PRIORITY: Look for the actual notice title
+  let title = null;
+  
+  // METHOD 1: Look for the notice title in the page content
+  // TU often puts the notice title in a heading or paragraph with the notice content
+  const possibleTitleSelectors = [
+    '.notice-title',
+    '.notice-heading',
+    '.news-title',
+    '.post-title',
+    '.entry-title',
+    'h1.entry-title',
+    'h1.post-title',
+    'h2.entry-title',
+    'h2.post-title',
+    '.page-header h1',
+    '.content h1',
+    '.content h2',
+    '.main-content h1',
+    '.main-content h2',
+    'article h1',
+    'article h2',
+    '.container h1',
+    '.container h2',
+    // TU specific: look for the main heading in the content area
+    '.main-content .page-header h1',
+    '.container .page-header h1',
+    '.row .col-md-8 h1',
+    '.row .col-md-8 h2',
+    // Look for any heading that contains the notice text
+    'h1:not(:has(img))',
+    'h2:not(:has(img))',
+    'h3:not(:has(img))',
+    // Look for the first paragraph that might contain the title
+    '.content p:first-child',
+    '.main-content p:first-child',
+  ];
+  
+  for (const selector of possibleTitleSelectors) {
+    const element = $(selector);
+    if (element.length > 0) {
+      const text = cleanText(element.first().text());
+      // Skip if it's too short or looks like a generic label
+      if (text && text.length > 10 && !/^(office|controller|examination|notice|home|dashboard|login|register)/i.test(text)) {
+        title = text;
+        break;
+      }
+    }
+  }
+  
+  // METHOD 2: Look for the notice title in the main content area
+  if (!title) {
+    // Find the main content area
+    const mainContent = $('.main-content, .content, .container .row, article, .post, .entry');
+    if (mainContent.length > 0) {
+      // Look for the first heading that's not the page title
+      const headings = mainContent.find('h1, h2, h3');
+      for (let i = 0; i < headings.length; i++) {
+        const text = cleanText($(headings[i]).text());
+        if (text && text.length > 10 && !/^(office|controller|examination|notice|home|dashboard)/i.test(text)) {
+          title = text;
+          break;
+        }
+      }
+    }
+  }
+  
+  // METHOD 3: Look for the title in the URL if it's a number
+  if (!title || /^notice\s+\d+$/i.test(title)) {
+    const urlMatch = url.match(/\/notices\/(\d+)/);
+    if (urlMatch) {
+      // Try to find the title from the listing page by checking the link text
+      // But since we don't have that here, use a placeholder
+      title = `Notice ${urlMatch[1]}`;
+    }
+  }
+  
+  // METHOD 4: Fallback to the page title only if we have nothing better
+  if (!title || /^notice\s+\d+$/i.test(title) || /^office of the controller/i.test(title)) {
+    const pageTitle = $('title').first().text().trim();
+    // If the page title contains "Office of the Controller", skip it
+    if (!/office of the controller/i.test(pageTitle) && !/controller of examinations/i.test(pageTitle)) {
+      title = pageTitle;
+    }
+  }
+  
+  // Final fallback
+  if (!title || /^office of the controller/i.test(title)) {
+    const urlMatch = url.match(/\/notices\/(\d+)/);
+    title = urlMatch ? `Notice ${urlMatch[1]}` : 'TU Notice';
+  }
+  
+  // Clean up the title - remove any extra text
+  if (title) {
+    // Remove common prefixes
+    title = title.replace(/^(notice|news|post|article)\s*[:：]\s*/i, '');
+    // Remove trailing separators
+    title = title.replace(/[||-]\s*$/, '');
+    // Remove extra whitespace
+    title = cleanText(title);
+  }
   
   // Look for AD date in the page - DIRECT APPROACH
   let adDate = null;

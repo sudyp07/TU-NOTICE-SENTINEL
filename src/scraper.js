@@ -97,7 +97,7 @@ async function fetchPageWithRetry(
 }
 
 /**
- * Fetch a single notice page to get its details (especially the AD date)
+ * Fetch a single notice page to get its details (especially the AD date and correct title)
  */
 async function fetchNoticeDetails(notice, log, fetchImpl = fetch) {
   try {
@@ -130,11 +130,21 @@ async function fetchNoticeDetails(notice, log, fetchImpl = fetch) {
     }
     
     // Merge the details back into the notice
+    // ONLY update the title if we found a good one (not the generic page title)
+    let finalTitle = notice.title;
+    if (details.title && 
+        details.title !== 'Office of the Controller of Examinations' && 
+        details.title !== 'TU Notice' &&
+        !/^\d+\s*$/.test(details.title) &&
+        !/^notice\s+\d+$/i.test(details.title)) {
+      finalTitle = details.title;
+    }
+    
     const merged = {
       ...notice,
       adDate: details.adDate || notice.adDate || null,
       bsDate: details.bsDate || notice.bsDate || null,
-      title: details.title || notice.title,
+      title: finalTitle,
     };
     
     return merged;
@@ -217,7 +227,7 @@ export async function fetchNotices(
   const dedupedNotices = dedupeNotices(allNotices);
   log.info(`Deduplicated to ${dedupedNotices.length} unique notices`);
 
-  // Now fetch details for each notice to get the AD date
+  // Now fetch details for each notice to get the AD date and correct title
   log.info(`Fetching details for ${dedupedNotices.length} notices...`);
   
   const noticesWithDetails = [];
@@ -250,9 +260,9 @@ export async function fetchNotices(
   if (notice14313) {
     console.log(`\n📋 Final check - Notice 14313:`);
     console.log(`  ID: ${notice14313.id}`);
+    console.log(`  Title: ${notice14313.title}`);
     console.log(`  AD Date: ${notice14313.adDate}`);
-    console.log(`  BS Date: ${notice14313.bsDate}`);
-    console.log(`  Title: ${notice14313.title}\n`);
+    console.log(`  BS Date: ${notice14313.bsDate}\n`);
   }
   
   return dedupeNotices(noticesWithDetails);
