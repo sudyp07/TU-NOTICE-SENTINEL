@@ -1,38 +1,72 @@
-- name: Debug state file
-  if: always()
-  run: |
-    echo "=== Current directory ==="
-    pwd
+name: TU Notice Sentinel
 
-    echo "=== Data directory ==="
-    ls -la data || true
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
 
-    echo "=== State file ==="
-    if [ -f data/state.json ]; then
-      echo "state.json EXISTS"
-      wc -c data/state.json
-      head -20 data/state.json
-    else
-      echo "state.json DOES NOT EXIST"
-    fi
+permissions:
+  contents: write
 
-    echo "=== Git status ==="
-    git status --short
+jobs:
+  check:
+    runs-on: ubuntu-latest
 
-- name: Save state
-  if: always()
-  run: |
-    if [ -f data/state.json ]; then
-      git add data/state.json
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      if git diff --cached --quiet; then
-        echo "No state changes."
-      else
-        git config user.name "TU Notice Sentinel Bot"
-        git config user.email "actions@users.noreply.github.com"
-        git commit -m "chore: update notice state"
-        git push
-      fi
-    else
-      echo "WARNING: data/state.json was not created."
-    fi
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run TU Notice Sentinel
+        run: npm start
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+
+      - name: Check state file
+        run: |
+          echo "=== Current directory ==="
+          pwd
+
+          echo "=== Data directory ==="
+          ls -la data || true
+
+          echo "=== State file ==="
+          if [ -f data/state.json ]; then
+            echo "state.json EXISTS"
+            wc -c data/state.json
+          else
+            echo "state.json DOES NOT EXIST"
+          fi
+
+          echo "=== Git status ==="
+          git status --short
+
+      - name: Save state
+        run: |
+          if [ -f data/state.json ]; then
+            git add data/state.json
+
+            if git diff --cached --quiet; then
+              echo "No state changes."
+            else
+              git config user.name "TU Notice Sentinel Bot"
+              git config user.email "actions@users.noreply.github.com"
+              git commit -m "chore: update notice state"
+              git push
+            fi
+          else
+            echo "WARNING: data/state.json was not created."
+          fi
