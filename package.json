@@ -11,7 +11,7 @@
     "start": "node src/server.js",
     "bot": "node src/index.js",
     "dry-run": "cross-env DRY_RUN=true node src/index.js",
-    "test": "node --test --test-reporter=spec"
+    "test": "node --test --test-reporter=spec tests/*.test.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
