@@ -1,0 +1,4 @@
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.sudyp.tunoticesentinel.data.remote.** { *; }
+-dontwarn javax.annotation.**

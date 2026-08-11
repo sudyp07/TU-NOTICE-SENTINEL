@@ -1,0 +1,11 @@
+name: Build APK manually
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    uses: ./.github/workflows/android.yml
