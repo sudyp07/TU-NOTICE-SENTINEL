@@ -1,209 +1,362 @@
-# TU Notice Sentinel v3.3.0
+# TU Notice Sentinel
 
-TU Notice Sentinel monitors Tribhuvan University Exam notices, prevents duplicate alerts, sends Gmail notifications, runs automatically through GitHub Actions, and exposes a private HTTPS API for the TU Notice Sentinel Android control-panel app.
+![Android](https://img.shields.io/badge/Android-Kotlin%20%2B%20Compose-3DDC84?logo=android&logoColor=white)
+![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-339933?logo=nodedotjs&logoColor=white)
+![Version](https://img.shields.io/badge/Android-v4.0.0-2563EB)
+![API](https://img.shields.io/badge/API-v3.3.3-7C3AED)
+![License](https://img.shields.io/badge/Use-Private%20Project-orange)
 
-## What this integrated version provides
+**TU Notice Sentinel** is a private Android notice-monitoring application for Tribhuvan University students. It connects securely to a Node.js/Express backend, displays notices and service status, provides bot controls, checks TU results, and periodically checks for new notices in the background.
 
-- TU notice scraping with pagination and duplicate removal
-- Nepali digit and Bikram Sambat date handling
-- First-run email containing the latest 10 notices
-- Email only when a genuinely new notice is detected
-- Persistent state in `data/state.json`
-- Scheduled GitHub Actions run every 30 minutes
-- Manual `workflow_dispatch` support
-- Successful and failed run status, logs, notices, and email history
-- Authenticated Android API with short-lived bearer sessions
-- Android **Run Bot**, workflow status, test-email, enable/disable, logs, and notices support
-- GitHub-backed state so the Android app does not require your PC to remain on
-- No committed passwords, API secrets, or GitHub tokens
+The project is designed to stay simple and inexpensive:
+
+- No Firebase dependency
+- No paid push-notification service
+- No Android Studio required for GitHub builds
+- Personal information remains on the Android device
+- API secrets and server credentials are never committed to GitHub
+
+## Live service
+
+- **API base URL:** `https://tu-notice-sentinel-api.onrender.com`
+- **Health check:** `https://tu-notice-sentinel-api.onrender.com/health`
+- **TU result portal:** `https://result.tuexam.edu.np/`
+
+> The API root intentionally returns `404 Cannot GET /`. Use `/health` to check the server. The Android app authenticates through `/api/auth/token`.
+
+## Main features
+
+### Dashboard
+
+- Live bot online/offline state
+- Last checked and last successful run information
+- Notice, email, scan, and stored-item counters
+- TU website, scraper, state, Gmail, and GitHub Actions status
+- Quick actions for checking notices, sending test email, running tests, controlling the bot, and triggering the workflow
+
+### Notice management
+
+- Five newest notices on the dashboard
+- Complete notice archive
+- Search by notice title or keyword
+- Faculty/category filtering
+- Read and unread tracking
+- Mark all notices as read
+- Clear/hide read notices
+- Bookmark important notices for offline access
+- Local Room database cache
+
+### Background alerts
+
+- Android WorkManager checks for new notices periodically
+- Notification sound and vibration for newly discovered notices
+- First synchronization is silent to avoid alerting for every existing notice
+- Notification history is available inside the app
+
+> Android periodic background work has a minimum interval of approximately 15 minutes and may be delayed by battery optimization or Doze mode. This is reliable background polling, not instant Firebase push messaging.
+
+### TU results
+
+- Built-in TU examination-results WebView
+- Back/forward web navigation
+- File and PDF download support
+- Locally saved symbol number and date of birth
+- Personal result archive
+- Semester-wise records and average GPA/CGPA assistance
+
+### Privacy and personalization
+
+- Local profile dashboard
+- Faculty and batch preferences
+- Saved symbol number and date of birth
+- Result history
+- Bookmarked notices
+- Download history and reading statistics
+- Nepal Standard Time (`UTC+05:45`) throughout the app
+
+Profile details, result records, bookmarks, and preferences are stored privately on the Android device. They are not uploaded to the backend.
 
 ## Architecture
 
-```text
-TU website → GitHub Actions bot → data/state.json → HTTPS Node API → Android app
-                         └──────→ Gmail/Nodemailer
-Android Run Bot ─────────────────→ GitHub workflow dispatch
+```mermaid
+flowchart LR
+    TU[TU notice website] --> BOT[Node.js notice bot]
+    BOT --> STORE[Notice and state data]
+    BOT --> EMAIL[Gmail alerts]
+    STORE --> API[Express API on Render]
+    API --> APP[Android application]
+    APP --> LOCAL[Room and local preferences]
+    ACTIONS[GitHub Actions] --> BOT
 ```
 
-The bot and API have different commands:
-
-- `npm run bot` runs one real notice check. GitHub Actions uses this command.
-- `npm start` starts the Android control API. Your hosting service uses this command.
-- `npm run dry-run` checks scraping without sending email or changing state.
-- `npm test` runs the automated test suite.
-
-## 1. Put the project in GitHub
-
-Extract the ZIP and place all its contents at the root of your TU Notice Sentinel repository. Confirm that these files exist on the `main` branch:
+## Repository structure
 
 ```text
-.github/workflows/bot.yml
-data/state.json
-src/
-package.json
-package-lock.json
+tu-notice-sentinel/
+├── .github/
+│   └── workflows/
+│       ├── android.yml       # Reusable Android build
+│       ├── build-apk.yml     # Manual APK build button
+│       └── bot.yml           # Existing bot workflow
+├── android/                  # Kotlin Android application
+│   ├── app/
+│   ├── gradle/
+│   ├── build.gradle.kts
+│   ├── gradlew
+│   └── settings.gradle.kts
+├── data/                     # Runtime bot state/data
+├── src/                      # Node.js backend and bot source
+├── tests/                    # Backend tests
+├── Dockerfile
+├── package.json
+└── README.md
 ```
 
-Do not upload `.env` or `node_modules`.
+## Android connection setup
 
-## 2. Configure Gmail for GitHub Actions
-
-In GitHub, open:
-
-**Repository → Settings → Secrets and variables → Actions → Secrets**
-
-Create these repository secrets:
-
-| Secret | Value |
-| --- | --- |
-| `GMAIL_USER` | Gmail address used by the bot |
-| `GMAIL_APP_PASSWORD` | Google 16-character App Password |
-| `EMAIL_TO` | Address that receives TU notice emails |
-
-Use a Google App Password, not the normal Gmail password. Do not put these values in `.env.example`, the Android app, or a commit.
-
-Under **Actions → Variables**, optionally create:
-
-| Variable | Value |
-| --- | --- |
-| `BOT_ENABLED` | `true` |
-| `SOURCE_URL` | `https://exam.tu.edu.np/notices` |
-
-If `SOURCE_URL` is absent or blank, the bot uses the same TU URL by default. Setting `BOT_ENABLED` to `false` skips scheduled runs; manually dispatched runs are still allowed.
-
-## 3. Test the GitHub bot
-
-1. Open **GitHub → Actions → TU Notice Sentinel**.
-2. Select **Run workflow** on the `main` branch.
-3. Wait for the run to complete successfully.
-4. Confirm that `data/state.json` was updated by the workflow.
-5. On the first successful run, confirm receipt of an email containing up to 10 latest notices.
-
-The workflow needs permission to commit `data/state.json`. If the repository protects `main`, allow GitHub Actions to push this state update or use a branch policy that permits the bot commit.
-
-## 4. Create the backend GitHub token
-
-Create a fine-grained personal access token limited to this repository. It needs:
-
-- **Actions: Read and write** — queue the workflow and read its status
-- **Contents: Read and write** — read/update `data/state.json`
-- **Variables: Read and write** — enable or disable scheduled bot runs
-
-Keep this token only in your HTTPS hosting service's secret environment settings. Never commit it.
-
-## 5. Deploy the HTTPS Node API
-
-Deploy this repository as a Node.js web service on an always-available host.
-
-- Build command: `npm ci`
-- Start command: `npm start`
-- Health-check path: `/health`
-- Required Node version: 20 or newer
-
-Set these secret environment variables on the hosting service:
-
-```dotenv
-API_SECRET=generate-a-random-secret-with-at-least-24-characters
-GITHUB_TOKEN=your-fine-grained-token
-GITHUB_OWNER=your-github-username-or-organization
-GITHUB_REPO=your-repository-name-without-dot-git
-GITHUB_WORKFLOW=bot.yml
-GITHUB_REF=main
-GITHUB_STATE_PATH=data/state.json
-GMAIL_USER=yourgmail@gmail.com
-GMAIL_APP_PASSWORD=your-google-app-password
-EMAIL_TO=recipient@example.com
-TOKEN_TTL_SECONDS=900
-```
-
-Generate a strong API secret locally with Node.js:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-Do not paste that secret into chat or commit it. The hosting service normally supplies `PORT`; otherwise the API uses port `8787`.
-
-After deployment, open:
+Open **Settings** in the app and enter:
 
 ```text
-https://YOUR-SERVER/health
+HTTP API URL: https://tu-notice-sentinel-api.onrender.com
+API Secret:   <the same API_SECRET configured on Render>
 ```
 
-The expected response includes:
+The URL may contain a trailing slash, but the recommended form is without one. Do not enter `/`, `/health`, `/api`, or `/api/auth/token` in the URL field—the app appends the correct paths itself.
 
-```json
-{"ok":true,"service":"tu-notice-sentinel-api","version":"3.3.0"}
+The connection flow is:
+
+```text
+POST /api/auth/token
+X-API-Key: <API_SECRET>
+Content-Type: application/json
+Body: {}
+        ↓
+Temporary JWT
+        ↓
+Authorization: Bearer <JWT>
+        ↓
+GET /api/status
+        ↓
+Dashboard connected
 ```
 
-The public app connection must use HTTPS. The included `Dockerfile` can be used by hosts that deploy containers.
+## API contract
 
-## 6. Connect the Android app
-
-The app does not have a username/password account. It authenticates with the private server URL and `API_SECRET`.
-
-1. Install and open the TU Notice Sentinel APK.
-2. Open **Settings → Sentinel Server**.
-3. Enter the deployed base URL, such as `https://your-service.example.com`.
-4. Do not add `/api`, `/health`, or another path.
-5. Enter the exact same `API_SECRET` configured on the server.
-6. Tap **Save settings**, return to the dashboard, and refresh.
-
-The app automatically exchanges the API secret for a signed 15-minute session token. The API secret remains in Android encrypted storage.
-
-For the optional direct GitHub controls under Android **Settings → GitHub Actions**, enter the owner, repository, `bot.yml`, and a fine-grained token. The normal dashboard **Run Bot** control already queues the GitHub workflow through the secured backend.
-
-You may enable a 4–8 digit app-lock PIN under **Settings → Security & appearance**. The PIN protects the app locally and is separate from API authentication.
-
-## API contract used by the Android app
-
-`POST /api/auth/token` accepts `X-API-Key: <API_SECRET>`. Every other `/api` endpoint requires `Authorization: Bearer <session-token>`.
+### Public endpoints
 
 | Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/api/status` | Bot, website, scraper, Gmail, GitHub, and run status |
-| GET | `/api/notices` | Stored normalized notices |
-| GET | `/api/notices/latest` | Latest stored notice |
-| GET | `/api/logs` | Persistent bot logs |
-| DELETE | `/api/logs` | Clear logs |
-| GET | `/api/notifications` | Notice-email and test-email history |
-| POST | `/api/check` | Queue the real GitHub workflow |
-| POST | `/api/test-email` | Send a real Nodemailer/Gmail test |
-| POST | `/api/bot/enable` | Enable scheduled workflow runs |
-| POST | `/api/bot/disable` | Disable scheduled workflow runs |
-| POST | `/api/bot/test` | Verify GitHub state/workflow access |
-| POST | `/api/github/workflow` | Queue the configured workflow |
-| GET | `/api/github/status` | Read the latest workflow run |
+|---|---|---|
+| `GET` | `/health` | API health and version |
+| `POST` | `/api/auth/token` | Exchange API secret for a temporary JWT |
 
-## Local development
+Authentication request:
 
 ```bash
-cp .env.example .env
-npm ci
-npm test
-npm run dry-run
+curl -X POST \
+  'https://tu-notice-sentinel-api.onrender.com/api/auth/token' \
+  -H 'X-API-Key: YOUR_API_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{}'
 ```
 
-To run the API locally, fill all required `.env` values and use `npm start`. Local HTTP is suitable for development tools, but the production Android app requires an HTTPS URL.
+### Protected endpoints
 
-## Troubleshooting
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/api/status` | Dashboard and bot status |
+| `GET` | `/api/notices` | Notice archive |
+| `GET` | `/api/notices/latest` | Latest notice |
+| `GET` | `/api/logs` | Bot/API logs |
+| `DELETE` | `/api/logs` | Clear logs |
+| `GET` | `/api/notifications` | Notification history |
+| `POST` | `/api/check` | Run a notice check |
+| `POST` | `/api/bot/enabled` | Enable or disable the bot |
+| `POST` | `/api/tests/run` | Run backend tests |
+| `POST` | `/api/notifications/test` | Send a test email |
 
-| Problem | Cause or fix |
-| --- | --- |
-| Android shows `Invalid API key` | `API_SECRET` differs between the app and server |
-| Android cannot connect | Check the HTTPS base URL and `/health` response |
-| `GITHUB_NOT_CONFIGURED` | One or more `GITHUB_*` server variables are missing |
-| GitHub returns `Resource not accessible` | Token lacks Actions, Contents, or Variables permission |
-| `INVALID_STATE_FILE` | `data/state.json` is absent or invalid JSON on `main` |
-| Test email says Gmail is not configured | Set all three Gmail environment variables on the API host |
-| Workflow cannot commit state | Enable workflow `contents: write` and review branch protection |
-| Every run emails the same notices | Confirm `data/state.json` is tracked and workflow commits succeed |
-| No notices are detected | Run `npm run dry-run` and inspect whether TU changed its HTML structure |
+Protected request example:
 
-## Security notes
+```bash
+curl \
+  'https://tu-notice-sentinel-api.onrender.com/api/status' \
+  -H 'Authorization: Bearer YOUR_TEMPORARY_JWT'
+```
 
-- Never commit `.env`, Gmail App Passwords, GitHub tokens, or `API_SECRET`.
-- Restrict the GitHub token to only the Sentinel repository and required permissions.
-- Rotate the API secret and GitHub token if the phone or server is lost.
-- Keep the API behind HTTPS and use the hosting platform's secret manager.
-- The application stores notice state in GitHub, but credentials remain only in GitHub/hosting secrets and encrypted Android storage.
+## Backend environment variables
+
+Configure secrets in **Render → Environment**. Never add the real `.env` file to Git.
+
+```dotenv
+API_SECRET=replace_with_a_long_random_secret
+GMAIL_USER=your_gmail_address
+GMAIL_APP_PASSWORD=your_google_app_password
+EMAIL_TO=notification_recipient
+```
+
+Other GitHub or bot-specific variables should remain in Render or GitHub Actions secrets, according to the backend configuration.
+
+Generate a strong API secret with:
+
+```bash
+openssl rand -hex 32
+```
+
+## Build the APK without Android Studio
+
+The included GitHub Actions workflows build the application in the cloud.
+
+1. Push the project to GitHub.
+2. Open the repository and select **Actions**.
+3. Select **Build APK**.
+4. Select **Run workflow** and confirm.
+5. Wait for the green success check.
+6. Download the APK artifact from the completed workflow run.
+7. Extract the downloaded ZIP file.
+8. Install `TU-Notice-Sentinel.apk`.
+
+The artifact can contain both:
+
+```text
+TU-Notice-Sentinel.apk
+TU-Notice-Sentinel-debug.apk
+```
+
+Install `TU-Notice-Sentinel.apk`. The second file is an explicitly named debug copy produced by the workflow.
+
+## Local build
+
+Android Studio is optional. With Java and the Android SDK installed, use:
+
+```bash
+cd android
+./gradlew test assembleDebug
+```
+
+On Windows Command Prompt or PowerShell:
+
+```powershell
+cd android
+.\gradlew.bat test assembleDebug
+```
+
+The generated APK is normally located at:
+
+```text
+android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+## Backend tests
+
+From the repository root:
+
+```bash
+npm ci
+npm test
+```
+
+Check the deployed service:
+
+```bash
+curl 'https://tu-notice-sentinel-api.onrender.com/health'
+```
+
+Expected response structure:
+
+```json
+{
+  "ok": true,
+  "service": "tu-notice-sentinel-api",
+  "version": "3.3.3"
+}
+```
+
+## Installing and upgrading
+
+1. Transfer the APK to the Android device.
+2. Allow **Install unknown apps** for the file manager when prompted.
+3. Open the APK and select **Install**.
+4. Disable the unknown-app permission afterward if desired.
+
+If Android reports an incompatible package or signature conflict, uninstall the older TU Notice Sentinel build and install the new APK. Uninstalling clears locally stored profiles, bookmarks, results, and settings, so export or record important information first.
+
+## Required permissions
+
+Depending on Android version, the app may request:
+
+- Internet access for the Render API and TU results portal
+- Notification permission for notice alerts
+- Download/file access managed through Android's download service
+
+For more reliable background checks, allow notifications and exclude the app from aggressive battery optimization when appropriate.
+
+## Security checklist
+
+- Keep the GitHub repository private if it contains operational details.
+- Never commit `.env`, API secrets, Gmail passwords, GitHub tokens, keystores, or signing passwords.
+- Use a Gmail **App Password**, never the normal account password.
+- Use HTTPS for the API URL.
+- Rotate exposed credentials immediately.
+- Use least-privilege GitHub tokens.
+- Keep signing keys in a secure offline backup.
+- Do not post API secrets or tokens in screenshots, issues, or build logs.
+
+Recommended `.gitignore` rules:
+
+```gitignore
+.env
+.env.*
+!.env.example
+node_modules/
+.idea/
+*.log
+*.jks
+*.keystore
+android/local.properties
+android/.gradle/
+android/**/build/
+```
+
+## Release checklist
+
+- [ ] Backend health endpoint returns HTTP `200`
+- [ ] Authentication returns a temporary JWT
+- [ ] Dashboard connects and refreshes successfully
+- [ ] Notices and latest notice load correctly
+- [ ] Check Now works
+- [ ] Test Email works
+- [ ] Workflow trigger/status works
+- [ ] Run Test works
+- [ ] Enable/Disable Bot works
+- [ ] Background notification permission is granted
+- [ ] A newly detected notice produces one sound notification
+- [ ] Result portal loads and downloads work
+- [ ] Bookmarks and profile data remain after restarting the app
+- [ ] `.env` and credentials are absent from Git history
+- [ ] Final APK installs successfully on a real Android device
+
+## Current versions
+
+| Component | Version |
+|---|---:|
+| Android application | `4.0.0` |
+| Render API/backend | `3.3.3` |
+
+## Maintenance
+
+Keep these workflow files even after the first successful build:
+
+```text
+.github/workflows/android.yml
+.github/workflows/build-apk.yml
+.github/workflows/bot.yml
+```
+
+They allow future Android builds and continued bot operation. Completed workflow runs and downloaded artifacts may be deleted from GitHub when they are no longer required.
+
+## Disclaimer
+
+TU Notice Sentinel is an independent student project and is not an official application of Tribhuvan University. Notice and result information should be verified through the official TU websites.
+
+---
+
+Built for private, secure, and convenient TU notice monitoring.
