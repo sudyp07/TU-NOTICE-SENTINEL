@@ -68,7 +68,9 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-            git add data/state.json
+            # State is the authenticated API dashboard's data source. Use -f
+            # so older clones that still have the former ignore rule recover.
+            git add -f data/state.json
             git commit -m "chore: update notice state"
             git push
           else

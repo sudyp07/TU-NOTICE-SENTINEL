@@ -218,7 +218,7 @@ export async function runBot({
 
       emailsSent: (next.status?.emailsSent || 0) + (emailSent ? 1 : 0),
 
-      version: "3.3.0",
+      version: "3.3.3",
     };
 
     // Save state.
@@ -280,7 +280,7 @@ export async function runBot({
           storedNotices: previous.notices?.length || 0,
           newNotices: 0,
 
-          version: "3.3.0",
+          version: "3.3.3",
         };
 
         await saveState(stateFile, previous);
