@@ -4,15 +4,28 @@ import helmet from "helmet";
 import { createAuth } from "./auth.js";
 import { AppError, redactError } from "./errors.js";
 
+const API_VERSION = "3.3.1";
+
 const booleanValue = (value) => value === true || value === "true";
+
+const asyncRoute = (handler) => (request, response, next) =>
+  Promise.resolve(handler(request, response, next)).catch(next);
 
 const sortNotices = (notices) =>
   [...notices].sort((left, right) => {
     const leftDate =
-      left.adDate || left.bsDate || left.date || left.discoveredAt || "";
+      left.adDate ||
+      left.bsDate ||
+      left.date ||
+      left.discoveredAt ||
+      "";
 
     const rightDate =
-      right.adDate || right.bsDate || right.date || right.discoveredAt || "";
+      right.adDate ||
+      right.bsDate ||
+      right.date ||
+      right.discoveredAt ||
+      "";
 
     return (
       String(rightDate).localeCompare(String(leftDate)) ||
@@ -20,68 +33,128 @@ const sortNotices = (notices) =>
     );
   });
 
-/**
- * Normalize a notice into the Android/API data contract.
- *
- * Important:
- * - adDate is the canonical AD/Gregorian date.
- * - bsDate is kept separately when available.
- * - originalDate preserves the original date information.
- * - date is provided as a compatibility field for the Android app.
- */
-const normalizeNotice = (notice) => {
+const normalizeNotice = (notice = {}) => {
   const adDate = notice.adDate || null;
   const bsDate = notice.bsDate || null;
+  const originalDate =
+    notice.originalDate ||
+    adDate ||
+    bsDate ||
+    null;
 
-  const originalDate = notice.originalDate || adDate || bsDate || null;
-
-  /*
-   * Android compatibility field.
-   *
-   * The Android app can simply display:
-   *
-   * notice.date
-   *
-   * Prefer AD date because the application intentionally
-   * stores Gregorian/AD dates as its primary notice date.
-   */
-  const date = notice.date || adDate || bsDate || null;
+  const date =
+    notice.date ||
+    adDate ||
+    bsDate ||
+    null;
 
   return {
-    id: String(notice.id || notice.noticeId || notice.url || ""),
-    title: String(notice.title || "Untitled notice"),
-    url: String(notice.url || notice.link || ""),
+    id: String(
+      notice.id ||
+      notice.noticeId ||
+      notice.url ||
+      "",
+    ),
 
-    // Canonical date fields.
+    title: String(
+      notice.title ||
+      "Untitled notice",
+    ),
+
+    url: String(
+      notice.url ||
+      notice.link ||
+      "",
+    ),
+
     adDate,
     bsDate,
     originalDate,
-
-    // Android compatibility field.
     date,
 
     isNew: Boolean(notice.isNew),
     isRead: Boolean(notice.isRead),
-    discoveredAt: notice.discoveredAt || null,
+
+    discoveredAt:
+      notice.discoveredAt ||
+      null,
   };
+};
+
+const invokeAdapter = (adapter, method, ...args) => {
+  const operation = adapter?.[method];
+
+  if (typeof operation !== "function") {
+    throw new AppError(
+      501,
+      "ADAPTER_METHOD_NOT_AVAILABLE",
+      `The configured adapter does not provide ${method}().`,
+    );
+  }
+
+  return operation.apply(adapter, args);
+};
+
+/*
+ * Read-only adapter operations should not prevent the
+ * Android application from connecting.
+ *
+ * If the adapter fails, the API returns safe degraded
+ * data and records the real error in the Render logs.
+ */
+const safeAdapterRead = async (
+  label,
+  operation,
+  fallback,
+) => {
+  try {
+    return {
+      value: await operation(),
+      degraded: false,
+      adapterError: null,
+    };
+  } catch (error) {
+    const safeMessage = redactError(error);
+
+    console.error(
+      `[adapter:${label}] ${safeMessage}`,
+    );
+
+    return {
+      value: fallback,
+      degraded: true,
+      adapterError:
+        `${label} failed: ${safeMessage}`,
+    };
+  }
 };
 
 export function createApp({
   adapter,
   apiSecret = process.env.API_SECRET,
-  tokenTtl = Number(process.env.TOKEN_TTL_SECONDS || 900),
-  env = process.env,
-}) {
+  tokenTtl = Number(
+    process.env.TOKEN_TTL_SECONDS ||
+    900,
+  ),
+} = {}) {
+  if (!adapter) {
+    throw new Error(
+      "createApp() requires an adapter",
+    );
+  }
+
   const app = express();
 
-  const auth = createAuth(apiSecret, tokenTtl);
+  const auth = createAuth(
+    apiSecret,
+    tokenTtl,
+  );
 
   /*
-   * Render terminates HTTPS and forwards
-   * the original client address through
-   * one reverse proxy.
+   * Render uses one trusted reverse proxy.
    */
   app.set("trust proxy", 1);
+
   app.disable("x-powered-by");
 
   app.use(helmet());
@@ -93,7 +166,30 @@ export function createApp({
   );
 
   /*
-   * Global API rate limit.
+   * Safe request logging.
+   *
+   * Headers, API secrets and Bearer tokens
+   * are not logged.
+   */
+  app.use(
+    (request, response, next) => {
+      const startedAt = Date.now();
+
+      response.once("finish", () => {
+        console.log(
+          `${request.method} ` +
+          `${request.originalUrl} -> ` +
+          `${response.statusCode} ` +
+          `(${Date.now() - startedAt}ms)`,
+        );
+      });
+
+      next();
+    },
+  );
+
+  /*
+   * Global rate limiter.
    */
   app.use(
     rateLimit({
@@ -105,239 +201,686 @@ export function createApp({
   );
 
   /*
-   * HEALTH
+   * Public health endpoint.
    */
-  app.get("/health", (_request, response) => {
-    response.json({
-      ok: true,
-      service: "tu-notice-sentinel-api",
-      version: "3.3.0",
-      time: new Date().toISOString(),
-    });
-  });
+  app.get(
+    "/health",
+    (_request, response) => {
+      response.json({
+        ok: true,
+        service:
+          "tu-notice-sentinel-api",
+        version: API_VERSION,
+        time: new Date().toISOString(),
+      });
+    },
+  );
 
   /*
-   * AUTH
-   *
-   * Android sends:
-   *
-   * X-API-Key: your-secret
-   *
-   * and receives a temporary Bearer token.
+   * Exchange the API secret for a
+   * temporary Bearer token.
    */
   app.post(
     "/api/auth/token",
+
     rateLimit({
       windowMs: 60_000,
       limit: 10,
       standardHeaders: "draft-8",
       legacyHeaders: false,
     }),
+
     auth.issue,
   );
 
   /*
    * Everything below /api requires
-   * a valid session token.
+   * a valid Bearer token.
    */
-  app.use("/api", auth.requireToken);
+  app.use(
+    "/api",
+    auth.requireToken,
+  );
+
+  /*
+   * Protected route diagnostic.
+   */
+  app.get(
+    "/api/routes",
+    (_request, response) => {
+      response.json({
+        ok: true,
+        version: API_VERSION,
+
+        routes: [
+          "GET /api/status",
+          "GET /api/notices",
+          "GET /api/notices/latest",
+          "GET /api/logs",
+          "GET /api/notifications",
+          "POST /api/check",
+          "POST /api/bot/enabled",
+          "POST /api/tests/run",
+          "POST /api/notifications/test",
+          "DELETE /api/logs",
+        ],
+      });
+    },
+  );
 
   /*
    * STATUS
    */
-  app.get("/api/status", async (_request, response) => {
-    const status = await adapter.getStatus();
+  app.get(
+    "/api/status",
 
-    response.json({
-      ...status,
-      serverTime: new Date().toISOString(),
-    });
-  });
+    asyncRoute(
+      async (_request, response) => {
+        const read =
+          await safeAdapterRead(
+            "getStatus",
+
+            () =>
+              invokeAdapter(
+                adapter,
+                "getStatus",
+              ),
+
+            {},
+          );
+
+        const status =
+          read.value &&
+          typeof read.value === "object"
+            ? read.value
+            : {};
+
+        response.json({
+          configured:
+            status.configured ??
+            adapter.configured === true,
+
+          online:
+            Boolean(status.online),
+
+          bot:
+            String(
+              status.bot ??
+              (read.degraded
+                ? "error"
+                : "unknown"),
+            ),
+
+          website:
+            String(
+              status.website ??
+              "unknown",
+            ),
+
+          scraper:
+            String(
+              status.scraper ??
+              "unknown",
+            ),
+
+          state:
+            String(
+              status.state ??
+              (read.degraded
+                ? "degraded"
+                : "unknown"),
+            ),
+
+          gmail:
+            String(
+              status.gmail ??
+              "unknown",
+            ),
+
+          github:
+            String(
+              status.github ??
+              "unknown",
+            ),
+
+          lastChecked:
+            status.lastChecked ??
+            null,
+
+          lastSuccessfulRun:
+            status.lastSuccessfulRun ??
+            null,
+
+          lastFailedRun:
+            status.lastFailedRun ??
+            null,
+
+          lastError:
+            status.lastError ??
+            read.adapterError,
+
+          noticesScanned:
+            Number(
+              status.noticesScanned ||
+              0,
+            ),
+
+          storedNotices:
+            Number(
+              status.storedNotices ||
+              0,
+            ),
+
+          newNotices:
+            Number(
+              status.newNotices ||
+              0,
+            ),
+
+          emailsSent:
+            Number(
+              status.emailsSent ||
+              0,
+            ),
+
+          version:
+            String(
+              status.version ||
+              API_VERSION,
+            ),
+
+          serverTime:
+            new Date().toISOString(),
+
+          degraded:
+            read.degraded,
+
+          adapterError:
+            read.adapterError,
+        });
+      },
+    ),
+  );
 
   /*
    * NOTICES
    */
-  app.get("/api/notices", async (request, response) => {
-    const search = String(request.query.search || "")
-      .trim()
-      .toLowerCase();
+  app.get(
+    "/api/notices",
 
-    const unreadOnly = booleanValue(request.query.unreadOnly);
+    asyncRoute(
+      async (request, response) => {
+        const search =
+          String(
+            request.query.search ||
+            "",
+          )
+            .trim()
+            .toLowerCase();
 
-    const limit = Math.min(
-      200,
-      Math.max(1, Number(request.query.limit || 100)),
-    );
+        const unreadOnly =
+          booleanValue(
+            request.query.unreadOnly,
+          );
 
-    const notices = (await adapter.listNotices()).map(normalizeNotice);
+        const requestedLimit =
+          Number(
+            request.query.limit ||
+            100,
+          );
 
-    const filtered = notices.filter(
-      (notice) =>
-        (!search || notice.title.toLowerCase().includes(search)) &&
-        (!unreadOnly || !notice.isRead),
-    );
+        const limit = Math.min(
+          200,
 
-    const sorted = sortNotices(filtered);
+          Math.max(
+            1,
 
-    response.json({
-      notices: sorted.slice(0, limit),
-      total: filtered.length,
-    });
-  });
+            Number.isFinite(
+              requestedLimit,
+            )
+              ? requestedLimit
+              : 100,
+          ),
+        );
+
+        const read =
+          await safeAdapterRead(
+            "listNotices",
+
+            () =>
+              invokeAdapter(
+                adapter,
+                "listNotices",
+              ),
+
+            [],
+          );
+
+        const notices =
+          Array.isArray(read.value)
+            ? read.value.map(
+                normalizeNotice,
+              )
+            : [];
+
+        const filtered =
+          notices.filter(
+            (notice) =>
+              (
+                !search ||
+                notice.title
+                  .toLowerCase()
+                  .includes(search)
+              ) &&
+              (
+                !unreadOnly ||
+                !notice.isRead
+              ),
+          );
+
+        response.json({
+          notices:
+            sortNotices(filtered)
+              .slice(0, limit),
+
+          total:
+            filtered.length,
+
+          degraded:
+            read.degraded,
+
+          adapterError:
+            read.adapterError,
+        });
+      },
+    ),
+  );
 
   /*
    * LATEST NOTICE
    */
-  app.get("/api/notices/latest", async (_request, response) => {
-    const notices = (await adapter.listNotices()).map(normalizeNotice);
+  app.get(
+    "/api/notices/latest",
 
-    const sorted = sortNotices(notices);
+    asyncRoute(
+      async (_request, response) => {
+        const read =
+          await safeAdapterRead(
+            "listNotices",
 
-    response.json({
-      notice: sorted[0] || null,
-    });
-  });
+            () =>
+              invokeAdapter(
+                adapter,
+                "listNotices",
+              ),
+
+            [],
+          );
+
+        const notices =
+          Array.isArray(read.value)
+            ? read.value.map(
+                normalizeNotice,
+              )
+            : [];
+
+        response.json({
+          notice:
+            sortNotices(notices)[0] ||
+            null,
+
+          degraded:
+            read.degraded,
+
+          adapterError:
+            read.adapterError,
+        });
+      },
+    ),
+  );
 
   /*
    * LOGS
    */
-  app.get("/api/logs", async (_request, response) => {
-    const logs = await adapter.listLogs();
+  app.get(
+    "/api/logs",
 
-    response.json({
-      logs,
-      total: logs.length,
-    });
-  });
+    asyncRoute(
+      async (_request, response) => {
+        const read =
+          await safeAdapterRead(
+            "listLogs",
+
+            () =>
+              invokeAdapter(
+                adapter,
+                "listLogs",
+              ),
+
+            [],
+          );
+
+        const logs =
+          Array.isArray(read.value)
+            ? read.value
+            : [];
+
+        response.json({
+          logs,
+          total: logs.length,
+
+          degraded:
+            read.degraded,
+
+          adapterError:
+            read.adapterError,
+        });
+      },
+    ),
+  );
 
   /*
    * NOTIFICATIONS
    */
-  app.get("/api/notifications", async (_request, response) => {
-    const notifications = await adapter.listNotifications();
+  app.get(
+    "/api/notifications",
 
-    response.json({
-      notifications,
-      total: notifications.length,
-    });
-  });
+    asyncRoute(
+      async (_request, response) => {
+        const read =
+          await safeAdapterRead(
+            "listNotifications",
+
+            () =>
+              invokeAdapter(
+                adapter,
+                "listNotifications",
+              ),
+
+            [],
+          );
+
+        const notifications =
+          Array.isArray(read.value)
+            ? read.value
+            : [];
+
+        response.json({
+          notifications,
+
+          total:
+            notifications.length,
+
+          degraded:
+            read.degraded,
+
+          adapterError:
+            read.adapterError,
+        });
+      },
+    ),
+  );
 
   /*
    * CHECK NOW
    */
-  app.post("/api/check", async (request, response, next) => {
-    try {
-      const mode = String(request.body?.mode || "check");
+  app.post(
+    "/api/check",
 
-      const result = await adapter.checkNow(mode);
+    asyncRoute(
+      async (request, response) => {
+        const mode =
+          String(
+            request.body?.mode ||
+            "check",
+          );
 
-      response.status(202).json({
-        ok: true,
-        ...result,
-      });
-    } catch (error) {
-      next(error);
-    }
-  });
+        const result =
+          await invokeAdapter(
+            adapter,
+            "checkNow",
+            mode,
+          );
+
+        response
+          .status(202)
+          .json({
+            ok: true,
+            ...(result || {}),
+          });
+      },
+    ),
+  );
 
   /*
-   * BOT ENABLE / DISABLE
+   * ENABLE OR DISABLE BOT
    */
-  app.post("/api/bot/enabled", async (request, response, next) => {
-    try {
-      const enabled = booleanValue(request.body?.enabled);
+  app.post(
+    "/api/bot/enabled",
 
-      const result = await adapter.setEnabled(enabled);
+    asyncRoute(
+      async (request, response) => {
+        const enabled =
+          booleanValue(
+            request.body?.enabled,
+          );
 
-      response.json({
-        ok: true,
-        enabled,
-        ...result,
-      });
-    } catch (error) {
-      next(error);
-    }
-  });
+        const result =
+          await invokeAdapter(
+            adapter,
+            "setEnabled",
+            enabled,
+          );
+
+        response.json({
+          ok: true,
+          enabled,
+          ...(result || {}),
+        });
+      },
+    ),
+  );
 
   /*
    * RUN TESTS
    */
-  app.post("/api/tests/run", async (_request, response, next) => {
-    try {
-      const result = await adapter.runTests();
+  app.post(
+    "/api/tests/run",
 
-      response.json(result);
-    } catch (error) {
-      next(error);
-    }
-  });
+    asyncRoute(
+      async (_request, response) => {
+        const result =
+          await invokeAdapter(
+            adapter,
+            "runTests",
+          );
+
+        response.json(
+          result || {
+            ok: true,
+          },
+        );
+      },
+    ),
+  );
 
   /*
-   * RECORD TEST NOTIFICATION
+   * CREATE A TEST NOTIFICATION
    */
-  app.post("/api/notifications/test", async (request, response, next) => {
-    try {
-      const notification = {
-        id: request.body?.id || `test-${Date.now()}`,
+  app.post(
+    "/api/notifications/test",
 
-        status: request.body?.status || "accepted",
+    asyncRoute(
+      async (request, response) => {
+        const notification = {
+          id:
+            request.body?.id ||
+            `test-${Date.now()}`,
 
-        message: request.body?.message || "Test notification",
+          type:
+            request.body?.type ||
+            "test",
 
-        createdAt: new Date().toISOString(),
-      };
+          noticeCount:
+            Number(
+              request.body
+                ?.noticeCount ||
+              0,
+            ),
 
-      await adapter.recordNotification(notification);
+          timestamp:
+            new Date().toISOString(),
 
-      response.status(201).json({
-        ok: true,
-        notification,
-      });
-    } catch (error) {
-      next(error);
-    }
-  });
+          recipient:
+            request.body?.recipient ||
+            "hidden",
+
+          status:
+            request.body?.status ||
+            "accepted",
+
+          summary:
+            request.body?.summary ||
+            request.body?.message ||
+            "Test notification",
+
+          message:
+            request.body?.message ||
+            "Test notification",
+
+          createdAt:
+            new Date().toISOString(),
+        };
+
+        await invokeAdapter(
+          adapter,
+          "recordNotification",
+          notification,
+        );
+
+        response
+          .status(201)
+          .json({
+            ok: true,
+            notification,
+          });
+      },
+    ),
+  );
 
   /*
    * CLEAR LOGS
    */
-  app.delete("/api/logs", async (_request, response, next) => {
-    try {
-      await adapter.clearLogs();
+  app.delete(
+    "/api/logs",
 
-      response.json({
-        ok: true,
-        message: "Logs cleared.",
-      });
-    } catch (error) {
-      next(error);
-    }
-  });
+    asyncRoute(
+      async (_request, response) => {
+        await invokeAdapter(
+          adapter,
+          "clearLogs",
+        );
+
+        response.json({
+          ok: true,
+          message: "Logs cleared.",
+        });
+      },
+    ),
+  );
 
   /*
-   * ERROR HANDLER
+   * Explicit unmatched-route handler.
    */
-  app.use((error, _request, response, _next) => {
-    if (error instanceof AppError) {
-      const status = Number.isInteger(error.statusCode)
-        ? error.statusCode
-        : Number.isInteger(error.status)
-          ? error.status
-          : 500;
+  app.use(
+    (request, _response, next) => {
+      next(
+        new AppError(
+          404,
+          "NOT_FOUND",
+          `Endpoint not found: ${request.method} ${request.originalUrl}`,
+        ),
+      );
+    },
+  );
 
-      return response.status(status).json({
-        error: error.code || "API_ERROR",
-        message: error.message || "An API error occurred.",
-      });
-    }
+  /*
+   * Final error handler.
+   */
+  app.use(
+    (
+      error,
+      request,
+      response,
+      _next,
+    ) => {
+      const isAppError =
+        error instanceof AppError;
 
-    console.error(redactError(error));
+      const candidateStatus =
+        Number(
+          error?.statusCode ||
+          error?.status ||
+          error?.response?.status ||
+          500,
+        );
 
-    return response.status(500).json({
-      error: "INTERNAL_SERVER_ERROR",
-      message: "An unexpected server error occurred.",
-    });
-  });
+      /*
+       * A 404 thrown by an upstream adapter
+       * is not an Express route 404.
+       */
+      const upstreamNotFound =
+        !isAppError &&
+        candidateStatus === 404;
+
+      const status =
+        upstreamNotFound
+          ? 502
+          : Number.isInteger(
+                candidateStatus,
+              )
+            ? candidateStatus
+            : 500;
+
+      const message =
+        redactError(error);
+
+      if (!isAppError) {
+        console.error(
+          `${request.method} ` +
+          `${request.originalUrl}: ` +
+          message,
+        );
+      }
+
+      return response
+        .status(status)
+        .json({
+          error:
+            upstreamNotFound
+              ? "ADAPTER_UPSTREAM_NOT_FOUND"
+              : error?.code ||
+                (
+                  status >= 500
+                    ? "INTERNAL_SERVER_ERROR"
+                    : "API_ERROR"
+                ),
+
+          message:
+            isAppError
+              ? error.message
+              : upstreamNotFound
+                ? "The configured adapter requested an upstream resource that does not exist."
+                : "An unexpected server error occurred.",
+
+          path:
+            request.originalUrl,
+
+          method:
+            request.method,
+        });
+    },
+  );
 
   return app;
 }
