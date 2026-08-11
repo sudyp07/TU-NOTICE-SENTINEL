@@ -9,8 +9,8 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "bot": "node src/index.js",
-    "dry-run": "cross-env DRY_RUN=true node src/index.js",
+    "bot": "node src/bot.js",
+    "dry-run": "cross-env DRY_RUN=true node src/bot.js",
     "test": "node --test --test-reporter=spec tests/*.test.js",
     "test:email": "node src/test-email.js"
   },
