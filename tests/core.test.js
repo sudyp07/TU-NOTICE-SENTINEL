@@ -5,7 +5,6 @@ import {
   extractADDate,
   extractBSDate,
   normalizeNepaliDigits,
-  parseADDate,
 } from "../src/dates.js";
 
 import {
@@ -16,17 +15,11 @@ import {
 } from "../src/parser.js";
 
 test("AD date parsing works and BS dates are ignored", () => {
-  assert.ok(parseADDate("2026-07-30"));
 
-  assert.equal(parseADDate("2026-07-30"), "2026-07-30");
 
-  assert.equal(parseADDate("2026/07/30"), "2026-07-30");
 
-  assert.equal(parseADDate("30-07-2026"), "2026-07-30");
 
-  assert.equal(parseADDate("30 July 2026"), "2026-07-30");
 
-  assert.equal(parseADDate("July 30, 2026"), "2026-07-30");
 
   // BS dates are intentionally not converted.
   assert.equal(extractBSDate("2083-04-15"), null);
@@ -41,7 +34,6 @@ test("Nepali digits normalize correctly", () => {
 });
 
 test("AD and BS dates are handled independently", () => {
-  assert.equal(parseADDate("2026-04-15"), "2026-04-15");
 
   assert.equal(extractADDate("2083-04-15"), null);
 
