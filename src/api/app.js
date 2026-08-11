@@ -4,7 +4,7 @@ import helmet from "helmet";
 import { createAuth } from "./auth.js";
 import { AppError, redactError } from "./errors.js";
 
-const API_VERSION = "3.3.1";
+const API_VERSION = "3.3.2";
 
 const booleanValue = (value) => value === true || value === "true";
 

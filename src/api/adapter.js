@@ -1,3 +1,4 @@
+import { emptyState } from "../state.js";
 import { AppError } from "./errors.js";
 
 export class SentinelAdapter {
@@ -43,7 +44,14 @@ export class SentinelAdapter {
   }
 
   async getStatus() {
-    const state = await this.readState();
+    let state;
+    let stateError = null;
+    try {
+      state = await this.readState();
+    } catch (error) {
+      state = emptyState();
+      stateError = error;
+    }
     const [workflowResult, enabledResult] = await Promise.allSettled([
       this.github.latestWorkflowStatus(),
       this.github.getBotEnabled(),
@@ -59,17 +67,19 @@ export class SentinelAdapter {
     return {
       ...state.status,
       configured: true,
-      online: true,
+      online: workflowResult.status === "fulfilled",
       bot:
         workflow.state === "running"
           ? "running"
           : enabled
-            ? state.status.bot
+            ? state.status.bot === "unknown"
+              ? "idle"
+              : state.status.bot
             : "disabled",
       github: workflow.state,
-      state: this.stale ? "stale" : state.status.state,
+      state: stateError ? "degraded" : this.stale ? "stale" : state.status.state,
       lastChecked: state.status.lastChecked || workflow.updatedAt,
-      lastError: this.stale ? this.lastReadError : state.status.lastError,
+      lastError: stateError?.message || (this.stale ? this.lastReadError : state.status.lastError),
       botEnabled: enabled,
     };
   }
@@ -100,27 +110,36 @@ export class SentinelAdapter {
 
   async setEnabled(enabled) {
     const result = await this.github.setBotEnabled(enabled);
-    await this.github.updateState(
-      (state) => {
-        state.botEnabled = Boolean(enabled);
-        state.status.bot = enabled ? "idle" : "disabled";
-        return state;
-      },
-      `chore: ${enabled ? "enable" : "disable"} TU Notice Sentinel`,
-    );
+    try {
+      await this.github.updateState(
+        (state) => {
+          state.botEnabled = Boolean(enabled);
+          state.status.bot = enabled ? "idle" : "disabled";
+          return state;
+        },
+        `chore: ${enabled ? "enable" : "disable"} TU Notice Sentinel`,
+      );
+    } catch (error) {
+      if (error.status !== 404) throw error;
+      result.stateUpdated = false;
+      result.warning ||= "Workflow changed, but data/state.json was unavailable.";
+    }
     this.invalidate();
     return result;
   }
 
   async runTests() {
-    const [state, workflow] = await Promise.all([
+    const [stateResult, workflowResult] = await Promise.allSettled([
       this.readState(true),
       this.github.latestWorkflowStatus(),
     ]);
     return {
-      ok: true,
-      stateReadable: Boolean(state),
-      workflowReachable: workflow.state !== undefined,
+      ok: workflowResult.status === "fulfilled",
+      stateReadable: stateResult.status === "fulfilled",
+      workflowReachable: workflowResult.status === "fulfilled",
+      stateError: stateResult.status === "rejected" ? stateResult.reason.message : null,
+      workflowError:
+        workflowResult.status === "rejected" ? workflowResult.reason.message : null,
     };
   }
 

@@ -1,0 +1,12 @@
+# TU Notice Sentinel backend fix 3.3.2
+
+Deploy this project to the existing Render service using the same environment variables.
+
+This release fixes misleading HTTP 404 responses caused by upstream GitHub 404s:
+
+- `POST /api/tests/run` now returns diagnostics even when `data/state.json` cannot be read.
+- `POST /api/bot/enabled` falls back to GitHub workflow enable/disable when repository Variables access is unavailable.
+- `GET /api/status` remains online when the workflow API is reachable and reports state storage as degraded separately.
+- GitHub environment values are trimmed before constructing requests.
+
+For complete notices, logs and counters, the Render `GITHUB_TOKEN` still needs Contents read/write access and `data/state.json` must exist on `GITHUB_REF`.

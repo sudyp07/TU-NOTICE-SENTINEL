@@ -41,3 +41,31 @@ test('GitHub service reports invalid state JSON safely', async () => {
   }), { status: 200, headers: { 'content-type': 'application/json' } }));
   await assert.rejects(() => github.readStateFile(), (error) => error.code === 'INVALID_STATE_FILE');
 });
+
+test('GitHub service falls back to workflow control when Variables returns 404', async () => {
+  const calls = [];
+  const github = new GitHubService(env, async (url, init = {}) => {
+    calls.push({ url, method: init.method || 'GET' });
+    if (url.endsWith('/actions/variables/BOT_ENABLED')) {
+      return new Response(JSON.stringify({ message: 'Not Found' }), {
+        status: 404,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+    if (url.endsWith('/actions/variables')) {
+      return new Response(JSON.stringify({ message: 'Not Found' }), {
+        status: 404,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+    if (url.endsWith('/actions/workflows/bot.yml/disable')) {
+      return new Response(null, { status: 204 });
+    }
+    throw new Error(`Unexpected request: ${url}`);
+  });
+
+  const result = await github.setBotEnabled(false);
+  assert.equal(result.enabled, false);
+  assert.equal(result.control, 'workflow');
+  assert.ok(calls.some((call) => call.url.endsWith('/disable') && call.method === 'PUT'));
+});

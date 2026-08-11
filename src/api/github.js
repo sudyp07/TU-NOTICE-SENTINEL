@@ -5,12 +5,12 @@ export class GitHubService {
   constructor(env = process.env, fetchImpl = fetch) {
     this.fetch = fetchImpl;
 
-    this.token = env.GITHUB_TOKEN;
-    this.owner = env.GITHUB_OWNER;
-    this.repo = env.GITHUB_REPO;
-    this.workflow = env.GITHUB_WORKFLOW || "bot.yml";
-    this.ref = env.GITHUB_REF || "main";
-    this.statePath = env.GITHUB_STATE_PATH || "data/state.json";
+    this.token = env.GITHUB_TOKEN?.trim();
+    this.owner = env.GITHUB_OWNER?.trim();
+    this.repo = env.GITHUB_REPO?.trim();
+    this.workflow = env.GITHUB_WORKFLOW?.trim() || "bot.yml";
+    this.ref = env.GITHUB_REF?.trim() || "main";
+    this.statePath = env.GITHUB_STATE_PATH?.trim() || "data/state.json";
   }
 
   get configured() {
@@ -259,36 +259,47 @@ export class GitHubService {
 
     const existing = await this.request(endpoint, {}, true);
 
-    if (existing) {
-      await this.request(endpoint, {
-        method: "PATCH",
+    try {
+      if (existing) {
+        await this.request(endpoint, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "BOT_ENABLED",
+            value: String(Boolean(enabled)),
+          }),
+        });
+      } else {
+        await this.request(this.repositoryPath("/actions/variables"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "BOT_ENABLED",
+            value: String(Boolean(enabled)),
+          }),
+        });
+      }
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+      return { enabled: Boolean(enabled), control: "repository-variable" };
+    } catch (error) {
+      if (error.status !== 404) throw error;
 
-        body: JSON.stringify({
-          name: "BOT_ENABLED",
-          value: String(Boolean(enabled)),
-        }),
-      });
-    } else {
-      await this.request(this.repositoryPath("/actions/variables"), {
-        method: "POST",
+      // Fine-grained tokens with Actions access can control the workflow even
+      // when repository Variables permission has not been granted.
+      await this.request(
+        this.repositoryPath(
+          `/actions/workflows/${encodeURIComponent(this.workflow)}/${
+            enabled ? "enable" : "disable"
+          }`,
+        ),
+        { method: "PUT" },
+      );
 
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          name: "BOT_ENABLED",
-          value: String(Boolean(enabled)),
-        }),
-      });
+      return {
+        enabled: Boolean(enabled),
+        control: "workflow",
+        warning: "BOT_ENABLED variable was unavailable; workflow state was used.",
+      };
     }
-
-    return {
-      enabled: Boolean(enabled),
-    };
   }
 }
