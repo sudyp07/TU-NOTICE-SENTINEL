@@ -1313,7 +1313,7 @@
       "discoveredAt": "2026-08-12T10:17:06.030Z"
     }
   ],
-  "updatedAt": "2026-08-14T23:57:56.031Z",
+  "updatedAt": "2026-08-15T01:10:42.053Z",
   "status": {
     "configured": true,
     "online": true,
@@ -1323,8 +1323,8 @@
     "state": "saved",
     "gmail": "configured",
     "github": "connected",
-    "lastChecked": "2026-08-14T23:57:56.031Z",
-    "lastSuccessfulRun": "2026-08-14T23:57:56.031Z",
+    "lastChecked": "2026-08-15T01:10:42.053Z",
+    "lastSuccessfulRun": "2026-08-15T01:10:42.053Z",
     "lastFailedRun": null,
     "lastError": null,
     "noticesScanned": 121,
@@ -1334,1470 +1334,6 @@
     "version": "3.3.3"
   },
   "logs": [
-    {
-      "id": "log-2026-08-14T23:07:53.369Z-500",
-      "timestamp": "2026-08-14T23:07:53.369Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 11271: https://exam.tu.edu.np/notices/11271"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.474Z-500",
-      "timestamp": "2026-08-14T23:07:54.474Z",
-      "level": "INFO",
-      "message": "Processed 70/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Processed 80/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Processed 90/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Processed 100/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Processed 110/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Processed 120/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Completed fetching details for 121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Current unique notices collected: 121"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "Previously stored notices: 125"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "New notices detected: 0"
-    },
-    {
-      "id": "log-2026-08-14T23:07:54.475Z-500",
-      "timestamp": "2026-08-14T23:07:54.475Z",
-      "level": "INFO",
-      "message": "No new notices. No email sent."
-    },
-    {
-      "id": "log-2026-08-14T23:32:46.892Z-500",
-      "timestamp": "2026-08-14T23:32:46.892Z",
-      "level": "INFO",
-      "message": "Starting TU Notice Sentinel"
-    },
-    {
-      "id": "log-2026-08-14T23:32:46.892Z-500",
-      "timestamp": "2026-08-14T23:32:46.892Z",
-      "level": "INFO",
-      "message": "Source: https://exam.tu.edu.np/notices"
-    },
-    {
-      "id": "log-2026-08-14T23:32:46.892Z-500",
-      "timestamp": "2026-08-14T23:32:46.892Z",
-      "level": "INFO",
-      "message": "Dry run: false"
-    },
-    {
-      "id": "log-2026-08-14T23:32:46.893Z-500",
-      "timestamp": "2026-08-14T23:32:46.893Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 1, attempt 1/5: https://exam.tu.edu.np/notices"
-    },
-    {
-      "id": "log-2026-08-14T23:32:51.686Z-500",
-      "timestamp": "2026-08-14T23:32:51.686Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 1."
-    },
-    {
-      "id": "log-2026-08-14T23:32:51.686Z-500",
-      "timestamp": "2026-08-14T23:32:51.686Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 2, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0wNyAxNzo0NjoyMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:52.304Z-500",
-      "timestamp": "2026-08-14T23:32:52.304Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 2."
-    },
-    {
-      "id": "log-2026-08-14T23:32:52.304Z-500",
-      "timestamp": "2026-08-14T23:32:52.304Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 3, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0zMSAyMDowNjowOSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:52.916Z-500",
-      "timestamp": "2026-08-14T23:32:52.916Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 3."
-    },
-    {
-      "id": "log-2026-08-14T23:32:52.916Z-500",
-      "timestamp": "2026-08-14T23:32:52.916Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 4, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOSAxNzoyNTowOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:53.544Z-500",
-      "timestamp": "2026-08-14T23:32:53.544Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 4."
-    },
-    {
-      "id": "log-2026-08-14T23:32:53.545Z-500",
-      "timestamp": "2026-08-14T23:32:53.545Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 5, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOCAxMzowNTo0MiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:54.107Z-500",
-      "timestamp": "2026-08-14T23:32:54.107Z",
-      "level": "INFO",
-      "message": "Found 61 notice link(s) on page 5."
-    },
-    {
-      "id": "log-2026-08-14T23:32:54.108Z-500",
-      "timestamp": "2026-08-14T23:32:54.108Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 6, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0xNyAxMzo1NDo1NSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:54.665Z-500",
-      "timestamp": "2026-08-14T23:32:54.665Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 6."
-    },
-    {
-      "id": "log-2026-08-14T23:32:54.665Z-500",
-      "timestamp": "2026-08-14T23:32:54.665Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 7, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0wNyAxOTo1OTozNiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:55.231Z-500",
-      "timestamp": "2026-08-14T23:32:55.231Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 7."
-    },
-    {
-      "id": "log-2026-08-14T23:32:55.231Z-500",
-      "timestamp": "2026-08-14T23:32:55.231Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 8, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0zMCAxNjoyODozMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:55.809Z-500",
-      "timestamp": "2026-08-14T23:32:55.809Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 8."
-    },
-    {
-      "id": "log-2026-08-14T23:32:55.809Z-500",
-      "timestamp": "2026-08-14T23:32:55.809Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 9, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yNiAxMjowODo1NyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:56.365Z-500",
-      "timestamp": "2026-08-14T23:32:56.365Z",
-      "level": "INFO",
-      "message": "Found 62 notice link(s) on page 9."
-    },
-    {
-      "id": "log-2026-08-14T23:32:56.365Z-500",
-      "timestamp": "2026-08-14T23:32:56.365Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 10, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yMyAxNToxNToxNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:56.966Z-500",
-      "timestamp": "2026-08-14T23:32:56.966Z",
-      "level": "INFO",
-      "message": "Found 65 notice link(s) on page 10."
-    },
-    {
-      "id": "log-2026-08-14T23:32:56.966Z-500",
-      "timestamp": "2026-08-14T23:32:56.966Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 11, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xOSAxNjowOTozNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:57.525Z-500",
-      "timestamp": "2026-08-14T23:32:57.525Z",
-      "level": "INFO",
-      "message": "Found 62 notice link(s) on page 11."
-    },
-    {
-      "id": "log-2026-08-14T23:32:57.525Z-500",
-      "timestamp": "2026-08-14T23:32:57.525Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 12, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xMCAxNzo1NTo1OSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:58.087Z-500",
-      "timestamp": "2026-08-14T23:32:58.087Z",
-      "level": "INFO",
-      "message": "Found 65 notice link(s) on page 12."
-    },
-    {
-      "id": "log-2026-08-14T23:32:58.087Z-500",
-      "timestamp": "2026-08-14T23:32:58.087Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 13, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOSAxMzo1NToyMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:58.656Z-500",
-      "timestamp": "2026-08-14T23:32:58.656Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 13."
-    },
-    {
-      "id": "log-2026-08-14T23:32:58.656Z-500",
-      "timestamp": "2026-08-14T23:32:58.656Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 14, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOCAxNzo1MDoxNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:59.237Z-500",
-      "timestamp": "2026-08-14T23:32:59.237Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 14."
-    },
-    {
-      "id": "log-2026-08-14T23:32:59.238Z-500",
-      "timestamp": "2026-08-14T23:32:59.238Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 15, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNyAwOToyMDo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:32:59.810Z-500",
-      "timestamp": "2026-08-14T23:32:59.810Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 15."
-    },
-    {
-      "id": "log-2026-08-14T23:32:59.810Z-500",
-      "timestamp": "2026-08-14T23:32:59.810Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 16, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNSAxMjowNzo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:33:00.392Z-500",
-      "timestamp": "2026-08-14T23:33:00.392Z",
-      "level": "INFO",
-      "message": "Found 64 notice link(s) on page 16."
-    },
-    {
-      "id": "log-2026-08-14T23:33:00.392Z-500",
-      "timestamp": "2026-08-14T23:33:00.392Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 17, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xNSAxMzoyMzowNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:33:00.950Z-500",
-      "timestamp": "2026-08-14T23:33:00.950Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 17."
-    },
-    {
-      "id": "log-2026-08-14T23:33:00.950Z-500",
-      "timestamp": "2026-08-14T23:33:00.950Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 18, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xMCAxMDoxOTowMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:33:01.516Z-500",
-      "timestamp": "2026-08-14T23:33:01.516Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 18."
-    },
-    {
-      "id": "log-2026-08-14T23:33:01.516Z-500",
-      "timestamp": "2026-08-14T23:33:01.516Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 19, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wOSAwOToxNDozOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:33:02.095Z-500",
-      "timestamp": "2026-08-14T23:33:02.095Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 19."
-    },
-    {
-      "id": "log-2026-08-14T23:33:02.095Z-500",
-      "timestamp": "2026-08-14T23:33:02.095Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 20, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wNiAxNjo1MTo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:33:02.653Z-500",
-      "timestamp": "2026-08-14T23:33:02.653Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 20."
-    },
-    {
-      "id": "log-2026-08-14T23:33:02.654Z-500",
-      "timestamp": "2026-08-14T23:33:02.654Z",
-      "level": "INFO",
-      "message": "Deduplicated to 121 unique notices"
-    },
-    {
-      "id": "log-2026-08-14T23:33:02.654Z-500",
-      "timestamp": "2026-08-14T23:33:02.654Z",
-      "level": "INFO",
-      "message": "Fetching details for 121 notices..."
-    },
-    {
-      "id": "log-2026-08-14T23:33:02.654Z-500",
-      "timestamp": "2026-08-14T23:33:02.654Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14437: https://exam.tu.edu.np/notices/14437"
-    },
-    {
-      "id": "log-2026-08-14T23:33:03.690Z-500",
-      "timestamp": "2026-08-14T23:33:03.690Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14410: https://exam.tu.edu.np/notices/14410"
-    },
-    {
-      "id": "log-2026-08-14T23:33:04.724Z-500",
-      "timestamp": "2026-08-14T23:33:04.724Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14409: https://exam.tu.edu.np/notices/14409"
-    },
-    {
-      "id": "log-2026-08-14T23:33:05.737Z-500",
-      "timestamp": "2026-08-14T23:33:05.737Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14313: https://exam.tu.edu.np/notices/14313"
-    },
-    {
-      "id": "log-2026-08-14T23:33:06.815Z-500",
-      "timestamp": "2026-08-14T23:33:06.815Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14286: https://exam.tu.edu.np/notices/14286"
-    },
-    {
-      "id": "log-2026-08-14T23:33:07.848Z-500",
-      "timestamp": "2026-08-14T23:33:07.848Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14284: https://exam.tu.edu.np/notices/14284"
-    },
-    {
-      "id": "log-2026-08-14T23:33:08.871Z-500",
-      "timestamp": "2026-08-14T23:33:08.871Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14241: https://exam.tu.edu.np/notices/14241"
-    },
-    {
-      "id": "log-2026-08-14T23:33:09.899Z-500",
-      "timestamp": "2026-08-14T23:33:09.899Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14240: https://exam.tu.edu.np/notices/14240"
-    },
-    {
-      "id": "log-2026-08-14T23:33:10.898Z-500",
-      "timestamp": "2026-08-14T23:33:10.898Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14232: https://exam.tu.edu.np/notices/14232"
-    },
-    {
-      "id": "log-2026-08-14T23:33:11.949Z-500",
-      "timestamp": "2026-08-14T23:33:11.949Z",
-      "level": "INFO",
-      "message": "Processed 10/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:33:11.949Z-500",
-      "timestamp": "2026-08-14T23:33:11.949Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14180: https://exam.tu.edu.np/notices/14180"
-    },
-    {
-      "id": "log-2026-08-14T23:33:12.978Z-500",
-      "timestamp": "2026-08-14T23:33:12.978Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14161: https://exam.tu.edu.np/notices/14161"
-    },
-    {
-      "id": "log-2026-08-14T23:33:14.010Z-500",
-      "timestamp": "2026-08-14T23:33:14.010Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14155: https://exam.tu.edu.np/notices/14155"
-    },
-    {
-      "id": "log-2026-08-14T23:33:15.055Z-500",
-      "timestamp": "2026-08-14T23:33:15.055Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14148: https://exam.tu.edu.np/notices/14148"
-    },
-    {
-      "id": "log-2026-08-14T23:33:16.099Z-500",
-      "timestamp": "2026-08-14T23:33:16.099Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14103: https://exam.tu.edu.np/notices/14103"
-    },
-    {
-      "id": "log-2026-08-14T23:33:17.445Z-500",
-      "timestamp": "2026-08-14T23:33:17.445Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14102: https://exam.tu.edu.np/notices/14102"
-    },
-    {
-      "id": "log-2026-08-14T23:33:18.474Z-500",
-      "timestamp": "2026-08-14T23:33:18.474Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14101: https://exam.tu.edu.np/notices/14101"
-    },
-    {
-      "id": "log-2026-08-14T23:33:19.500Z-500",
-      "timestamp": "2026-08-14T23:33:19.500Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14099: https://exam.tu.edu.np/notices/14099"
-    },
-    {
-      "id": "log-2026-08-14T23:33:20.533Z-500",
-      "timestamp": "2026-08-14T23:33:20.533Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14098: https://exam.tu.edu.np/notices/14098"
-    },
-    {
-      "id": "log-2026-08-14T23:33:21.540Z-500",
-      "timestamp": "2026-08-14T23:33:21.540Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14080: https://exam.tu.edu.np/notices/14080"
-    },
-    {
-      "id": "log-2026-08-14T23:33:22.563Z-500",
-      "timestamp": "2026-08-14T23:33:22.563Z",
-      "level": "INFO",
-      "message": "Processed 20/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:33:22.563Z-500",
-      "timestamp": "2026-08-14T23:33:22.563Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14079: https://exam.tu.edu.np/notices/14079"
-    },
-    {
-      "id": "log-2026-08-14T23:33:23.602Z-500",
-      "timestamp": "2026-08-14T23:33:23.602Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14078: https://exam.tu.edu.np/notices/14078"
-    },
-    {
-      "id": "log-2026-08-14T23:33:24.608Z-500",
-      "timestamp": "2026-08-14T23:33:24.608Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14077: https://exam.tu.edu.np/notices/14077"
-    },
-    {
-      "id": "log-2026-08-14T23:33:25.617Z-500",
-      "timestamp": "2026-08-14T23:33:25.617Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14065: https://exam.tu.edu.np/notices/14065"
-    },
-    {
-      "id": "log-2026-08-14T23:33:26.645Z-500",
-      "timestamp": "2026-08-14T23:33:26.645Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14049: https://exam.tu.edu.np/notices/14049"
-    },
-    {
-      "id": "log-2026-08-14T23:33:27.685Z-500",
-      "timestamp": "2026-08-14T23:33:27.685Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14048: https://exam.tu.edu.np/notices/14048"
-    },
-    {
-      "id": "log-2026-08-14T23:33:28.718Z-500",
-      "timestamp": "2026-08-14T23:33:28.718Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13981: https://exam.tu.edu.np/notices/13981"
-    },
-    {
-      "id": "log-2026-08-14T23:33:29.728Z-500",
-      "timestamp": "2026-08-14T23:33:29.728Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13980: https://exam.tu.edu.np/notices/13980"
-    },
-    {
-      "id": "log-2026-08-14T23:33:30.758Z-500",
-      "timestamp": "2026-08-14T23:33:30.758Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13961: https://exam.tu.edu.np/notices/13961"
-    },
-    {
-      "id": "log-2026-08-14T23:33:31.772Z-500",
-      "timestamp": "2026-08-14T23:33:31.772Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13918: https://exam.tu.edu.np/notices/13918"
-    },
-    {
-      "id": "log-2026-08-14T23:33:32.775Z-500",
-      "timestamp": "2026-08-14T23:33:32.775Z",
-      "level": "INFO",
-      "message": "Processed 30/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:33:32.775Z-500",
-      "timestamp": "2026-08-14T23:33:32.775Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13848: https://exam.tu.edu.np/notices/13848"
-    },
-    {
-      "id": "log-2026-08-14T23:33:33.811Z-500",
-      "timestamp": "2026-08-14T23:33:33.811Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13843: https://exam.tu.edu.np/notices/13843"
-    },
-    {
-      "id": "log-2026-08-14T23:33:34.828Z-500",
-      "timestamp": "2026-08-14T23:33:34.828Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13813: https://exam.tu.edu.np/notices/13813"
-    },
-    {
-      "id": "log-2026-08-14T23:33:35.837Z-500",
-      "timestamp": "2026-08-14T23:33:35.837Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13812: https://exam.tu.edu.np/notices/13812"
-    },
-    {
-      "id": "log-2026-08-14T23:33:36.850Z-500",
-      "timestamp": "2026-08-14T23:33:36.850Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13753: https://exam.tu.edu.np/notices/13753"
-    },
-    {
-      "id": "log-2026-08-14T23:33:37.856Z-500",
-      "timestamp": "2026-08-14T23:33:37.856Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13700: https://exam.tu.edu.np/notices/13700"
-    },
-    {
-      "id": "log-2026-08-14T23:33:38.863Z-500",
-      "timestamp": "2026-08-14T23:33:38.863Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13681: https://exam.tu.edu.np/notices/13681"
-    },
-    {
-      "id": "log-2026-08-14T23:33:39.883Z-500",
-      "timestamp": "2026-08-14T23:33:39.883Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13680: https://exam.tu.edu.np/notices/13680"
-    },
-    {
-      "id": "log-2026-08-14T23:33:40.911Z-500",
-      "timestamp": "2026-08-14T23:33:40.911Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13679: https://exam.tu.edu.np/notices/13679"
-    },
-    {
-      "id": "log-2026-08-14T23:33:41.951Z-500",
-      "timestamp": "2026-08-14T23:33:41.951Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13677: https://exam.tu.edu.np/notices/13677"
-    },
-    {
-      "id": "log-2026-08-14T23:33:42.949Z-500",
-      "timestamp": "2026-08-14T23:33:42.949Z",
-      "level": "INFO",
-      "message": "Processed 40/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:33:42.949Z-500",
-      "timestamp": "2026-08-14T23:33:42.949Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13642: https://exam.tu.edu.np/notices/13642"
-    },
-    {
-      "id": "log-2026-08-14T23:33:43.984Z-500",
-      "timestamp": "2026-08-14T23:33:43.984Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13608: https://exam.tu.edu.np/notices/13608"
-    },
-    {
-      "id": "log-2026-08-14T23:33:45.031Z-500",
-      "timestamp": "2026-08-14T23:33:45.031Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13607: https://exam.tu.edu.np/notices/13607"
-    },
-    {
-      "id": "log-2026-08-14T23:33:46.058Z-500",
-      "timestamp": "2026-08-14T23:33:46.058Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13606: https://exam.tu.edu.np/notices/13606"
-    },
-    {
-      "id": "log-2026-08-14T23:33:47.091Z-500",
-      "timestamp": "2026-08-14T23:33:47.091Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13605: https://exam.tu.edu.np/notices/13605"
-    },
-    {
-      "id": "log-2026-08-14T23:33:48.192Z-500",
-      "timestamp": "2026-08-14T23:33:48.192Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13586: https://exam.tu.edu.np/notices/13586"
-    },
-    {
-      "id": "log-2026-08-14T23:33:49.217Z-500",
-      "timestamp": "2026-08-14T23:33:49.217Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13545: https://exam.tu.edu.np/notices/13545"
-    },
-    {
-      "id": "log-2026-08-14T23:33:50.285Z-500",
-      "timestamp": "2026-08-14T23:33:50.285Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13541: https://exam.tu.edu.np/notices/13541"
-    },
-    {
-      "id": "log-2026-08-14T23:33:51.305Z-500",
-      "timestamp": "2026-08-14T23:33:51.305Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13534: https://exam.tu.edu.np/notices/13534"
-    },
-    {
-      "id": "log-2026-08-14T23:33:52.360Z-500",
-      "timestamp": "2026-08-14T23:33:52.360Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13533: https://exam.tu.edu.np/notices/13533"
-    },
-    {
-      "id": "log-2026-08-14T23:33:53.371Z-500",
-      "timestamp": "2026-08-14T23:33:53.371Z",
-      "level": "INFO",
-      "message": "Processed 50/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:33:53.371Z-500",
-      "timestamp": "2026-08-14T23:33:53.371Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13532: https://exam.tu.edu.np/notices/13532"
-    },
-    {
-      "id": "log-2026-08-14T23:33:54.404Z-500",
-      "timestamp": "2026-08-14T23:33:54.404Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13531: https://exam.tu.edu.np/notices/13531"
-    },
-    {
-      "id": "log-2026-08-14T23:33:55.431Z-500",
-      "timestamp": "2026-08-14T23:33:55.431Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13451: https://exam.tu.edu.np/notices/13451"
-    },
-    {
-      "id": "log-2026-08-14T23:33:56.450Z-500",
-      "timestamp": "2026-08-14T23:33:56.450Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13348: https://exam.tu.edu.np/notices/13348"
-    },
-    {
-      "id": "log-2026-08-14T23:33:57.480Z-500",
-      "timestamp": "2026-08-14T23:33:57.480Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13301: https://exam.tu.edu.np/notices/13301"
-    },
-    {
-      "id": "log-2026-08-14T23:33:58.500Z-500",
-      "timestamp": "2026-08-14T23:33:58.500Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13252: https://exam.tu.edu.np/notices/13252"
-    },
-    {
-      "id": "log-2026-08-14T23:33:59.507Z-500",
-      "timestamp": "2026-08-14T23:33:59.507Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13251: https://exam.tu.edu.np/notices/13251"
-    },
-    {
-      "id": "log-2026-08-14T23:34:00.531Z-500",
-      "timestamp": "2026-08-14T23:34:00.531Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13220: https://exam.tu.edu.np/notices/13220"
-    },
-    {
-      "id": "log-2026-08-14T23:34:01.548Z-500",
-      "timestamp": "2026-08-14T23:34:01.548Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 12983: https://exam.tu.edu.np/notices/12983"
-    },
-    {
-      "id": "log-2026-08-14T23:34:02.574Z-500",
-      "timestamp": "2026-08-14T23:34:02.574Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 12937: https://exam.tu.edu.np/notices/12937"
-    },
-    {
-      "id": "log-2026-08-14T23:34:03.593Z-500",
-      "timestamp": "2026-08-14T23:34:03.593Z",
-      "level": "INFO",
-      "message": "Processed 60/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:03.593Z-500",
-      "timestamp": "2026-08-14T23:34:03.593Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 11271: https://exam.tu.edu.np/notices/11271"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.619Z-500",
-      "timestamp": "2026-08-14T23:34:04.619Z",
-      "level": "INFO",
-      "message": "Processed 70/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Processed 80/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Processed 90/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Processed 100/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Processed 110/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Processed 120/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Completed fetching details for 121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Current unique notices collected: 121"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "Previously stored notices: 125"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "New notices detected: 0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:04.620Z-500",
-      "timestamp": "2026-08-14T23:34:04.620Z",
-      "level": "INFO",
-      "message": "No new notices. No email sent."
-    },
-    {
-      "id": "log-2026-08-14T23:34:05.354Z-500",
-      "timestamp": "2026-08-14T23:34:05.354Z",
-      "level": "INFO",
-      "message": "Starting TU Notice Sentinel"
-    },
-    {
-      "id": "log-2026-08-14T23:34:05.355Z-500",
-      "timestamp": "2026-08-14T23:34:05.355Z",
-      "level": "INFO",
-      "message": "Source: https://exam.tu.edu.np/notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:05.355Z-500",
-      "timestamp": "2026-08-14T23:34:05.355Z",
-      "level": "INFO",
-      "message": "Dry run: false"
-    },
-    {
-      "id": "log-2026-08-14T23:34:05.356Z-500",
-      "timestamp": "2026-08-14T23:34:05.356Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 1, attempt 1/5: https://exam.tu.edu.np/notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:10.329Z-500",
-      "timestamp": "2026-08-14T23:34:10.329Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 1."
-    },
-    {
-      "id": "log-2026-08-14T23:34:10.329Z-500",
-      "timestamp": "2026-08-14T23:34:10.329Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 2, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0wNyAxNzo0NjoyMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:10.928Z-500",
-      "timestamp": "2026-08-14T23:34:10.928Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 2."
-    },
-    {
-      "id": "log-2026-08-14T23:34:10.928Z-500",
-      "timestamp": "2026-08-14T23:34:10.928Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 3, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0zMSAyMDowNjowOSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:11.509Z-500",
-      "timestamp": "2026-08-14T23:34:11.509Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 3."
-    },
-    {
-      "id": "log-2026-08-14T23:34:11.510Z-500",
-      "timestamp": "2026-08-14T23:34:11.510Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 4, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOSAxNzoyNTowOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:12.078Z-500",
-      "timestamp": "2026-08-14T23:34:12.078Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 4."
-    },
-    {
-      "id": "log-2026-08-14T23:34:12.078Z-500",
-      "timestamp": "2026-08-14T23:34:12.078Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 5, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOCAxMzowNTo0MiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:12.650Z-500",
-      "timestamp": "2026-08-14T23:34:12.650Z",
-      "level": "INFO",
-      "message": "Found 61 notice link(s) on page 5."
-    },
-    {
-      "id": "log-2026-08-14T23:34:12.650Z-500",
-      "timestamp": "2026-08-14T23:34:12.650Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 6, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0xNyAxMzo1NDo1NSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:13.223Z-500",
-      "timestamp": "2026-08-14T23:34:13.223Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 6."
-    },
-    {
-      "id": "log-2026-08-14T23:34:13.223Z-500",
-      "timestamp": "2026-08-14T23:34:13.223Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 7, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0wNyAxOTo1OTozNiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:13.774Z-500",
-      "timestamp": "2026-08-14T23:34:13.774Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 7."
-    },
-    {
-      "id": "log-2026-08-14T23:34:13.774Z-500",
-      "timestamp": "2026-08-14T23:34:13.774Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 8, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0zMCAxNjoyODozMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:14.351Z-500",
-      "timestamp": "2026-08-14T23:34:14.351Z",
-      "level": "INFO",
-      "message": "Found 60 notice link(s) on page 8."
-    },
-    {
-      "id": "log-2026-08-14T23:34:14.351Z-500",
-      "timestamp": "2026-08-14T23:34:14.351Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 9, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yNiAxMjowODo1NyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:14.911Z-500",
-      "timestamp": "2026-08-14T23:34:14.911Z",
-      "level": "INFO",
-      "message": "Found 62 notice link(s) on page 9."
-    },
-    {
-      "id": "log-2026-08-14T23:34:14.912Z-500",
-      "timestamp": "2026-08-14T23:34:14.912Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 10, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yMyAxNToxNToxNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:15.488Z-500",
-      "timestamp": "2026-08-14T23:34:15.488Z",
-      "level": "INFO",
-      "message": "Found 65 notice link(s) on page 10."
-    },
-    {
-      "id": "log-2026-08-14T23:34:15.488Z-500",
-      "timestamp": "2026-08-14T23:34:15.488Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 11, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xOSAxNjowOTozNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:16.053Z-500",
-      "timestamp": "2026-08-14T23:34:16.053Z",
-      "level": "INFO",
-      "message": "Found 62 notice link(s) on page 11."
-    },
-    {
-      "id": "log-2026-08-14T23:34:16.053Z-500",
-      "timestamp": "2026-08-14T23:34:16.053Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 12, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xMCAxNzo1NTo1OSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:16.613Z-500",
-      "timestamp": "2026-08-14T23:34:16.613Z",
-      "level": "INFO",
-      "message": "Found 65 notice link(s) on page 12."
-    },
-    {
-      "id": "log-2026-08-14T23:34:16.613Z-500",
-      "timestamp": "2026-08-14T23:34:16.613Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 13, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOSAxMzo1NToyMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:17.167Z-500",
-      "timestamp": "2026-08-14T23:34:17.167Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 13."
-    },
-    {
-      "id": "log-2026-08-14T23:34:17.167Z-500",
-      "timestamp": "2026-08-14T23:34:17.167Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 14, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOCAxNzo1MDoxNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:17.721Z-500",
-      "timestamp": "2026-08-14T23:34:17.721Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 14."
-    },
-    {
-      "id": "log-2026-08-14T23:34:17.722Z-500",
-      "timestamp": "2026-08-14T23:34:17.722Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 15, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNyAwOToyMDo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:18.272Z-500",
-      "timestamp": "2026-08-14T23:34:18.272Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 15."
-    },
-    {
-      "id": "log-2026-08-14T23:34:18.272Z-500",
-      "timestamp": "2026-08-14T23:34:18.272Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 16, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNSAxMjowNzo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:18.830Z-500",
-      "timestamp": "2026-08-14T23:34:18.830Z",
-      "level": "INFO",
-      "message": "Found 64 notice link(s) on page 16."
-    },
-    {
-      "id": "log-2026-08-14T23:34:18.830Z-500",
-      "timestamp": "2026-08-14T23:34:18.830Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 17, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xNSAxMzoyMzowNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:19.377Z-500",
-      "timestamp": "2026-08-14T23:34:19.377Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 17."
-    },
-    {
-      "id": "log-2026-08-14T23:34:19.378Z-500",
-      "timestamp": "2026-08-14T23:34:19.378Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 18, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xMCAxMDoxOTowMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:19.929Z-500",
-      "timestamp": "2026-08-14T23:34:19.929Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 18."
-    },
-    {
-      "id": "log-2026-08-14T23:34:19.930Z-500",
-      "timestamp": "2026-08-14T23:34:19.930Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 19, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wOSAwOToxNDozOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:20.486Z-500",
-      "timestamp": "2026-08-14T23:34:20.486Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 19."
-    },
-    {
-      "id": "log-2026-08-14T23:34:20.486Z-500",
-      "timestamp": "2026-08-14T23:34:20.486Z",
-      "level": "INFO",
-      "message": "Fetching TU notices page 20, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wNiAxNjo1MTo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
-    },
-    {
-      "id": "log-2026-08-14T23:34:21.045Z-500",
-      "timestamp": "2026-08-14T23:34:21.045Z",
-      "level": "INFO",
-      "message": "Found 66 notice link(s) on page 20."
-    },
-    {
-      "id": "log-2026-08-14T23:34:21.045Z-500",
-      "timestamp": "2026-08-14T23:34:21.045Z",
-      "level": "INFO",
-      "message": "Deduplicated to 121 unique notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:21.045Z-500",
-      "timestamp": "2026-08-14T23:34:21.045Z",
-      "level": "INFO",
-      "message": "Fetching details for 121 notices..."
-    },
-    {
-      "id": "log-2026-08-14T23:34:21.045Z-500",
-      "timestamp": "2026-08-14T23:34:21.045Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14437: https://exam.tu.edu.np/notices/14437"
-    },
-    {
-      "id": "log-2026-08-14T23:34:22.393Z-500",
-      "timestamp": "2026-08-14T23:34:22.393Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14410: https://exam.tu.edu.np/notices/14410"
-    },
-    {
-      "id": "log-2026-08-14T23:34:23.408Z-500",
-      "timestamp": "2026-08-14T23:34:23.408Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14409: https://exam.tu.edu.np/notices/14409"
-    },
-    {
-      "id": "log-2026-08-14T23:34:24.421Z-500",
-      "timestamp": "2026-08-14T23:34:24.421Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14313: https://exam.tu.edu.np/notices/14313"
-    },
-    {
-      "id": "log-2026-08-14T23:34:25.453Z-500",
-      "timestamp": "2026-08-14T23:34:25.453Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14286: https://exam.tu.edu.np/notices/14286"
-    },
-    {
-      "id": "log-2026-08-14T23:34:26.470Z-500",
-      "timestamp": "2026-08-14T23:34:26.470Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14284: https://exam.tu.edu.np/notices/14284"
-    },
-    {
-      "id": "log-2026-08-14T23:34:27.483Z-500",
-      "timestamp": "2026-08-14T23:34:27.483Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14241: https://exam.tu.edu.np/notices/14241"
-    },
-    {
-      "id": "log-2026-08-14T23:34:28.506Z-500",
-      "timestamp": "2026-08-14T23:34:28.506Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14240: https://exam.tu.edu.np/notices/14240"
-    },
-    {
-      "id": "log-2026-08-14T23:34:29.518Z-500",
-      "timestamp": "2026-08-14T23:34:29.518Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14232: https://exam.tu.edu.np/notices/14232"
-    },
-    {
-      "id": "log-2026-08-14T23:34:30.548Z-500",
-      "timestamp": "2026-08-14T23:34:30.548Z",
-      "level": "INFO",
-      "message": "Processed 10/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:30.548Z-500",
-      "timestamp": "2026-08-14T23:34:30.548Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14180: https://exam.tu.edu.np/notices/14180"
-    },
-    {
-      "id": "log-2026-08-14T23:34:31.617Z-500",
-      "timestamp": "2026-08-14T23:34:31.617Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14161: https://exam.tu.edu.np/notices/14161"
-    },
-    {
-      "id": "log-2026-08-14T23:34:32.629Z-500",
-      "timestamp": "2026-08-14T23:34:32.629Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14155: https://exam.tu.edu.np/notices/14155"
-    },
-    {
-      "id": "log-2026-08-14T23:34:33.643Z-500",
-      "timestamp": "2026-08-14T23:34:33.643Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14148: https://exam.tu.edu.np/notices/14148"
-    },
-    {
-      "id": "log-2026-08-14T23:34:34.657Z-500",
-      "timestamp": "2026-08-14T23:34:34.657Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14103: https://exam.tu.edu.np/notices/14103"
-    },
-    {
-      "id": "log-2026-08-14T23:34:35.668Z-500",
-      "timestamp": "2026-08-14T23:34:35.668Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14102: https://exam.tu.edu.np/notices/14102"
-    },
-    {
-      "id": "log-2026-08-14T23:34:36.696Z-500",
-      "timestamp": "2026-08-14T23:34:36.696Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14101: https://exam.tu.edu.np/notices/14101"
-    },
-    {
-      "id": "log-2026-08-14T23:34:37.720Z-500",
-      "timestamp": "2026-08-14T23:34:37.720Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14099: https://exam.tu.edu.np/notices/14099"
-    },
-    {
-      "id": "log-2026-08-14T23:34:38.740Z-500",
-      "timestamp": "2026-08-14T23:34:38.740Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14098: https://exam.tu.edu.np/notices/14098"
-    },
-    {
-      "id": "log-2026-08-14T23:34:39.795Z-500",
-      "timestamp": "2026-08-14T23:34:39.795Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14080: https://exam.tu.edu.np/notices/14080"
-    },
-    {
-      "id": "log-2026-08-14T23:34:40.812Z-500",
-      "timestamp": "2026-08-14T23:34:40.812Z",
-      "level": "INFO",
-      "message": "Processed 20/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:40.812Z-500",
-      "timestamp": "2026-08-14T23:34:40.812Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14079: https://exam.tu.edu.np/notices/14079"
-    },
-    {
-      "id": "log-2026-08-14T23:34:41.817Z-500",
-      "timestamp": "2026-08-14T23:34:41.817Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14078: https://exam.tu.edu.np/notices/14078"
-    },
-    {
-      "id": "log-2026-08-14T23:34:42.838Z-500",
-      "timestamp": "2026-08-14T23:34:42.838Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14077: https://exam.tu.edu.np/notices/14077"
-    },
-    {
-      "id": "log-2026-08-14T23:34:43.858Z-500",
-      "timestamp": "2026-08-14T23:34:43.858Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14065: https://exam.tu.edu.np/notices/14065"
-    },
-    {
-      "id": "log-2026-08-14T23:34:44.872Z-500",
-      "timestamp": "2026-08-14T23:34:44.872Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14049: https://exam.tu.edu.np/notices/14049"
-    },
-    {
-      "id": "log-2026-08-14T23:34:45.880Z-500",
-      "timestamp": "2026-08-14T23:34:45.880Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 14048: https://exam.tu.edu.np/notices/14048"
-    },
-    {
-      "id": "log-2026-08-14T23:34:46.871Z-500",
-      "timestamp": "2026-08-14T23:34:46.871Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13981: https://exam.tu.edu.np/notices/13981"
-    },
-    {
-      "id": "log-2026-08-14T23:34:47.920Z-500",
-      "timestamp": "2026-08-14T23:34:47.920Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13980: https://exam.tu.edu.np/notices/13980"
-    },
-    {
-      "id": "log-2026-08-14T23:34:48.994Z-500",
-      "timestamp": "2026-08-14T23:34:48.994Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13961: https://exam.tu.edu.np/notices/13961"
-    },
-    {
-      "id": "log-2026-08-14T23:34:50.322Z-500",
-      "timestamp": "2026-08-14T23:34:50.322Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13918: https://exam.tu.edu.np/notices/13918"
-    },
-    {
-      "id": "log-2026-08-14T23:34:51.335Z-500",
-      "timestamp": "2026-08-14T23:34:51.335Z",
-      "level": "INFO",
-      "message": "Processed 30/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:34:51.336Z-500",
-      "timestamp": "2026-08-14T23:34:51.336Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13848: https://exam.tu.edu.np/notices/13848"
-    },
-    {
-      "id": "log-2026-08-14T23:34:52.369Z-500",
-      "timestamp": "2026-08-14T23:34:52.369Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13843: https://exam.tu.edu.np/notices/13843"
-    },
-    {
-      "id": "log-2026-08-14T23:34:53.377Z-500",
-      "timestamp": "2026-08-14T23:34:53.377Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13813: https://exam.tu.edu.np/notices/13813"
-    },
-    {
-      "id": "log-2026-08-14T23:34:54.337Z-500",
-      "timestamp": "2026-08-14T23:34:54.337Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13812: https://exam.tu.edu.np/notices/13812"
-    },
-    {
-      "id": "log-2026-08-14T23:34:55.353Z-500",
-      "timestamp": "2026-08-14T23:34:55.353Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13753: https://exam.tu.edu.np/notices/13753"
-    },
-    {
-      "id": "log-2026-08-14T23:34:56.372Z-500",
-      "timestamp": "2026-08-14T23:34:56.372Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13700: https://exam.tu.edu.np/notices/13700"
-    },
-    {
-      "id": "log-2026-08-14T23:34:57.388Z-500",
-      "timestamp": "2026-08-14T23:34:57.388Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13681: https://exam.tu.edu.np/notices/13681"
-    },
-    {
-      "id": "log-2026-08-14T23:34:58.439Z-500",
-      "timestamp": "2026-08-14T23:34:58.439Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13680: https://exam.tu.edu.np/notices/13680"
-    },
-    {
-      "id": "log-2026-08-14T23:34:59.480Z-500",
-      "timestamp": "2026-08-14T23:34:59.480Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13679: https://exam.tu.edu.np/notices/13679"
-    },
-    {
-      "id": "log-2026-08-14T23:35:00.493Z-500",
-      "timestamp": "2026-08-14T23:35:00.493Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13677: https://exam.tu.edu.np/notices/13677"
-    },
-    {
-      "id": "log-2026-08-14T23:35:01.508Z-500",
-      "timestamp": "2026-08-14T23:35:01.508Z",
-      "level": "INFO",
-      "message": "Processed 40/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:35:01.508Z-500",
-      "timestamp": "2026-08-14T23:35:01.508Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13642: https://exam.tu.edu.np/notices/13642"
-    },
-    {
-      "id": "log-2026-08-14T23:35:02.552Z-500",
-      "timestamp": "2026-08-14T23:35:02.552Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13608: https://exam.tu.edu.np/notices/13608"
-    },
-    {
-      "id": "log-2026-08-14T23:35:03.573Z-500",
-      "timestamp": "2026-08-14T23:35:03.573Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13607: https://exam.tu.edu.np/notices/13607"
-    },
-    {
-      "id": "log-2026-08-14T23:35:04.623Z-500",
-      "timestamp": "2026-08-14T23:35:04.623Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13606: https://exam.tu.edu.np/notices/13606"
-    },
-    {
-      "id": "log-2026-08-14T23:35:05.663Z-500",
-      "timestamp": "2026-08-14T23:35:05.663Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13605: https://exam.tu.edu.np/notices/13605"
-    },
-    {
-      "id": "log-2026-08-14T23:35:06.678Z-500",
-      "timestamp": "2026-08-14T23:35:06.678Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13586: https://exam.tu.edu.np/notices/13586"
-    },
-    {
-      "id": "log-2026-08-14T23:35:07.689Z-500",
-      "timestamp": "2026-08-14T23:35:07.689Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13545: https://exam.tu.edu.np/notices/13545"
-    },
-    {
-      "id": "log-2026-08-14T23:35:08.714Z-500",
-      "timestamp": "2026-08-14T23:35:08.714Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13541: https://exam.tu.edu.np/notices/13541"
-    },
-    {
-      "id": "log-2026-08-14T23:35:09.774Z-500",
-      "timestamp": "2026-08-14T23:35:09.774Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13534: https://exam.tu.edu.np/notices/13534"
-    },
-    {
-      "id": "log-2026-08-14T23:35:10.788Z-500",
-      "timestamp": "2026-08-14T23:35:10.788Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13533: https://exam.tu.edu.np/notices/13533"
-    },
-    {
-      "id": "log-2026-08-14T23:35:11.792Z-500",
-      "timestamp": "2026-08-14T23:35:11.792Z",
-      "level": "INFO",
-      "message": "Processed 50/121 notices"
-    },
-    {
-      "id": "log-2026-08-14T23:35:11.793Z-500",
-      "timestamp": "2026-08-14T23:35:11.793Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13532: https://exam.tu.edu.np/notices/13532"
-    },
-    {
-      "id": "log-2026-08-14T23:35:12.793Z-500",
-      "timestamp": "2026-08-14T23:35:12.793Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13531: https://exam.tu.edu.np/notices/13531"
-    },
-    {
-      "id": "log-2026-08-14T23:35:13.836Z-500",
-      "timestamp": "2026-08-14T23:35:13.836Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13451: https://exam.tu.edu.np/notices/13451"
-    },
-    {
-      "id": "log-2026-08-14T23:35:14.854Z-500",
-      "timestamp": "2026-08-14T23:35:14.854Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13348: https://exam.tu.edu.np/notices/13348"
-    },
-    {
-      "id": "log-2026-08-14T23:35:15.893Z-500",
-      "timestamp": "2026-08-14T23:35:15.893Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13301: https://exam.tu.edu.np/notices/13301"
-    },
-    {
-      "id": "log-2026-08-14T23:35:16.910Z-500",
-      "timestamp": "2026-08-14T23:35:16.910Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13252: https://exam.tu.edu.np/notices/13252"
-    },
-    {
-      "id": "log-2026-08-14T23:35:17.927Z-500",
-      "timestamp": "2026-08-14T23:35:17.927Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13251: https://exam.tu.edu.np/notices/13251"
-    },
-    {
-      "id": "log-2026-08-14T23:35:18.953Z-500",
-      "timestamp": "2026-08-14T23:35:18.953Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 13220: https://exam.tu.edu.np/notices/13220"
-    },
-    {
-      "id": "log-2026-08-14T23:35:19.951Z-500",
-      "timestamp": "2026-08-14T23:35:19.951Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 12983: https://exam.tu.edu.np/notices/12983"
-    },
-    {
-      "id": "log-2026-08-14T23:35:20.946Z-500",
-      "timestamp": "2026-08-14T23:35:20.946Z",
-      "level": "INFO",
-      "message": "Fetching notice details for ID 12937: https://exam.tu.edu.np/notices/12937"
-    },
-    {
-      "id": "log-2026-08-14T23:35:21.966Z-500",
-      "timestamp": "2026-08-14T23:35:21.966Z",
-      "level": "INFO",
-      "message": "Processed 60/121 notices"
-    },
     {
       "id": "log-2026-08-14T23:35:21.966Z-500",
       "timestamp": "2026-08-14T23:35:21.966Z",
@@ -4331,6 +2867,1470 @@
     {
       "id": "log-2026-08-14T23:57:56.031Z-500",
       "timestamp": "2026-08-14T23:57:56.031Z",
+      "level": "INFO",
+      "message": "No new notices. No email sent."
+    },
+    {
+      "id": "log-2026-08-15T01:08:08.192Z-500",
+      "timestamp": "2026-08-15T01:08:08.192Z",
+      "level": "INFO",
+      "message": "Starting TU Notice Sentinel"
+    },
+    {
+      "id": "log-2026-08-15T01:08:08.192Z-500",
+      "timestamp": "2026-08-15T01:08:08.192Z",
+      "level": "INFO",
+      "message": "Source: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-15T01:08:08.192Z-500",
+      "timestamp": "2026-08-15T01:08:08.192Z",
+      "level": "INFO",
+      "message": "Dry run: false"
+    },
+    {
+      "id": "log-2026-08-15T01:08:08.193Z-500",
+      "timestamp": "2026-08-15T01:08:08.193Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 1, attempt 1/5: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-15T01:08:13.715Z-500",
+      "timestamp": "2026-08-15T01:08:13.715Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 1."
+    },
+    {
+      "id": "log-2026-08-15T01:08:13.716Z-500",
+      "timestamp": "2026-08-15T01:08:13.716Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 2, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0wNyAxNzo0NjoyMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:14.380Z-500",
+      "timestamp": "2026-08-15T01:08:14.380Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 2."
+    },
+    {
+      "id": "log-2026-08-15T01:08:14.380Z-500",
+      "timestamp": "2026-08-15T01:08:14.380Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 3, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0zMSAyMDowNjowOSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:14.963Z-500",
+      "timestamp": "2026-08-15T01:08:14.963Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 3."
+    },
+    {
+      "id": "log-2026-08-15T01:08:14.963Z-500",
+      "timestamp": "2026-08-15T01:08:14.963Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 4, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOSAxNzoyNTowOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:15.537Z-500",
+      "timestamp": "2026-08-15T01:08:15.537Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 4."
+    },
+    {
+      "id": "log-2026-08-15T01:08:15.538Z-500",
+      "timestamp": "2026-08-15T01:08:15.538Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 5, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOCAxMzowNTo0MiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:16.095Z-500",
+      "timestamp": "2026-08-15T01:08:16.095Z",
+      "level": "INFO",
+      "message": "Found 61 notice link(s) on page 5."
+    },
+    {
+      "id": "log-2026-08-15T01:08:16.095Z-500",
+      "timestamp": "2026-08-15T01:08:16.095Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 6, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0xNyAxMzo1NDo1NSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:16.667Z-500",
+      "timestamp": "2026-08-15T01:08:16.667Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 6."
+    },
+    {
+      "id": "log-2026-08-15T01:08:16.667Z-500",
+      "timestamp": "2026-08-15T01:08:16.667Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 7, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0wNyAxOTo1OTozNiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:17.220Z-500",
+      "timestamp": "2026-08-15T01:08:17.220Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 7."
+    },
+    {
+      "id": "log-2026-08-15T01:08:17.220Z-500",
+      "timestamp": "2026-08-15T01:08:17.220Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 8, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0zMCAxNjoyODozMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:17.792Z-500",
+      "timestamp": "2026-08-15T01:08:17.792Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 8."
+    },
+    {
+      "id": "log-2026-08-15T01:08:17.792Z-500",
+      "timestamp": "2026-08-15T01:08:17.792Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 9, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yNiAxMjowODo1NyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:18.381Z-500",
+      "timestamp": "2026-08-15T01:08:18.381Z",
+      "level": "INFO",
+      "message": "Found 62 notice link(s) on page 9."
+    },
+    {
+      "id": "log-2026-08-15T01:08:18.381Z-500",
+      "timestamp": "2026-08-15T01:08:18.381Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 10, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yMyAxNToxNToxNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:18.951Z-500",
+      "timestamp": "2026-08-15T01:08:18.951Z",
+      "level": "INFO",
+      "message": "Found 65 notice link(s) on page 10."
+    },
+    {
+      "id": "log-2026-08-15T01:08:18.951Z-500",
+      "timestamp": "2026-08-15T01:08:18.951Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 11, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xOSAxNjowOTozNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:19.516Z-500",
+      "timestamp": "2026-08-15T01:08:19.516Z",
+      "level": "INFO",
+      "message": "Found 62 notice link(s) on page 11."
+    },
+    {
+      "id": "log-2026-08-15T01:08:19.516Z-500",
+      "timestamp": "2026-08-15T01:08:19.516Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 12, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xMCAxNzo1NTo1OSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:20.103Z-500",
+      "timestamp": "2026-08-15T01:08:20.103Z",
+      "level": "INFO",
+      "message": "Found 65 notice link(s) on page 12."
+    },
+    {
+      "id": "log-2026-08-15T01:08:20.103Z-500",
+      "timestamp": "2026-08-15T01:08:20.103Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 13, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOSAxMzo1NToyMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:20.677Z-500",
+      "timestamp": "2026-08-15T01:08:20.677Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 13."
+    },
+    {
+      "id": "log-2026-08-15T01:08:20.677Z-500",
+      "timestamp": "2026-08-15T01:08:20.677Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 14, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOCAxNzo1MDoxNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:21.236Z-500",
+      "timestamp": "2026-08-15T01:08:21.236Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 14."
+    },
+    {
+      "id": "log-2026-08-15T01:08:21.236Z-500",
+      "timestamp": "2026-08-15T01:08:21.236Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 15, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNyAwOToyMDo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:22.079Z-500",
+      "timestamp": "2026-08-15T01:08:22.079Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 15."
+    },
+    {
+      "id": "log-2026-08-15T01:08:22.079Z-500",
+      "timestamp": "2026-08-15T01:08:22.079Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 16, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNSAxMjowNzo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:22.663Z-500",
+      "timestamp": "2026-08-15T01:08:22.663Z",
+      "level": "INFO",
+      "message": "Found 64 notice link(s) on page 16."
+    },
+    {
+      "id": "log-2026-08-15T01:08:22.663Z-500",
+      "timestamp": "2026-08-15T01:08:22.663Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 17, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xNSAxMzoyMzowNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:23.240Z-500",
+      "timestamp": "2026-08-15T01:08:23.240Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 17."
+    },
+    {
+      "id": "log-2026-08-15T01:08:23.240Z-500",
+      "timestamp": "2026-08-15T01:08:23.240Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 18, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xMCAxMDoxOTowMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:23.814Z-500",
+      "timestamp": "2026-08-15T01:08:23.814Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 18."
+    },
+    {
+      "id": "log-2026-08-15T01:08:23.814Z-500",
+      "timestamp": "2026-08-15T01:08:23.814Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 19, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wOSAwOToxNDozOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:24.406Z-500",
+      "timestamp": "2026-08-15T01:08:24.406Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 19."
+    },
+    {
+      "id": "log-2026-08-15T01:08:24.406Z-500",
+      "timestamp": "2026-08-15T01:08:24.406Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 20, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wNiAxNjo1MTo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:08:24.973Z-500",
+      "timestamp": "2026-08-15T01:08:24.973Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 20."
+    },
+    {
+      "id": "log-2026-08-15T01:08:24.973Z-500",
+      "timestamp": "2026-08-15T01:08:24.973Z",
+      "level": "INFO",
+      "message": "Deduplicated to 121 unique notices"
+    },
+    {
+      "id": "log-2026-08-15T01:08:24.973Z-500",
+      "timestamp": "2026-08-15T01:08:24.973Z",
+      "level": "INFO",
+      "message": "Fetching details for 121 notices..."
+    },
+    {
+      "id": "log-2026-08-15T01:08:24.974Z-500",
+      "timestamp": "2026-08-15T01:08:24.974Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14437: https://exam.tu.edu.np/notices/14437"
+    },
+    {
+      "id": "log-2026-08-15T01:08:26.027Z-500",
+      "timestamp": "2026-08-15T01:08:26.027Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14410: https://exam.tu.edu.np/notices/14410"
+    },
+    {
+      "id": "log-2026-08-15T01:08:27.046Z-500",
+      "timestamp": "2026-08-15T01:08:27.046Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14409: https://exam.tu.edu.np/notices/14409"
+    },
+    {
+      "id": "log-2026-08-15T01:08:28.065Z-500",
+      "timestamp": "2026-08-15T01:08:28.065Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14313: https://exam.tu.edu.np/notices/14313"
+    },
+    {
+      "id": "log-2026-08-15T01:08:29.076Z-500",
+      "timestamp": "2026-08-15T01:08:29.076Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14286: https://exam.tu.edu.np/notices/14286"
+    },
+    {
+      "id": "log-2026-08-15T01:08:30.067Z-500",
+      "timestamp": "2026-08-15T01:08:30.067Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14284: https://exam.tu.edu.np/notices/14284"
+    },
+    {
+      "id": "log-2026-08-15T01:08:31.073Z-500",
+      "timestamp": "2026-08-15T01:08:31.073Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14241: https://exam.tu.edu.np/notices/14241"
+    },
+    {
+      "id": "log-2026-08-15T01:08:32.078Z-500",
+      "timestamp": "2026-08-15T01:08:32.078Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14240: https://exam.tu.edu.np/notices/14240"
+    },
+    {
+      "id": "log-2026-08-15T01:08:33.154Z-500",
+      "timestamp": "2026-08-15T01:08:33.154Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14232: https://exam.tu.edu.np/notices/14232"
+    },
+    {
+      "id": "log-2026-08-15T01:08:34.160Z-500",
+      "timestamp": "2026-08-15T01:08:34.160Z",
+      "level": "INFO",
+      "message": "Processed 10/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:08:34.160Z-500",
+      "timestamp": "2026-08-15T01:08:34.160Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14180: https://exam.tu.edu.np/notices/14180"
+    },
+    {
+      "id": "log-2026-08-15T01:08:35.241Z-500",
+      "timestamp": "2026-08-15T01:08:35.241Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14161: https://exam.tu.edu.np/notices/14161"
+    },
+    {
+      "id": "log-2026-08-15T01:08:36.391Z-500",
+      "timestamp": "2026-08-15T01:08:36.391Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14155: https://exam.tu.edu.np/notices/14155"
+    },
+    {
+      "id": "log-2026-08-15T01:08:37.415Z-500",
+      "timestamp": "2026-08-15T01:08:37.415Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14148: https://exam.tu.edu.np/notices/14148"
+    },
+    {
+      "id": "log-2026-08-15T01:08:38.448Z-500",
+      "timestamp": "2026-08-15T01:08:38.448Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14103: https://exam.tu.edu.np/notices/14103"
+    },
+    {
+      "id": "log-2026-08-15T01:08:39.482Z-500",
+      "timestamp": "2026-08-15T01:08:39.482Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14102: https://exam.tu.edu.np/notices/14102"
+    },
+    {
+      "id": "log-2026-08-15T01:08:40.497Z-500",
+      "timestamp": "2026-08-15T01:08:40.497Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14101: https://exam.tu.edu.np/notices/14101"
+    },
+    {
+      "id": "log-2026-08-15T01:08:41.514Z-500",
+      "timestamp": "2026-08-15T01:08:41.514Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14099: https://exam.tu.edu.np/notices/14099"
+    },
+    {
+      "id": "log-2026-08-15T01:08:42.536Z-500",
+      "timestamp": "2026-08-15T01:08:42.536Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14098: https://exam.tu.edu.np/notices/14098"
+    },
+    {
+      "id": "log-2026-08-15T01:08:43.493Z-500",
+      "timestamp": "2026-08-15T01:08:43.493Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14080: https://exam.tu.edu.np/notices/14080"
+    },
+    {
+      "id": "log-2026-08-15T01:08:44.500Z-500",
+      "timestamp": "2026-08-15T01:08:44.500Z",
+      "level": "INFO",
+      "message": "Processed 20/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:08:44.500Z-500",
+      "timestamp": "2026-08-15T01:08:44.500Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14079: https://exam.tu.edu.np/notices/14079"
+    },
+    {
+      "id": "log-2026-08-15T01:08:45.470Z-500",
+      "timestamp": "2026-08-15T01:08:45.470Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14078: https://exam.tu.edu.np/notices/14078"
+    },
+    {
+      "id": "log-2026-08-15T01:08:46.493Z-500",
+      "timestamp": "2026-08-15T01:08:46.493Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14077: https://exam.tu.edu.np/notices/14077"
+    },
+    {
+      "id": "log-2026-08-15T01:08:47.515Z-500",
+      "timestamp": "2026-08-15T01:08:47.515Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14065: https://exam.tu.edu.np/notices/14065"
+    },
+    {
+      "id": "log-2026-08-15T01:08:48.535Z-500",
+      "timestamp": "2026-08-15T01:08:48.535Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14049: https://exam.tu.edu.np/notices/14049"
+    },
+    {
+      "id": "log-2026-08-15T01:08:49.591Z-500",
+      "timestamp": "2026-08-15T01:08:49.591Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14048: https://exam.tu.edu.np/notices/14048"
+    },
+    {
+      "id": "log-2026-08-15T01:08:50.625Z-500",
+      "timestamp": "2026-08-15T01:08:50.625Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13981: https://exam.tu.edu.np/notices/13981"
+    },
+    {
+      "id": "log-2026-08-15T01:08:51.639Z-500",
+      "timestamp": "2026-08-15T01:08:51.639Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13980: https://exam.tu.edu.np/notices/13980"
+    },
+    {
+      "id": "log-2026-08-15T01:08:52.654Z-500",
+      "timestamp": "2026-08-15T01:08:52.654Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13961: https://exam.tu.edu.np/notices/13961"
+    },
+    {
+      "id": "log-2026-08-15T01:08:53.671Z-500",
+      "timestamp": "2026-08-15T01:08:53.671Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13918: https://exam.tu.edu.np/notices/13918"
+    },
+    {
+      "id": "log-2026-08-15T01:08:54.694Z-500",
+      "timestamp": "2026-08-15T01:08:54.694Z",
+      "level": "INFO",
+      "message": "Processed 30/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:08:54.694Z-500",
+      "timestamp": "2026-08-15T01:08:54.694Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13848: https://exam.tu.edu.np/notices/13848"
+    },
+    {
+      "id": "log-2026-08-15T01:08:55.710Z-500",
+      "timestamp": "2026-08-15T01:08:55.710Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13843: https://exam.tu.edu.np/notices/13843"
+    },
+    {
+      "id": "log-2026-08-15T01:08:56.730Z-500",
+      "timestamp": "2026-08-15T01:08:56.730Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13813: https://exam.tu.edu.np/notices/13813"
+    },
+    {
+      "id": "log-2026-08-15T01:08:57.748Z-500",
+      "timestamp": "2026-08-15T01:08:57.748Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13812: https://exam.tu.edu.np/notices/13812"
+    },
+    {
+      "id": "log-2026-08-15T01:08:58.774Z-500",
+      "timestamp": "2026-08-15T01:08:58.774Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13753: https://exam.tu.edu.np/notices/13753"
+    },
+    {
+      "id": "log-2026-08-15T01:08:59.824Z-500",
+      "timestamp": "2026-08-15T01:08:59.824Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13700: https://exam.tu.edu.np/notices/13700"
+    },
+    {
+      "id": "log-2026-08-15T01:09:00.842Z-500",
+      "timestamp": "2026-08-15T01:09:00.842Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13681: https://exam.tu.edu.np/notices/13681"
+    },
+    {
+      "id": "log-2026-08-15T01:09:01.855Z-500",
+      "timestamp": "2026-08-15T01:09:01.855Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13680: https://exam.tu.edu.np/notices/13680"
+    },
+    {
+      "id": "log-2026-08-15T01:09:02.915Z-500",
+      "timestamp": "2026-08-15T01:09:02.915Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13679: https://exam.tu.edu.np/notices/13679"
+    },
+    {
+      "id": "log-2026-08-15T01:09:03.951Z-500",
+      "timestamp": "2026-08-15T01:09:03.951Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13677: https://exam.tu.edu.np/notices/13677"
+    },
+    {
+      "id": "log-2026-08-15T01:09:04.958Z-500",
+      "timestamp": "2026-08-15T01:09:04.958Z",
+      "level": "INFO",
+      "message": "Processed 40/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:04.958Z-500",
+      "timestamp": "2026-08-15T01:09:04.958Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13642: https://exam.tu.edu.np/notices/13642"
+    },
+    {
+      "id": "log-2026-08-15T01:09:06.061Z-500",
+      "timestamp": "2026-08-15T01:09:06.061Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13608: https://exam.tu.edu.np/notices/13608"
+    },
+    {
+      "id": "log-2026-08-15T01:09:07.092Z-500",
+      "timestamp": "2026-08-15T01:09:07.092Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13607: https://exam.tu.edu.np/notices/13607"
+    },
+    {
+      "id": "log-2026-08-15T01:09:08.103Z-500",
+      "timestamp": "2026-08-15T01:09:08.103Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13606: https://exam.tu.edu.np/notices/13606"
+    },
+    {
+      "id": "log-2026-08-15T01:09:09.120Z-500",
+      "timestamp": "2026-08-15T01:09:09.120Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13605: https://exam.tu.edu.np/notices/13605"
+    },
+    {
+      "id": "log-2026-08-15T01:09:10.141Z-500",
+      "timestamp": "2026-08-15T01:09:10.141Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13586: https://exam.tu.edu.np/notices/13586"
+    },
+    {
+      "id": "log-2026-08-15T01:09:11.159Z-500",
+      "timestamp": "2026-08-15T01:09:11.159Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13545: https://exam.tu.edu.np/notices/13545"
+    },
+    {
+      "id": "log-2026-08-15T01:09:12.200Z-500",
+      "timestamp": "2026-08-15T01:09:12.200Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13541: https://exam.tu.edu.np/notices/13541"
+    },
+    {
+      "id": "log-2026-08-15T01:09:13.219Z-500",
+      "timestamp": "2026-08-15T01:09:13.219Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13534: https://exam.tu.edu.np/notices/13534"
+    },
+    {
+      "id": "log-2026-08-15T01:09:14.250Z-500",
+      "timestamp": "2026-08-15T01:09:14.250Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13533: https://exam.tu.edu.np/notices/13533"
+    },
+    {
+      "id": "log-2026-08-15T01:09:15.280Z-500",
+      "timestamp": "2026-08-15T01:09:15.280Z",
+      "level": "INFO",
+      "message": "Processed 50/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:15.280Z-500",
+      "timestamp": "2026-08-15T01:09:15.280Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13532: https://exam.tu.edu.np/notices/13532"
+    },
+    {
+      "id": "log-2026-08-15T01:09:16.324Z-500",
+      "timestamp": "2026-08-15T01:09:16.324Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13531: https://exam.tu.edu.np/notices/13531"
+    },
+    {
+      "id": "log-2026-08-15T01:09:17.377Z-500",
+      "timestamp": "2026-08-15T01:09:17.377Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13451: https://exam.tu.edu.np/notices/13451"
+    },
+    {
+      "id": "log-2026-08-15T01:09:18.434Z-500",
+      "timestamp": "2026-08-15T01:09:18.434Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13348: https://exam.tu.edu.np/notices/13348"
+    },
+    {
+      "id": "log-2026-08-15T01:09:19.451Z-500",
+      "timestamp": "2026-08-15T01:09:19.451Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13301: https://exam.tu.edu.np/notices/13301"
+    },
+    {
+      "id": "log-2026-08-15T01:09:20.473Z-500",
+      "timestamp": "2026-08-15T01:09:20.473Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13252: https://exam.tu.edu.np/notices/13252"
+    },
+    {
+      "id": "log-2026-08-15T01:09:21.513Z-500",
+      "timestamp": "2026-08-15T01:09:21.513Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13251: https://exam.tu.edu.np/notices/13251"
+    },
+    {
+      "id": "log-2026-08-15T01:09:22.540Z-500",
+      "timestamp": "2026-08-15T01:09:22.540Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13220: https://exam.tu.edu.np/notices/13220"
+    },
+    {
+      "id": "log-2026-08-15T01:09:23.548Z-500",
+      "timestamp": "2026-08-15T01:09:23.548Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 12983: https://exam.tu.edu.np/notices/12983"
+    },
+    {
+      "id": "log-2026-08-15T01:09:24.593Z-500",
+      "timestamp": "2026-08-15T01:09:24.593Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 12937: https://exam.tu.edu.np/notices/12937"
+    },
+    {
+      "id": "log-2026-08-15T01:09:25.626Z-500",
+      "timestamp": "2026-08-15T01:09:25.626Z",
+      "level": "INFO",
+      "message": "Processed 60/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:25.626Z-500",
+      "timestamp": "2026-08-15T01:09:25.626Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 11271: https://exam.tu.edu.np/notices/11271"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.644Z-500",
+      "timestamp": "2026-08-15T01:09:26.644Z",
+      "level": "INFO",
+      "message": "Processed 70/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.644Z-500",
+      "timestamp": "2026-08-15T01:09:26.644Z",
+      "level": "INFO",
+      "message": "Processed 80/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.644Z-500",
+      "timestamp": "2026-08-15T01:09:26.644Z",
+      "level": "INFO",
+      "message": "Processed 90/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.644Z-500",
+      "timestamp": "2026-08-15T01:09:26.644Z",
+      "level": "INFO",
+      "message": "Processed 100/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.644Z-500",
+      "timestamp": "2026-08-15T01:09:26.644Z",
+      "level": "INFO",
+      "message": "Processed 110/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.645Z-500",
+      "timestamp": "2026-08-15T01:09:26.645Z",
+      "level": "INFO",
+      "message": "Processed 120/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.645Z-500",
+      "timestamp": "2026-08-15T01:09:26.645Z",
+      "level": "INFO",
+      "message": "Completed fetching details for 121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.645Z-500",
+      "timestamp": "2026-08-15T01:09:26.645Z",
+      "level": "INFO",
+      "message": "Current unique notices collected: 121"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.645Z-500",
+      "timestamp": "2026-08-15T01:09:26.645Z",
+      "level": "INFO",
+      "message": "Previously stored notices: 125"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.645Z-500",
+      "timestamp": "2026-08-15T01:09:26.645Z",
+      "level": "INFO",
+      "message": "New notices detected: 0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:26.645Z-500",
+      "timestamp": "2026-08-15T01:09:26.645Z",
+      "level": "INFO",
+      "message": "No new notices. No email sent."
+    },
+    {
+      "id": "log-2026-08-15T01:09:27.383Z-500",
+      "timestamp": "2026-08-15T01:09:27.383Z",
+      "level": "INFO",
+      "message": "Starting TU Notice Sentinel"
+    },
+    {
+      "id": "log-2026-08-15T01:09:27.384Z-500",
+      "timestamp": "2026-08-15T01:09:27.384Z",
+      "level": "INFO",
+      "message": "Source: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:27.384Z-500",
+      "timestamp": "2026-08-15T01:09:27.384Z",
+      "level": "INFO",
+      "message": "Dry run: false"
+    },
+    {
+      "id": "log-2026-08-15T01:09:27.384Z-500",
+      "timestamp": "2026-08-15T01:09:27.384Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 1, attempt 1/5: https://exam.tu.edu.np/notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:28.615Z-500",
+      "timestamp": "2026-08-15T01:09:28.615Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 1."
+    },
+    {
+      "id": "log-2026-08-15T01:09:28.615Z-500",
+      "timestamp": "2026-08-15T01:09:28.615Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 2, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0wNyAxNzo0NjoyMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:29.236Z-500",
+      "timestamp": "2026-08-15T01:09:29.236Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 2."
+    },
+    {
+      "id": "log-2026-08-15T01:09:29.236Z-500",
+      "timestamp": "2026-08-15T01:09:29.236Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 3, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0zMSAyMDowNjowOSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:29.827Z-500",
+      "timestamp": "2026-08-15T01:09:29.827Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 3."
+    },
+    {
+      "id": "log-2026-08-15T01:09:29.827Z-500",
+      "timestamp": "2026-08-15T01:09:29.827Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 4, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOSAxNzoyNTowOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:30.410Z-500",
+      "timestamp": "2026-08-15T01:09:30.410Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 4."
+    },
+    {
+      "id": "log-2026-08-15T01:09:30.410Z-500",
+      "timestamp": "2026-08-15T01:09:30.410Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 5, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0yOCAxMzowNTo0MiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:30.963Z-500",
+      "timestamp": "2026-08-15T01:09:30.963Z",
+      "level": "INFO",
+      "message": "Found 61 notice link(s) on page 5."
+    },
+    {
+      "id": "log-2026-08-15T01:09:30.963Z-500",
+      "timestamp": "2026-08-15T01:09:30.963Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 6, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0xNyAxMzo1NDo1NSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:31.523Z-500",
+      "timestamp": "2026-08-15T01:09:31.523Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 6."
+    },
+    {
+      "id": "log-2026-08-15T01:09:31.523Z-500",
+      "timestamp": "2026-08-15T01:09:31.523Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 7, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNy0wNyAxOTo1OTozNiIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:32.071Z-500",
+      "timestamp": "2026-08-15T01:09:32.071Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 7."
+    },
+    {
+      "id": "log-2026-08-15T01:09:32.071Z-500",
+      "timestamp": "2026-08-15T01:09:32.071Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 8, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0zMCAxNjoyODozMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:32.645Z-500",
+      "timestamp": "2026-08-15T01:09:32.645Z",
+      "level": "INFO",
+      "message": "Found 60 notice link(s) on page 8."
+    },
+    {
+      "id": "log-2026-08-15T01:09:32.645Z-500",
+      "timestamp": "2026-08-15T01:09:32.645Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 9, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yNiAxMjowODo1NyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:33.211Z-500",
+      "timestamp": "2026-08-15T01:09:33.211Z",
+      "level": "INFO",
+      "message": "Found 62 notice link(s) on page 9."
+    },
+    {
+      "id": "log-2026-08-15T01:09:33.211Z-500",
+      "timestamp": "2026-08-15T01:09:33.211Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 10, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0yMyAxNToxNToxNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:33.803Z-500",
+      "timestamp": "2026-08-15T01:09:33.803Z",
+      "level": "INFO",
+      "message": "Found 65 notice link(s) on page 10."
+    },
+    {
+      "id": "log-2026-08-15T01:09:33.803Z-500",
+      "timestamp": "2026-08-15T01:09:33.803Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 11, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xOSAxNjowOTozNSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:34.683Z-500",
+      "timestamp": "2026-08-15T01:09:34.683Z",
+      "level": "INFO",
+      "message": "Found 62 notice link(s) on page 11."
+    },
+    {
+      "id": "log-2026-08-15T01:09:34.683Z-500",
+      "timestamp": "2026-08-15T01:09:34.683Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 12, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xMCAxNzo1NTo1OSIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:35.248Z-500",
+      "timestamp": "2026-08-15T01:09:35.248Z",
+      "level": "INFO",
+      "message": "Found 65 notice link(s) on page 12."
+    },
+    {
+      "id": "log-2026-08-15T01:09:35.248Z-500",
+      "timestamp": "2026-08-15T01:09:35.248Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 13, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOSAxMzo1NToyMCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:35.805Z-500",
+      "timestamp": "2026-08-15T01:09:35.805Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 13."
+    },
+    {
+      "id": "log-2026-08-15T01:09:35.805Z-500",
+      "timestamp": "2026-08-15T01:09:35.805Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 14, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNi0wOCAxNzo1MDoxNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:36.364Z-500",
+      "timestamp": "2026-08-15T01:09:36.364Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 14."
+    },
+    {
+      "id": "log-2026-08-15T01:09:36.365Z-500",
+      "timestamp": "2026-08-15T01:09:36.365Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 15, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNyAwOToyMDo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:36.968Z-500",
+      "timestamp": "2026-08-15T01:09:36.968Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 15."
+    },
+    {
+      "id": "log-2026-08-15T01:09:36.968Z-500",
+      "timestamp": "2026-08-15T01:09:36.968Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 16, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0yNSAxMjowNzo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:37.534Z-500",
+      "timestamp": "2026-08-15T01:09:37.534Z",
+      "level": "INFO",
+      "message": "Found 64 notice link(s) on page 16."
+    },
+    {
+      "id": "log-2026-08-15T01:09:37.534Z-500",
+      "timestamp": "2026-08-15T01:09:37.534Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 17, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xNSAxMzoyMzowNCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:38.088Z-500",
+      "timestamp": "2026-08-15T01:09:38.088Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 17."
+    },
+    {
+      "id": "log-2026-08-15T01:09:38.088Z-500",
+      "timestamp": "2026-08-15T01:09:38.088Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 18, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0xMCAxMDoxOTowMyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:38.700Z-500",
+      "timestamp": "2026-08-15T01:09:38.700Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 18."
+    },
+    {
+      "id": "log-2026-08-15T01:09:38.700Z-500",
+      "timestamp": "2026-08-15T01:09:38.700Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 19, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wOSAwOToxNDozOCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:39.320Z-500",
+      "timestamp": "2026-08-15T01:09:39.320Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 19."
+    },
+    {
+      "id": "log-2026-08-15T01:09:39.320Z-500",
+      "timestamp": "2026-08-15T01:09:39.320Z",
+      "level": "INFO",
+      "message": "Fetching TU notices page 20, attempt 1/5: https://exam.tu.edu.np/notices?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0wNS0wNiAxNjo1MTo0NCIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+    },
+    {
+      "id": "log-2026-08-15T01:09:39.969Z-500",
+      "timestamp": "2026-08-15T01:09:39.969Z",
+      "level": "INFO",
+      "message": "Found 66 notice link(s) on page 20."
+    },
+    {
+      "id": "log-2026-08-15T01:09:39.970Z-500",
+      "timestamp": "2026-08-15T01:09:39.970Z",
+      "level": "INFO",
+      "message": "Deduplicated to 121 unique notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:39.970Z-500",
+      "timestamp": "2026-08-15T01:09:39.970Z",
+      "level": "INFO",
+      "message": "Fetching details for 121 notices..."
+    },
+    {
+      "id": "log-2026-08-15T01:09:39.970Z-500",
+      "timestamp": "2026-08-15T01:09:39.970Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14437: https://exam.tu.edu.np/notices/14437"
+    },
+    {
+      "id": "log-2026-08-15T01:09:41.006Z-500",
+      "timestamp": "2026-08-15T01:09:41.006Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14410: https://exam.tu.edu.np/notices/14410"
+    },
+    {
+      "id": "log-2026-08-15T01:09:42.024Z-500",
+      "timestamp": "2026-08-15T01:09:42.024Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14409: https://exam.tu.edu.np/notices/14409"
+    },
+    {
+      "id": "log-2026-08-15T01:09:43.139Z-500",
+      "timestamp": "2026-08-15T01:09:43.139Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14313: https://exam.tu.edu.np/notices/14313"
+    },
+    {
+      "id": "log-2026-08-15T01:09:44.141Z-500",
+      "timestamp": "2026-08-15T01:09:44.141Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14286: https://exam.tu.edu.np/notices/14286"
+    },
+    {
+      "id": "log-2026-08-15T01:09:45.171Z-500",
+      "timestamp": "2026-08-15T01:09:45.171Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14284: https://exam.tu.edu.np/notices/14284"
+    },
+    {
+      "id": "log-2026-08-15T01:09:46.210Z-500",
+      "timestamp": "2026-08-15T01:09:46.210Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14241: https://exam.tu.edu.np/notices/14241"
+    },
+    {
+      "id": "log-2026-08-15T01:09:47.222Z-500",
+      "timestamp": "2026-08-15T01:09:47.222Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14240: https://exam.tu.edu.np/notices/14240"
+    },
+    {
+      "id": "log-2026-08-15T01:09:48.253Z-500",
+      "timestamp": "2026-08-15T01:09:48.253Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14232: https://exam.tu.edu.np/notices/14232"
+    },
+    {
+      "id": "log-2026-08-15T01:09:49.279Z-500",
+      "timestamp": "2026-08-15T01:09:49.279Z",
+      "level": "INFO",
+      "message": "Processed 10/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:49.279Z-500",
+      "timestamp": "2026-08-15T01:09:49.279Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14180: https://exam.tu.edu.np/notices/14180"
+    },
+    {
+      "id": "log-2026-08-15T01:09:50.343Z-500",
+      "timestamp": "2026-08-15T01:09:50.343Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14161: https://exam.tu.edu.np/notices/14161"
+    },
+    {
+      "id": "log-2026-08-15T01:09:51.391Z-500",
+      "timestamp": "2026-08-15T01:09:51.391Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14155: https://exam.tu.edu.np/notices/14155"
+    },
+    {
+      "id": "log-2026-08-15T01:09:52.493Z-500",
+      "timestamp": "2026-08-15T01:09:52.493Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14148: https://exam.tu.edu.np/notices/14148"
+    },
+    {
+      "id": "log-2026-08-15T01:09:53.486Z-500",
+      "timestamp": "2026-08-15T01:09:53.486Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14103: https://exam.tu.edu.np/notices/14103"
+    },
+    {
+      "id": "log-2026-08-15T01:09:54.579Z-500",
+      "timestamp": "2026-08-15T01:09:54.579Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14102: https://exam.tu.edu.np/notices/14102"
+    },
+    {
+      "id": "log-2026-08-15T01:09:55.640Z-500",
+      "timestamp": "2026-08-15T01:09:55.640Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14101: https://exam.tu.edu.np/notices/14101"
+    },
+    {
+      "id": "log-2026-08-15T01:09:56.661Z-500",
+      "timestamp": "2026-08-15T01:09:56.661Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14099: https://exam.tu.edu.np/notices/14099"
+    },
+    {
+      "id": "log-2026-08-15T01:09:57.694Z-500",
+      "timestamp": "2026-08-15T01:09:57.694Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14098: https://exam.tu.edu.np/notices/14098"
+    },
+    {
+      "id": "log-2026-08-15T01:09:58.727Z-500",
+      "timestamp": "2026-08-15T01:09:58.727Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14080: https://exam.tu.edu.np/notices/14080"
+    },
+    {
+      "id": "log-2026-08-15T01:09:59.751Z-500",
+      "timestamp": "2026-08-15T01:09:59.751Z",
+      "level": "INFO",
+      "message": "Processed 20/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:09:59.751Z-500",
+      "timestamp": "2026-08-15T01:09:59.751Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14079: https://exam.tu.edu.np/notices/14079"
+    },
+    {
+      "id": "log-2026-08-15T01:10:00.728Z-500",
+      "timestamp": "2026-08-15T01:10:00.728Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14078: https://exam.tu.edu.np/notices/14078"
+    },
+    {
+      "id": "log-2026-08-15T01:10:01.800Z-500",
+      "timestamp": "2026-08-15T01:10:01.800Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14077: https://exam.tu.edu.np/notices/14077"
+    },
+    {
+      "id": "log-2026-08-15T01:10:02.835Z-500",
+      "timestamp": "2026-08-15T01:10:02.835Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14065: https://exam.tu.edu.np/notices/14065"
+    },
+    {
+      "id": "log-2026-08-15T01:10:03.863Z-500",
+      "timestamp": "2026-08-15T01:10:03.863Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14049: https://exam.tu.edu.np/notices/14049"
+    },
+    {
+      "id": "log-2026-08-15T01:10:04.889Z-500",
+      "timestamp": "2026-08-15T01:10:04.889Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 14048: https://exam.tu.edu.np/notices/14048"
+    },
+    {
+      "id": "log-2026-08-15T01:10:05.912Z-500",
+      "timestamp": "2026-08-15T01:10:05.912Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13981: https://exam.tu.edu.np/notices/13981"
+    },
+    {
+      "id": "log-2026-08-15T01:10:06.935Z-500",
+      "timestamp": "2026-08-15T01:10:06.935Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13980: https://exam.tu.edu.np/notices/13980"
+    },
+    {
+      "id": "log-2026-08-15T01:10:07.958Z-500",
+      "timestamp": "2026-08-15T01:10:07.958Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13961: https://exam.tu.edu.np/notices/13961"
+    },
+    {
+      "id": "log-2026-08-15T01:10:08.989Z-500",
+      "timestamp": "2026-08-15T01:10:08.989Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13918: https://exam.tu.edu.np/notices/13918"
+    },
+    {
+      "id": "log-2026-08-15T01:10:09.998Z-500",
+      "timestamp": "2026-08-15T01:10:09.998Z",
+      "level": "INFO",
+      "message": "Processed 30/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:09.998Z-500",
+      "timestamp": "2026-08-15T01:10:09.998Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13848: https://exam.tu.edu.np/notices/13848"
+    },
+    {
+      "id": "log-2026-08-15T01:10:10.978Z-500",
+      "timestamp": "2026-08-15T01:10:10.978Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13843: https://exam.tu.edu.np/notices/13843"
+    },
+    {
+      "id": "log-2026-08-15T01:10:12.047Z-500",
+      "timestamp": "2026-08-15T01:10:12.047Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13813: https://exam.tu.edu.np/notices/13813"
+    },
+    {
+      "id": "log-2026-08-15T01:10:13.073Z-500",
+      "timestamp": "2026-08-15T01:10:13.073Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13812: https://exam.tu.edu.np/notices/13812"
+    },
+    {
+      "id": "log-2026-08-15T01:10:14.094Z-500",
+      "timestamp": "2026-08-15T01:10:14.094Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13753: https://exam.tu.edu.np/notices/13753"
+    },
+    {
+      "id": "log-2026-08-15T01:10:15.125Z-500",
+      "timestamp": "2026-08-15T01:10:15.125Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13700: https://exam.tu.edu.np/notices/13700"
+    },
+    {
+      "id": "log-2026-08-15T01:10:16.178Z-500",
+      "timestamp": "2026-08-15T01:10:16.178Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13681: https://exam.tu.edu.np/notices/13681"
+    },
+    {
+      "id": "log-2026-08-15T01:10:17.245Z-500",
+      "timestamp": "2026-08-15T01:10:17.245Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13680: https://exam.tu.edu.np/notices/13680"
+    },
+    {
+      "id": "log-2026-08-15T01:10:18.301Z-500",
+      "timestamp": "2026-08-15T01:10:18.301Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13679: https://exam.tu.edu.np/notices/13679"
+    },
+    {
+      "id": "log-2026-08-15T01:10:19.355Z-500",
+      "timestamp": "2026-08-15T01:10:19.355Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13677: https://exam.tu.edu.np/notices/13677"
+    },
+    {
+      "id": "log-2026-08-15T01:10:20.369Z-500",
+      "timestamp": "2026-08-15T01:10:20.369Z",
+      "level": "INFO",
+      "message": "Processed 40/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:20.369Z-500",
+      "timestamp": "2026-08-15T01:10:20.369Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13642: https://exam.tu.edu.np/notices/13642"
+    },
+    {
+      "id": "log-2026-08-15T01:10:21.397Z-500",
+      "timestamp": "2026-08-15T01:10:21.397Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13608: https://exam.tu.edu.np/notices/13608"
+    },
+    {
+      "id": "log-2026-08-15T01:10:22.427Z-500",
+      "timestamp": "2026-08-15T01:10:22.427Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13607: https://exam.tu.edu.np/notices/13607"
+    },
+    {
+      "id": "log-2026-08-15T01:10:23.458Z-500",
+      "timestamp": "2026-08-15T01:10:23.458Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13606: https://exam.tu.edu.np/notices/13606"
+    },
+    {
+      "id": "log-2026-08-15T01:10:24.478Z-500",
+      "timestamp": "2026-08-15T01:10:24.478Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13605: https://exam.tu.edu.np/notices/13605"
+    },
+    {
+      "id": "log-2026-08-15T01:10:25.498Z-500",
+      "timestamp": "2026-08-15T01:10:25.498Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13586: https://exam.tu.edu.np/notices/13586"
+    },
+    {
+      "id": "log-2026-08-15T01:10:26.513Z-500",
+      "timestamp": "2026-08-15T01:10:26.513Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13545: https://exam.tu.edu.np/notices/13545"
+    },
+    {
+      "id": "log-2026-08-15T01:10:27.538Z-500",
+      "timestamp": "2026-08-15T01:10:27.538Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13541: https://exam.tu.edu.np/notices/13541"
+    },
+    {
+      "id": "log-2026-08-15T01:10:28.642Z-500",
+      "timestamp": "2026-08-15T01:10:28.642Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13534: https://exam.tu.edu.np/notices/13534"
+    },
+    {
+      "id": "log-2026-08-15T01:10:29.628Z-500",
+      "timestamp": "2026-08-15T01:10:29.628Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13533: https://exam.tu.edu.np/notices/13533"
+    },
+    {
+      "id": "log-2026-08-15T01:10:30.639Z-500",
+      "timestamp": "2026-08-15T01:10:30.639Z",
+      "level": "INFO",
+      "message": "Processed 50/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:30.639Z-500",
+      "timestamp": "2026-08-15T01:10:30.639Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13532: https://exam.tu.edu.np/notices/13532"
+    },
+    {
+      "id": "log-2026-08-15T01:10:31.673Z-500",
+      "timestamp": "2026-08-15T01:10:31.673Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13531: https://exam.tu.edu.np/notices/13531"
+    },
+    {
+      "id": "log-2026-08-15T01:10:32.681Z-500",
+      "timestamp": "2026-08-15T01:10:32.681Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13451: https://exam.tu.edu.np/notices/13451"
+    },
+    {
+      "id": "log-2026-08-15T01:10:33.731Z-500",
+      "timestamp": "2026-08-15T01:10:33.731Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13348: https://exam.tu.edu.np/notices/13348"
+    },
+    {
+      "id": "log-2026-08-15T01:10:34.755Z-500",
+      "timestamp": "2026-08-15T01:10:34.755Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13301: https://exam.tu.edu.np/notices/13301"
+    },
+    {
+      "id": "log-2026-08-15T01:10:35.791Z-500",
+      "timestamp": "2026-08-15T01:10:35.791Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13252: https://exam.tu.edu.np/notices/13252"
+    },
+    {
+      "id": "log-2026-08-15T01:10:36.782Z-500",
+      "timestamp": "2026-08-15T01:10:36.782Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13251: https://exam.tu.edu.np/notices/13251"
+    },
+    {
+      "id": "log-2026-08-15T01:10:37.824Z-500",
+      "timestamp": "2026-08-15T01:10:37.824Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 13220: https://exam.tu.edu.np/notices/13220"
+    },
+    {
+      "id": "log-2026-08-15T01:10:38.892Z-500",
+      "timestamp": "2026-08-15T01:10:38.892Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 12983: https://exam.tu.edu.np/notices/12983"
+    },
+    {
+      "id": "log-2026-08-15T01:10:39.954Z-500",
+      "timestamp": "2026-08-15T01:10:39.954Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 12937: https://exam.tu.edu.np/notices/12937"
+    },
+    {
+      "id": "log-2026-08-15T01:10:41.001Z-500",
+      "timestamp": "2026-08-15T01:10:41.001Z",
+      "level": "INFO",
+      "message": "Processed 60/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:41.001Z-500",
+      "timestamp": "2026-08-15T01:10:41.001Z",
+      "level": "INFO",
+      "message": "Fetching notice details for ID 11271: https://exam.tu.edu.np/notices/11271"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Processed 70/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Processed 80/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Processed 90/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Processed 100/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Processed 110/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Processed 120/121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Completed fetching details for 121 notices"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Current unique notices collected: 121"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "Previously stored notices: 125"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
+      "level": "INFO",
+      "message": "New notices detected: 0"
+    },
+    {
+      "id": "log-2026-08-15T01:10:42.053Z-500",
+      "timestamp": "2026-08-15T01:10:42.053Z",
       "level": "INFO",
       "message": "No new notices. No email sent."
     }
