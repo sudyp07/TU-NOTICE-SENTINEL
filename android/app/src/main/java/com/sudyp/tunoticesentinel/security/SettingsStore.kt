@@ -10,12 +10,6 @@ import javax.crypto.spec.PBEKeySpec
 data class AppSettings(
     val baseUrl: String = "",
     val apiKey: String = "",
-    val gmailAddress: String = "",
-    val gmailAppPassword: String = "",
-    val githubOwner: String = "",
-    val githubRepository: String = "",
-    val githubWorkflow: String = "bot.yml",
-    val githubToken: String = "",
     val darkMode: Boolean = true,
     val appLockEnabled: Boolean = false,
     val profileName: String = "",
@@ -33,12 +27,6 @@ class SettingsStore(context: Context) {
     fun read() = AppSettings(
         baseUrl = secure.get("base_url"),
         apiKey = secure.get("api_key"),
-        gmailAddress = secure.get("gmail_address"),
-        gmailAppPassword = secure.get("gmail_password"),
-        githubOwner = secure.get("github_owner"),
-        githubRepository = secure.get("github_repo"),
-        githubWorkflow = secure.get("github_workflow").ifBlank { "bot.yml" },
-        githubToken = secure.get("github_token"),
         darkMode = plain.getBoolean("dark_mode", true),
         appLockEnabled = plain.getBoolean("app_lock", false) && secure.get("pin_hash").isNotBlank(),
         profileName = secure.get("profile_name"),
@@ -52,12 +40,6 @@ class SettingsStore(context: Context) {
     fun save(settings: AppSettings) {
         secure.put("base_url", settings.baseUrl.trim())
         secure.put("api_key", settings.apiKey.trim())
-        secure.put("gmail_address", settings.gmailAddress.trim())
-        secure.put("gmail_password", settings.gmailAppPassword.replace(" ", ""))
-        secure.put("github_owner", settings.githubOwner.trim())
-        secure.put("github_repo", settings.githubRepository.trim())
-        secure.put("github_workflow", settings.githubWorkflow.trim())
-        secure.put("github_token", settings.githubToken.trim())
         plain.edit().putBoolean("dark_mode", settings.darkMode).apply()
         plain.edit().putBoolean("background_alerts", settings.backgroundAlerts).apply()
         secure.put("profile_name", settings.profileName.trim())
@@ -66,11 +48,6 @@ class SettingsStore(context: Context) {
         secure.put("symbol_number", settings.symbolNumber.trim())
         secure.put("date_of_birth", settings.dateOfBirth.trim())
         if (!settings.appLockEnabled) plain.edit().putBoolean("app_lock", false).apply()
-    }
-
-    fun clearGmail() {
-        secure.remove("gmail_address")
-        secure.remove("gmail_password")
     }
 
     fun setPin(pin: String) {

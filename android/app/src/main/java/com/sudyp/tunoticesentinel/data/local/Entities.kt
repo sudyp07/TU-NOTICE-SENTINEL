@@ -22,7 +22,7 @@ data class StatusEntity(
     val storedNotices: Int = 0,
     val newNotices: Int = 0,
     val emailsSent: Int = 0,
-    val version: String = "3.1",
+    val version: String = "3.3.0",
     val cachedAt: Long = System.currentTimeMillis(),
 )
 

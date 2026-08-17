@@ -18,10 +18,18 @@ interface SentinelApi {
     suspend fun notices(
         @Header("Authorization") authorization: String,
         @Query("limit") limit: Int = 200,
+        @Query("search") search: String? = null,
+        @Query("unreadOnly") unreadOnly: Boolean? = null,
     ): NoticesResponse
 
+    @GET("api/notices/latest")
+    suspend fun latestNotice(@Header("Authorization") authorization: String): LatestNoticeResponse
+
     @GET("api/logs")
-    suspend fun logs(@Header("Authorization") authorization: String): LogsResponse
+    suspend fun logs(
+        @Header("Authorization") authorization: String,
+        @Query("level") level: String? = null,
+    ): LogsResponse
 
     @GET("api/notifications")
     suspend fun notifications(@Header("Authorization") authorization: String): NotificationsResponse
@@ -29,20 +37,23 @@ interface SentinelApi {
     @POST("api/check")
     suspend fun checkNow(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
 
-    @POST("api/check")
-    suspend fun testEmail(@Header("Authorization") authorization: String, @Body body: Map<String, String> = mapOf("mode" to "test-email")): ActionResponse
+    @POST("api/test-email")
+    suspend fun testEmail(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
 
-    @POST("api/bot/enabled")
-    suspend fun enableBot(@Header("Authorization") authorization: String, @Body body: Map<String, Boolean> = mapOf("enabled" to true)): ActionResponse
+    @POST("api/bot/enable")
+    suspend fun enableBot(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
 
-    @POST("api/bot/enabled")
-    suspend fun disableBot(@Header("Authorization") authorization: String, @Body body: Map<String, Boolean> = mapOf("enabled" to false)): ActionResponse
+    @POST("api/bot/disable")
+    suspend fun disableBot(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
 
-    @POST("api/tests/run")
-    suspend fun runTest(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
+    @POST("api/bot/test")
+    suspend fun runTest(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): BotTestResponse
 
-    @POST("api/check")
+    @POST("api/github/workflow")
     suspend fun triggerWorkflow(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
+
+    @GET("api/github/status")
+    suspend fun githubStatus(@Header("Authorization") authorization: String): GitHubStatusDto
 
     @DELETE("api/logs")
     suspend fun clearLogs(@Header("Authorization") authorization: String)

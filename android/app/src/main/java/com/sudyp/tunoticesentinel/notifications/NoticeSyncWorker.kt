@@ -58,7 +58,7 @@ class NoticeSyncWorker(context: Context, parameters: WorkerParameters) : Corouti
         )
         val text = if (titles.size == 1) titles.first() else "${titles.size} new TU notices are available"
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(if (titles.size == 1) "New TU notice" else "New TU notices")
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(titles.take(5).joinToString("\n")))

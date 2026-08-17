@@ -19,7 +19,8 @@ data class StatusDto(
     val storedNotices: Int = 0,
     val newNotices: Int = 0,
     val emailsSent: Int = 0,
-    val version: String = "3.1",
+    val version: String = "3.3.0",
+    val botEnabled: Boolean? = null,
     val serverTime: String? = null,
 )
 
@@ -36,6 +37,7 @@ data class NoticeDto(
 )
 
 data class NoticesResponse(val notices: List<NoticeDto> = emptyList(), val total: Int = 0)
+data class LatestNoticeResponse(val notice: NoticeDto? = null)
 
 data class LogDto(
     val id: String? = null,
@@ -58,4 +60,6 @@ data class NotificationDto(
 
 data class NotificationsResponse(val notifications: List<NotificationDto> = emptyList())
 data class ActionResponse(val accepted: Boolean? = null, val enabled: Boolean? = null, val message: String? = null)
+data class BotTestResult(val ok: Boolean = false, val stateReadable: Boolean = false, val workflowReachable: Boolean = false)
+data class BotTestResponse(val result: BotTestResult = BotTestResult())
 data class GitHubStatusDto(val state: String = "unknown", val status: String? = null, val conclusion: String? = null, val updatedAt: String? = null, val url: String? = null, val runNumber: Int? = null)

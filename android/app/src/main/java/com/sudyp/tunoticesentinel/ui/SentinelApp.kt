@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -87,10 +88,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -103,6 +107,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.sudyp.tunoticesentinel.R
 import com.sudyp.tunoticesentinel.data.BotStatus
 import com.sudyp.tunoticesentinel.data.LogEntry
 import com.sudyp.tunoticesentinel.data.Notice
@@ -113,6 +119,8 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+
+private const val TU_LOGO_URL = "https://portal.tu.edu.np/medias/2025_04_17_16_42_31.png"
 
 private enum class Destination(val route: String, val label: String, val icon: ImageVector, val primary: Boolean = true) {
     Dashboard("dashboard", "Home", Icons.Outlined.Home),
@@ -156,7 +164,7 @@ fun SentinelApp(model: SentinelViewModel) {
             ConnectionBanner(connection, status)
             NavHost(navController = nav, startDestination = Destination.Dashboard.route, modifier = Modifier.weight(1f)) {
                 composable(Destination.Dashboard.route) {
-                    DashboardScreen(status, personalizedNotices(notices, settings.faculty), connection, loading, model, nav)
+                    DashboardScreen(status, personalizedNotices(notices, settings.faculty), connection, githubState, loading, model, nav)
                 }
                 composable(Destination.Notices.route) { NoticesScreen(notices, settings.faculty, model) }
                 composable(Destination.Results.route) { ResultsScreen(settings, results, model) }
@@ -218,20 +226,31 @@ private fun DashboardScreen(
     status: BotStatus?,
     notices: List<Notice>,
     connection: ConnectionState,
+    githubState: String,
     loading: Boolean,
     model: SentinelViewModel,
     nav: NavHostController,
 ) {
+    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier.fillMaxSize().testTag("dashboard_screen"),
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                AsyncImage(
+                    model = TU_LOGO_URL,
+                    contentDescription = "Tribhuvan University emblem",
+                    placeholder = painterResource(R.drawable.ic_tu_fallback),
+                    error = painterResource(R.drawable.ic_tu_fallback),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(66.dp).clip(CircleShape).background(Color.White).padding(5.dp),
+                )
                 Column(Modifier.weight(1f)) {
-                    Text("TU NOTICE SENTINEL", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
-                    Text("Private monitoring console", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("TU SENTINEL PRO", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
+                    Text("Notices • results • backend control", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Unofficial student companion", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary)
                 }
                 if (loading) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 3.dp)
             }
@@ -279,6 +298,8 @@ private fun DashboardScreen(
             SectionTitle("BOT STATUS")
             Spacer(Modifier.height(8.dp))
             OutlinedCard(Modifier.fillMaxWidth()) {
+                StatusRow("Bot", status?.bot ?: "unknown")
+                HorizontalDivider()
                 StatusRow("TU website", status?.website ?: "unknown")
                 HorizontalDivider()
                 StatusRow("Scraper", status?.scraper ?: "unknown")
@@ -287,7 +308,17 @@ private fun DashboardScreen(
                 HorizontalDivider()
                 StatusRow("Gmail", status?.gmail ?: "unknown")
                 HorizontalDivider()
-                StatusRow("GitHub Actions", status?.github ?: "unknown")
+                StatusRow("GitHub Actions", githubState.takeUnless { it == "unknown" } ?: status?.github ?: "unknown")
+            }
+        }
+        item {
+            SectionTitle("OFFICIAL PORTALS")
+            Spacer(Modifier.height(8.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                item { AssistChip(onClick = { openTrustedUrl(context, "https://tu.edu.np/") }, label = { Text("TU Home") }) }
+                item { AssistChip(onClick = { openTrustedUrl(context, "https://exam.tu.edu.np/") }, label = { Text("Exam Office") }) }
+                item { AssistChip(onClick = { openTrustedUrl(context, "https://exam.tu.edu.np/notices") }, label = { Text("Exam Notices") }) }
+                item { AssistChip(onClick = { openTrustedUrl(context, "https://result.tuexam.edu.np/") }, label = { Text("Results") }) }
             }
         }
         item {
@@ -312,6 +343,7 @@ private fun HeroStatus(status: BotStatus?, connection: ConnectionState) {
     val state = when {
         connection != ConnectionState.CONNECTED -> StatusTone.UNKNOWN
         status?.configured != true -> StatusTone.UNKNOWN
+        status?.bot.equals("disabled", ignoreCase = true) -> StatusTone.WARNING
         status?.online == true -> StatusTone.HEALTHY
         else -> StatusTone.ERROR
     }
@@ -329,7 +361,12 @@ private fun HeroStatus(status: BotStatus?, connection: ConnectionState) {
                 StatusDot(state)
                 Spacer(Modifier.width(10.dp))
                 Text(
-                    when (state) { StatusTone.HEALTHY -> "BOT ONLINE"; StatusTone.ERROR -> "BOT OFFLINE"; else -> "STATUS UNKNOWN" },
+                    when (state) {
+                        StatusTone.HEALTHY -> "BOT ONLINE"
+                        StatusTone.WARNING -> "BOT DISABLED"
+                        StatusTone.ERROR -> "BOT OFFLINE"
+                        StatusTone.UNKNOWN -> "STATUS UNKNOWN"
+                    },
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = if (state == StatusTone.UNKNOWN) MaterialTheme.colorScheme.onSurfaceVariant else Color.White,
@@ -483,7 +520,7 @@ private fun NoticeCard(notice: Notice, markRead: (String) -> Unit, toggleBookmar
             Spacer(Modifier.height(12.dp))
             Button(onClick = {
                 markRead(notice.id)
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(notice.url)))
+                openTrustedUrl(context, notice.url)
             }) {
                 Text("Open notice")
                 Spacer(Modifier.width(8.dp))
@@ -491,6 +528,12 @@ private fun NoticeCard(notice: Notice, markRead: (String) -> Unit, toggleBookmar
             }
         }
     }
+}
+
+internal fun openTrustedUrl(context: android.content.Context, url: String) {
+    val uri = runCatching { Uri.parse(url) }.getOrNull() ?: return
+    if (uri.scheme != "https" || uri.host.isNullOrBlank()) return
+    runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, uri)) }
 }
 
 @Composable
@@ -570,39 +613,19 @@ private fun LogsScreen(logs: List<LogEntry>, refresh: () -> Unit, clear: () -> U
 private fun SettingsScreen(settings: AppSettings, githubState: String, loading: Boolean, model: SentinelViewModel) {
     var baseUrl by rememberSaveable { mutableStateOf(settings.baseUrl) }
     var apiKey by rememberSaveable { mutableStateOf(settings.apiKey) }
-    var gmail by rememberSaveable { mutableStateOf(settings.gmailAddress) }
-    var gmailPassword by rememberSaveable { mutableStateOf(settings.gmailAppPassword) }
-    var owner by rememberSaveable { mutableStateOf(settings.githubOwner) }
-    var repository by rememberSaveable { mutableStateOf(settings.githubRepository) }
-    var workflow by rememberSaveable { mutableStateOf(settings.githubWorkflow) }
-    var githubToken by rememberSaveable { mutableStateOf(settings.githubToken) }
     var darkMode by rememberSaveable { mutableStateOf(settings.darkMode) }
     var apiVisible by rememberSaveable { mutableStateOf(false) }
-    var gmailVisible by rememberSaveable { mutableStateOf(false) }
-    var githubVisible by rememberSaveable { mutableStateOf(false) }
     var pin by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(settings) {
         baseUrl = settings.baseUrl
         apiKey = settings.apiKey
-        gmail = settings.gmailAddress
-        gmailPassword = settings.gmailAppPassword
-        owner = settings.githubOwner
-        repository = settings.githubRepository
-        workflow = settings.githubWorkflow
-        githubToken = settings.githubToken
         darkMode = settings.darkMode
     }
 
     val current = settings.copy(
         baseUrl = baseUrl,
         apiKey = apiKey,
-        gmailAddress = gmail,
-        gmailAppPassword = gmailPassword,
-        githubOwner = owner,
-        githubRepository = repository,
-        githubWorkflow = workflow,
-        githubToken = githubToken,
         darkMode = darkMode,
     )
 
@@ -613,25 +636,12 @@ private fun SettingsScreen(settings: AppSettings, githubState: String, loading: 
             SecureField("API secret", apiKey, { apiKey = it }, !apiVisible, false) { apiVisible = !apiVisible }
             Text("The API secret is exchanged for a short-lived session token. It is never included in the app source.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        SettingsCard("Gmail", Icons.Outlined.Email) {
-            SecureField("Gmail address", gmail, { gmail = it }, false, false)
-            SecureField("Gmail App Password", gmailPassword, { gmailPassword = it }, !gmailVisible, false) { gmailVisible = !gmailVisible }
-            Text("These two values stay on this phone. Test Email uses the backend's GMAIL_USER and GMAIL_APP_PASSWORD; the app never uploads this password.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = model::testEmail, enabled = !loading) { Text("Test backend Gmail") }
-                OutlinedButton(onClick = model::clearGmail, enabled = !loading) { Text("Clear local") }
-            }
-        }
-        SettingsCard("GitHub Actions", Icons.Outlined.PlayArrow) {
-            SecureField("Owner", owner, { owner = it }, false, false)
-            SecureField("Repository", repository, { repository = it }, false, false)
-            SecureField("Workflow file", workflow, { workflow = it }, false, false)
-            SecureField("Fine-grained token", githubToken, { githubToken = it }, !githubVisible, false) { githubVisible = !githubVisible }
-            Text("Direct GitHub control sends the token only to api.github.com. Use a fine-grained token limited to Actions for this repository.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        SettingsCard("Backend automation", Icons.Outlined.PlayArrow) {
+            Text("Gmail and GitHub credentials stay on the v3.3 backend. This app never asks for them.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Row(verticalAlignment = Alignment.CenterVertically) { Text("Latest: ", fontWeight = FontWeight.SemiBold); StatusDot(tone(githubState)); Spacer(Modifier.width(6.dp)); Text(githubState) }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = { model.triggerGitHubDirect(current) }, enabled = !loading) { Text("Trigger") }
-                OutlinedButton(onClick = { model.checkGitHubDirect(current) }, enabled = !loading) { Text("Check status") }
+                OutlinedButton(onClick = model::triggerBackendWorkflow, enabled = !loading) { Text("Run workflow") }
+                OutlinedButton(onClick = model::testEmail, enabled = !loading) { Text("Test email") }
             }
         }
         SettingsCard("Security & appearance", Icons.Outlined.Lock) {
@@ -654,6 +664,12 @@ private fun SettingsScreen(settings: AppSettings, githubState: String, loading: 
         Button(onClick = { model.saveSettings(current) }, modifier = Modifier.fillMaxWidth().height(52.dp), enabled = !loading) {
             if (loading) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp) else Text("Save settings")
         }
+        Spacer(Modifier.height(14.dp))
+        Text(
+            "TU Sentinel Pro is an independent student companion and is not affiliated with or endorsed by Tribhuvan University. The emblem is loaded from the official TU portal; university pages always open at their official HTTPS addresses.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         Spacer(Modifier.height(24.dp))
     }
 }
@@ -708,7 +724,7 @@ fun LockScreen(model: SentinelViewModel) {
             Box(contentAlignment = Alignment.Center) { Icon(Icons.Outlined.Lock, null, Modifier.size(34.dp), tint = MaterialTheme.colorScheme.primary) }
         }
         Spacer(Modifier.height(20.dp))
-        Text("TU Notice Sentinel", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
+        Text("TU Sentinel Pro", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
         Text("Enter your PIN to open the private dashboard", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(24.dp))
         OutlinedTextField(

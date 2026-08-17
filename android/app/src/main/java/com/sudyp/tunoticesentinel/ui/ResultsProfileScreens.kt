@@ -8,6 +8,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.webkit.CookieManager
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.URLUtil
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -63,11 +65,17 @@ import com.sudyp.tunoticesentinel.data.Notice
 import com.sudyp.tunoticesentinel.data.local.DownloadEntity
 import com.sudyp.tunoticesentinel.data.local.ResultEntity
 import com.sudyp.tunoticesentinel.security.AppSettings
+import org.json.JSONObject
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private const val RESULT_URL = "https://result.tuexam.edu.np/"
+
+private fun isTrustedResultUri(uri: Uri): Boolean {
+    val host = uri.host?.lowercase().orEmpty()
+    return uri.scheme == "https" && (host == "tuexam.edu.np" || host.endsWith(".tuexam.edu.np"))
+}
 
 @Composable
 fun ResultsScreen(settings: AppSettings, results: List<ResultEntity>, model: SentinelViewModel) {
@@ -98,15 +106,15 @@ fun ResultsScreen(settings: AppSettings, results: List<ResultEntity>, model: Sen
 }
 
 private fun autofillResultPortal(webView: WebView?, symbol: String, dob: String) {
-    val safeSymbol = symbol.replace("\\", "\\\\").replace("'", "\\'")
-    val safeDob = dob.replace("\\", "\\\\").replace("'", "\\'")
+    val safeSymbol = JSONObject.quote(symbol)
+    val safeDob = JSONObject.quote(dob)
     webView?.evaluateJavascript(
         """(function(){
           const inputs=[...document.querySelectorAll('input')];
           const symbol=inputs.find(i=>/symbol|roll/i.test((i.name||'')+' '+(i.id||'')+' '+(i.placeholder||'')));
           const dob=inputs.find(i=>/dob|birth|date/i.test((i.name||'')+' '+(i.id||'')+' '+(i.placeholder||'')));
           const set=(e,v)=>{if(!e)return;e.focus();e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));};
-          set(symbol,'$safeSymbol'); set(dob,'$safeDob');
+          set(symbol,$safeSymbol); set(dob,$safeDob);
         })();""".trimIndent(),
         null,
     )
@@ -126,11 +134,27 @@ private fun ResultWebView(modifier: Modifier, model: SentinelViewModel, ready: (
                 settings.loadsImagesAutomatically = true
                 settings.builtInZoomControls = true
                 settings.displayZoomControls = false
-                webViewClient = WebViewClient()
+                settings.allowFileAccess = false
+                settings.allowContentAccess = false
+                settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                settings.safeBrowsingEnabled = true
+                CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
+                webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                        val uri = request.url
+                        if (isTrustedResultUri(uri)) return false
+                        if (uri.scheme == "https") runCatching {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+                        }
+                        return true
+                    }
+                }
                 webChromeClient = WebChromeClient()
                 setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
+                    val downloadUri = Uri.parse(url)
+                    if (!isTrustedResultUri(downloadUri)) return@setDownloadListener
                     val filename = URLUtil.guessFileName(url, contentDisposition, mimeType)
-                    val request = DownloadManager.Request(Uri.parse(url))
+                    val request = DownloadManager.Request(downloadUri)
                         .setMimeType(mimeType)
                         .addRequestHeader("User-Agent", userAgent)
                         .addRequestHeader("Cookie", CookieManager.getInstance().getCookie(url).orEmpty())
@@ -257,7 +281,7 @@ fun ProfileScreen(
             OutlinedCard(Modifier.fillMaxWidth()) {
                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text(notice.title, Modifier.weight(1f), maxLines = 2)
-                    IconButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(notice.url))) }) { Icon(Icons.Outlined.OpenInNew, "Open") }
+                    IconButton(onClick = { openTrustedUrl(context, notice.url) }) { Icon(Icons.Outlined.OpenInNew, "Open") }
                 }
             }
         }

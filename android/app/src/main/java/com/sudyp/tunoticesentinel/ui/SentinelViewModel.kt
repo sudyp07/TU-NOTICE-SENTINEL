@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sudyp.tunoticesentinel.SentinelApplication
-import com.sudyp.tunoticesentinel.data.GitHubClient
 import com.sudyp.tunoticesentinel.data.SentinelRepository
 import com.sudyp.tunoticesentinel.data.local.toDomain
 import com.sudyp.tunoticesentinel.data.local.DownloadEntity
@@ -33,7 +32,6 @@ data class ActionMessage(val text: String, val success: Boolean)
 class SentinelViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as SentinelApplication
     private val dao = app.database.sentinelDao()
-    private val github = GitHubClient()
     private var repositoryKey = ""
     private var repository: SentinelRepository? = null
 
@@ -84,7 +82,10 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
 
     fun runBotTest() = perform("Bot self-test completed") { repo().runBotTest() }
 
-    fun triggerBackendWorkflow() = perform("GitHub workflow accepted") { repo().triggerBackendWorkflow() }
+    fun triggerBackendWorkflow() = perform("GitHub workflow accepted") {
+        repo().triggerBackendWorkflow()
+        _githubState.value = "queued"
+    }
 
     fun clearLogs() = perform("Logs cleared") { repo().clearLogs() }
 
@@ -128,12 +129,6 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
         if (configured(_settings.value)) refresh()
     }
 
-    fun clearGmail() {
-        app.settings.clearGmail()
-        _settings.value = app.settings.read()
-        _message.value = ActionMessage("Local Gmail details cleared", true)
-    }
-
     fun enablePin(pin: String) {
         runCatching { app.settings.setPin(pin) }
             .onSuccess {
@@ -154,15 +149,6 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
     fun unlock(pin: String) {
         if (app.settings.verifyPin(pin)) _locked.value = false
         else _message.value = ActionMessage("Incorrect PIN", false)
-    }
-
-    fun triggerGitHubDirect(settings: AppSettings) = perform("GitHub workflow accepted") {
-        github.trigger(settings.githubOwner, settings.githubRepository, settings.githubWorkflow, settings.githubToken)
-        _githubState.value = "running"
-    }
-
-    fun checkGitHubDirect(settings: AppSettings) = perform("GitHub status updated") {
-        _githubState.value = github.latest(settings.githubOwner, settings.githubRepository, settings.githubWorkflow, settings.githubToken).state
     }
 
     private fun perform(success: String, block: suspend () -> Unit) {
@@ -195,6 +181,7 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
 
     private suspend fun refreshWithAlerts() {
         val newRows = repo().refreshAll()
+        _githubState.value = runCatching { repo().githubStatus().state }.getOrDefault("unknown")
         val preferences = getApplication<Application>().getSharedPreferences("sentinel_worker", Context.MODE_PRIVATE)
         val initialized = preferences.getBoolean("initialized", false)
         if (initialized && newRows.isNotEmpty()) {
