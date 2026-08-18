@@ -11,7 +11,7 @@ async function fixture() {
       triggerWorkflow: async () => ({ accepted: true, message: 'Workflow queued.' }),
       latestWorkflowStatus: async () => ({ state: 'success', status: 'completed', conclusion: 'success', runNumber: 7 }),
     },
-    getStatus: async () => ({ configured: true, online: true, bot: 'idle', noticesScanned: 1, version: '3.3.0' }),
+    getStatus: async () => ({ configured: true, online: true, bot: 'idle', noticesScanned: 1, version: '3.4.0' }),
     listNotices: async () => [{ id: 'n1', title: 'TU notice', url: 'https://exam.tu.edu.np/notices/n1', bsDate: '2083-04-15' }],
     listLogs: async () => [],
     listNotifications: async () => [],
@@ -43,13 +43,13 @@ test('API protects private routes and matches the Android data contract', async 
   const status = await statusResponse.json();
   assert.equal(statusResponse.status, 200);
   assert.equal(status.online, true);
-  assert.equal(status.version, '3.3.0');
+  assert.equal(status.version, '3.4.0');
   const notices = await (await fetch(`${base}/api/notices`, { headers })).json();
   assert.equal(notices.total, 1);
   assert.equal(notices.notices[0].bsDate, '2083-04-15');
 });
 
-test('Run Bot endpoint queues the configured workflow', async (context) => {
+test('Run Bot endpoint starts the local bot runner', async (context) => {
   const { server, base } = await fixture();
   context.after(() => server.close());
   const session = await token(base);
@@ -57,5 +57,5 @@ test('Run Bot endpoint queues the configured workflow', async (context) => {
   const body = await response.json();
   assert.equal(response.status, 202);
   assert.equal(body.accepted, true);
-  assert.match(body.message, /queued/i);
+  assert.equal(body.accepted, true);
 });

@@ -218,7 +218,7 @@ export async function runBot({
 
       emailsSent: (next.status?.emailsSent || 0) + (emailSent ? 1 : 0),
 
-      version: "3.3.3",
+      version: "3.4.0",
     };
 
     // Save state.
@@ -280,7 +280,7 @@ export async function runBot({
           storedNotices: previous.notices?.length || 0,
           newNotices: 0,
 
-          version: "3.3.3",
+          version: "3.4.0",
         };
 
         await saveState(stateFile, previous);
@@ -319,4 +319,6 @@ export async function main() {
   }
 }
 
-main();
+if (process.argv[1] && process.argv[1] === new URL(import.meta.url).pathname) {
+  main();
+}

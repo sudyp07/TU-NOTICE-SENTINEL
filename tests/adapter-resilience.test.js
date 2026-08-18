@@ -1,31 +1,26 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { SentinelAdapter } from '../src/api/adapter.js';
+import test from "node:test";
+import assert from "node:assert/strict";
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { SentinelAdapter } from "../src/api/adapter.js";
 
-test('status remains online when workflow works but state file returns 404', async () => {
-  const missing = Object.assign(new Error('Not Found'), { status: 404 });
-  const github = {
-    configured: true,
-    readStateFile: async () => { throw missing; },
-    latestWorkflowStatus: async () => ({ state: 'running', updatedAt: '2026-08-11T00:00:00Z' }),
-    getBotEnabled: async () => true,
-  };
-  const status = await new SentinelAdapter(github).getStatus();
+test("local adapter reports the bot as an online local scheduler", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "sentinel-adapter-"));
+  const stateFile = path.join(directory, "state.json");
+  const adapter = new SentinelAdapter({ stateFile, intervalMs: 300000 });
+  const status = await adapter.getStatus();
   assert.equal(status.online, true);
-  assert.equal(status.bot, 'running');
-  assert.equal(status.state, 'degraded');
-  assert.equal(status.lastError, 'Not Found');
+  assert.equal(status.github, "not-used");
+  assert.equal(status.scheduler, "local");
 });
 
-test('run tests reports state diagnostics without converting them to HTTP 404', async () => {
-  const missing = Object.assign(new Error('Not Found'), { status: 404 });
-  const github = {
-    configured: true,
-    readStateFile: async () => { throw missing; },
-    latestWorkflowStatus: async () => ({ state: 'success' }),
-  };
-  const result = await new SentinelAdapter(github).runTests();
-  assert.equal(result.ok, true);
-  assert.equal(result.stateReadable, false);
-  assert.equal(result.workflowReachable, true);
+test("local adapter can read the persistent state without GitHub", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "sentinel-adapter-"));
+  const stateFile = path.join(directory, "state.json");
+  await writeFile(stateFile, JSON.stringify({ notices: [{ id: "n1" }] }));
+  const adapter = new SentinelAdapter({ stateFile });
+  const notices = await adapter.listNotices();
+  assert.equal(notices.length, 1);
+  assert.equal(notices[0].id, "n1");
 });

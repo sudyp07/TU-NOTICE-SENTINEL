@@ -1,156 +1,108 @@
-import { emptyState } from "../state.js";
-import { AppError } from "./errors.js";
+import { emptyState, loadState, saveState, normalizeState } from '../state.js';
+import { AppError } from './errors.js';
+import { sendEmail } from '../mailer.js';
+import { buildEmail, maskEmail } from '../email.js';
 
 export class SentinelAdapter {
-  constructor(github, cacheTtlMs = 30_000) {
-    this.github = github;
-    this.cacheTtlMs = cacheTtlMs;
-    this.cache = null;
-    this.cachedAt = 0;
-    this.stale = false;
+  constructor({ stateFile = process.env.STATE_FILE, intervalMs = 300000 } = {}) {
+    this.stateFile = stateFile || 'data/state.json';
+    this.intervalMs = intervalMs;
+    this.enabled = process.env.BOT_ENABLED !== 'false';
+    this.running = false;
     this.lastReadError = null;
-    this.configured = github.configured;
+    this.runner = null;
+    this.configured = true;
   }
 
-  async readState(force = false) {
-    if (!this.configured) {
-      throw new AppError(
-        503,
-        "GITHUB_NOT_CONFIGURED",
-        "Configure GitHub on the API server before using the dashboard.",
-      );
-    }
-    if (!force && this.cache && Date.now() - this.cachedAt < this.cacheTtlMs)
-      return structuredClone(this.cache);
+  attachRunner(runner) { this.runner = runner; }
+  setRunning(value) { this.running = Boolean(value); }
+  invalidate() { this.lastReadError = null; }
+
+  async readState() {
     try {
-      const { state } = await this.github.readStateFile();
-      this.cache = state;
-      this.cachedAt = Date.now();
-      this.stale = false;
-      this.lastReadError = null;
-      return structuredClone(state);
+      return await loadState(this.stateFile);
     } catch (error) {
-      if (this.cache) {
-        this.stale = true;
-        this.lastReadError = error.message;
-        return structuredClone(this.cache);
-      }
+      this.lastReadError = error.message;
       throw error;
     }
   }
 
-  invalidate() {
-    this.cachedAt = 0;
+  async writeState(mutator) {
+    const current = normalizeState(await loadState(this.stateFile));
+    const next = normalizeState((await mutator(current)) ?? current);
+    await saveState(this.stateFile, next);
+    return next;
   }
 
   async getStatus() {
     let state;
-    let stateError = null;
-    try {
-      state = await this.readState();
-    } catch (error) {
-      state = emptyState();
-      stateError = error;
-    }
-    const [workflowResult, enabledResult] = await Promise.allSettled([
-      this.github.latestWorkflowStatus(),
-      this.github.getBotEnabled(),
-    ]);
-    const workflow =
-      workflowResult.status === "fulfilled"
-        ? workflowResult.value
-        : { state: "error", updatedAt: null };
-    const enabled =
-      enabledResult.status === "fulfilled"
-        ? enabledResult.value
-        : state.botEnabled !== false;
+    try { state = await this.readState(); }
+    catch { state = emptyState(); }
     return {
       ...state.status,
       configured: true,
-      online: workflowResult.status === "fulfilled",
-      bot:
-        workflow.state === "running"
-          ? "running"
-          : enabled
-            ? state.status.bot === "unknown"
-              ? "idle"
-              : state.status.bot
-            : "disabled",
-      github: workflow.state,
-      state: stateError ? "degraded" : this.stale ? "stale" : state.status.state,
-      lastChecked: state.status.lastChecked || workflow.updatedAt,
-      lastError: stateError?.message || (this.stale ? this.lastReadError : state.status.lastError),
-      botEnabled: enabled,
+      online: true,
+      bot: this.running ? 'running' : (this.enabled ? (state.status.bot === 'failed' ? 'idle' : state.status.bot || 'idle') : 'disabled'),
+      github: 'not-used',
+      botEnabled: this.enabled,
+      scheduler: 'local',
+      intervalMs: this.intervalMs,
+      state: this.lastReadError ? 'degraded' : (state.status.state || 'ready'),
+      lastError: this.lastReadError || state.status.lastError || null,
     };
   }
 
-  async listNotices() {
-    return (await this.readState()).notices;
-  }
-
-  async listLogs() {
-    return (await this.readState()).logs;
-  }
-
-  async listNotifications() {
-    return (await this.readState()).notifications;
-  }
+  async listNotices() { return (await this.readState()).notices; }
+  async listLogs() { return (await this.readState()).logs; }
+  async listNotifications() { return (await this.readState()).notifications; }
 
   async clearLogs() {
-    await this.github.updateState((state) => {
-      state.logs = [];
-      return state;
-    }, "chore: clear Sentinel logs");
-    this.invalidate();
+    await this.writeState((state) => { state.logs = []; return state; });
   }
 
-  async checkNow(mode = "check") {
-    return this.github.triggerWorkflow(mode);
+  async checkNow(mode = 'check') {
+    if (mode === 'test-email') {
+      if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !process.env.EMAIL_TO) {
+        throw new AppError(503, 'EMAIL_NOT_CONFIGURED', 'Gmail environment variables are not configured.');
+      }
+      await sendEmail({
+        user: process.env.GMAIL_USER,
+        appPassword: process.env.GMAIL_APP_PASSWORD,
+        to: process.env.EMAIL_TO,
+        subject: 'TU Notice Sentinel Test Email',
+        text: `TU Notice Sentinel test email\n\nSent: ${new Date().toISOString()}`,
+      });
+      return { accepted: true, queued: false, mode, message: 'Test email sent.' };
+    }
+    if (mode !== 'check') throw new AppError(400, 'INVALID_CHECK_MODE', `Unsupported mode: ${mode}`);
+    if (!this.runner) throw new AppError(503, 'BOT_NOT_READY', 'Bot runner is not ready.');
+    const result = await this.runner('manual');
+    return { accepted: !result?.skipped, queued: false, mode, result };
   }
 
   async setEnabled(enabled) {
-    const result = await this.github.setBotEnabled(enabled);
-    try {
-      await this.github.updateState(
-        (state) => {
-          state.botEnabled = Boolean(enabled);
-          state.status.bot = enabled ? "idle" : "disabled";
-          return state;
-        },
-        `chore: ${enabled ? "enable" : "disable"} TU Notice Sentinel`,
-      );
-    } catch (error) {
-      if (error.status !== 404) throw error;
-      result.stateUpdated = false;
-      result.warning ||= "Workflow changed, but data/state.json was unavailable.";
-    }
-    this.invalidate();
-    return result;
+    this.enabled = Boolean(enabled);
+    await this.writeState((state) => {
+      state.botEnabled = this.enabled;
+      state.status.bot = this.enabled ? (this.running ? 'running' : 'idle') : 'disabled';
+      return state;
+    });
+    return { enabled: this.enabled, control: 'local-scheduler' };
   }
 
   async runTests() {
-    const [stateResult, workflowResult] = await Promise.allSettled([
-      this.readState(true),
-      this.github.latestWorkflowStatus(),
-    ]);
-    return {
-      ok: workflowResult.status === "fulfilled",
-      stateReadable: stateResult.status === "fulfilled",
-      workflowReachable: workflowResult.status === "fulfilled",
-      stateError: stateResult.status === "rejected" ? stateResult.reason.message : null,
-      workflowError:
-        workflowResult.status === "rejected" ? workflowResult.reason.message : null,
-    };
+    let stateReadable = false;
+    let stateError = null;
+    try { await this.readState(); stateReadable = true; } catch (e) { stateError = e.message; }
+    return { ok: stateReadable, stateReadable, scheduler: 'local', workflowReachable: false, workflowError: null, stateError };
   }
 
   async recordNotification(notification) {
-    await this.github.updateState((state) => {
+    await this.writeState((state) => {
       state.notifications.push(notification);
       state.notifications = state.notifications.slice(-200);
-      if (notification.status === "accepted")
-        state.status.emailsSent = Number(state.status.emailsSent || 0) + 1;
+      if (notification.status === 'accepted') state.status.emailsSent = Number(state.status.emailsSent || 0) + 1;
       return state;
-    }, "chore: record Sentinel test email");
-    this.invalidate();
+    });
   }
 }

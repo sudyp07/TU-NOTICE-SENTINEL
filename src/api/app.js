@@ -4,7 +4,7 @@ import helmet from "helmet";
 import { createAuth } from "./auth.js";
 import { AppError, redactError } from "./errors.js";
 
-const API_VERSION = "3.3.3";
+const API_VERSION = "3.4.0";
 
 const booleanValue = (value) => value === true || value === "true";
 
@@ -159,6 +159,14 @@ export function createApp({
 
   app.use(helmet());
 
+  // API data is live local state; never let browsers/proxies serve stale responses.
+  app.use("/api", (_request, response, next) => {
+    response.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    response.set("Pragma", "no-cache");
+    response.set("Expires", "0");
+    next();
+  });
+
   app.use(
     express.json({
       limit: "32kb",
@@ -206,6 +214,7 @@ export function createApp({
   app.get(
     "/health",
     (_request, response) => {
+      response.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
       response.json({
         ok: true,
         service:

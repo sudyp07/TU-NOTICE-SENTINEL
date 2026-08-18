@@ -23,7 +23,7 @@ export function emptyState() {
       storedNotices: 0,
       newNotices: 0,
       emailsSent: 0,
-      version: '3.3.3',
+      version: '3.4.0',
     },
     logs: [],
     notifications: [],
