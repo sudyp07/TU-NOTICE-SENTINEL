@@ -1,6 +1,6 @@
 # TU Sentinel Pro 4.0
 
-Native Android student companion for the TU Notice Sentinel v3.3.0 backend. Built with Kotlin, Jetpack Compose, Material 3, Room, WorkManager, Retrofit, Android Keystore, and a hardened official-results WebView.
+Native Android student companion for the TU Notice Sentinel v3.4.0 backend. Built with Kotlin, Jetpack Compose, Material 3, Room, WorkManager, Retrofit, Android Keystore, and a hardened official-results WebView.
 
 ## Open and build
 
@@ -8,7 +8,7 @@ Native Android student companion for the TU Notice Sentinel v3.3.0 backend. Buil
 2. Use JDK 17 and allow Gradle to sync.
 3. Run the `app` configuration on Android 8.0 (API 26) or newer.
 4. In the app, open **Profile → Settings** and enter:
-   - the HTTPS base URL of the deployed v3.3.0 backend, without `/api` at the end;
+   - the HTTPS base URL of the deployed v3.4.0 backend, without `/api` at the end;
    - the same `API_SECRET` configured on that backend (minimum 24 characters).
 5. Save settings. The app exchanges the secret for a short-lived bearer token automatically.
 
@@ -24,7 +24,7 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 ## Included features
 
 - Live bot health, workflow state, Gmail state, scraper state, metrics, and failure details
-- Correct v3.3 actions: check now, test email, enable/disable, self-test, workflow trigger, workflow status, logs, and notification history
+- Current v3.4 actions: check now, test email/notification test, enable/disable, backend self-test, logs, and notification history
 - Search, category filters, unread filter, bookmarks, read state, and offline notice cache
 - Background synchronization and high-priority device alerts for newly discovered notices
 - Official TU, Exam Office, Exam Notices, and Results quick links
@@ -37,7 +37,7 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 The client integrates with these authenticated v3.3.0 routes:
 
-`/api/auth/token`, `/api/status`, `/api/notices`, `/api/notices/latest`, `/api/logs`, `/api/notifications`, `/api/check`, `/api/test-email`, `/api/bot/enable`, `/api/bot/disable`, `/api/bot/test`, `/api/github/workflow`, and `/api/github/status`.
+`/api/auth/token`, `/api/status`, `/api/notices`, `/api/notices/latest`, `/api/logs`, `/api/notifications`, `/api/check`, `/api/notifications/test`, `/api/bot/enabled`, and `/api/tests/run`.
 
 Gmail App Passwords and GitHub tokens stay on the backend. The Android app does not request, store, or send either credential.
 

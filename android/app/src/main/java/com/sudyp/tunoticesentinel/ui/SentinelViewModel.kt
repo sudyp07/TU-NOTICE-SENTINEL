@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -57,6 +58,8 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
     private val _locked = MutableStateFlow(_settings.value.appLockEnabled)
     val locked: StateFlow<Boolean> = _locked.asStateFlow()
 
+    private val _githubState = MutableStateFlow("unknown")
+    val githubState: StateFlow<String> = _githubState.asStateFlow()
 
     init {
         if (configured(_settings.value)) refresh()
@@ -65,13 +68,6 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
     fun clearMessage() { _message.value = null }
 
     fun refresh() = perform("Dashboard updated") { refreshWithAlerts() }
-
-    fun refresh(silent: Boolean) {
-        if (silent) {
-            if (_loading.value) return
-            viewModelScope.launch { runCatching { refreshWithAlerts() } }
-        } else refresh()
-    }
 
     fun checkNow() = perform("Check request accepted") {
         repo().checkNow()
@@ -86,6 +82,11 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun runBotTest() = perform("Bot self-test completed") { repo().runBotTest() }
+
+    fun triggerBackendWorkflow() = perform("Backend check accepted") {
+        repo().checkNow()
+        _githubState.value = "check requested"
+    }
 
     fun clearLogs() = perform("Logs cleared") { repo().clearLogs() }
 
@@ -181,6 +182,7 @@ class SentinelViewModel(application: Application) : AndroidViewModel(application
 
     private suspend fun refreshWithAlerts() {
         val newRows = repo().refreshAll()
+        _githubState.value = dao.observeStatus().first()?.github ?: "unknown"
         val preferences = getApplication<Application>().getSharedPreferences("sentinel_worker", Context.MODE_PRIVATE)
         val initialized = preferences.getBoolean("initialized", false)
         if (initialized && newRows.isNotEmpty()) {

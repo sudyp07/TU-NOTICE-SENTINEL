@@ -133,7 +133,7 @@ class SentinelRepository(
     suspend fun checkNow() = authorized { api.checkNow(it) }
     suspend fun testEmail() = authorized { api.testEmail(it) }
     suspend fun setBotEnabled(enabled: Boolean) = authorized {
-        if (enabled) api.enableBot(it) else api.disableBot(it)
+        api.setBotEnabled(it, mapOf("enabled" to enabled))
     }
     suspend fun runBotTest() = authorized { api.runTest(it) }
     suspend fun clearLogs() {

@@ -32,7 +32,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Terminal
@@ -281,7 +281,7 @@ fun ProfileScreen(
             OutlinedCard(Modifier.fillMaxWidth()) {
                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text(notice.title, Modifier.weight(1f), maxLines = 2)
-                    IconButton(onClick = { openTrustedUrl(context, notice.url) }) { Icon(Icons.Outlined.OpenInNew, "Open") }
+                    IconButton(onClick = { openTrustedUrl(context, notice.url) }) { Icon(Icons.AutoMirrored.Outlined.OpenInNew, "Open") }
                 }
             }
         }
@@ -304,9 +304,3 @@ private fun ProfileMetric(label: String, value: String, modifier: Modifier) {
 private fun formatLocalTime(epoch: Long): String = DateTimeFormatter.ofPattern("MMM d, yyyy • h:mm a 'NST'")
     .withZone(ZoneId.of("Asia/Kathmandu"))
     .format(Instant.ofEpochMilli(epoch))
-
-private fun openTrustedUrl(context: Context, url: String) {
-    val uri = runCatching { Uri.parse(url) }.getOrNull() ?: return
-    if (uri.scheme != "https" && uri.scheme != "http") return
-    context.startActivity(Intent(Intent.ACTION_VIEW, uri))
-}

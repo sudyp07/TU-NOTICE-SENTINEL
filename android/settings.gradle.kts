@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TU Pulse"
+rootProject.name = "TU Sentinel Pro"
 include(":app")

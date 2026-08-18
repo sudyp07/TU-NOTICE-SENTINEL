@@ -10,11 +10,11 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.tupulse.app"
+        applicationId = "com.tusentinel.pro"
         minSdk = 26
         targetSdk = 35
-        versionCode = 50
-        versionName = "5.0.0"
+        versionCode = 40
+        versionName = "4.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

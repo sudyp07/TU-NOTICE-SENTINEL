@@ -37,18 +37,14 @@ interface SentinelApi {
     @POST("api/check")
     suspend fun checkNow(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
 
-    @POST("api/test-email")
+    @POST("api/notifications/test")
     suspend fun testEmail(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
 
-    @POST("api/bot/enable")
-    suspend fun enableBot(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
+    @POST("api/bot/enabled")
+    suspend fun setBotEnabled(@Header("Authorization") authorization: String, @Body body: Map<String, Any> = emptyMap()): ActionResponse
 
-    @POST("api/bot/disable")
-    suspend fun disableBot(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): ActionResponse
-
-    @POST("api/bot/test")
+    @POST("api/tests/run")
     suspend fun runTest(@Header("Authorization") authorization: String, @Body body: Map<String, String> = emptyMap()): BotTestResponse
-
 
     @DELETE("api/logs")
     suspend fun clearLogs(@Header("Authorization") authorization: String)

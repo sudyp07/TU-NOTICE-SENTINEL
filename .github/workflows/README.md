@@ -1,5 +1,1 @@
-# Workflows
-
-Only `android-self-build.yml` belongs here.
-
-The backend bot does not use GitHub Actions. Render runs `npm start`, and `src/server.js` owns the bot scheduler.
+The TU Notice Sentinel bot no longer uses GitHub Actions. Android CI/release workflows may remain.
