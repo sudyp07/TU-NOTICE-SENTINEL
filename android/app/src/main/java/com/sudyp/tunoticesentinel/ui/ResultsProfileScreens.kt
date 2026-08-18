@@ -304,3 +304,9 @@ private fun ProfileMetric(label: String, value: String, modifier: Modifier) {
 private fun formatLocalTime(epoch: Long): String = DateTimeFormatter.ofPattern("MMM d, yyyy • h:mm a 'NST'")
     .withZone(ZoneId.of("Asia/Kathmandu"))
     .format(Instant.ofEpochMilli(epoch))
+
+private fun openTrustedUrl(context: Context, url: String) {
+    val uri = runCatching { Uri.parse(url) }.getOrNull() ?: return
+    if (uri.scheme != "https" && uri.scheme != "http") return
+    context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+}
